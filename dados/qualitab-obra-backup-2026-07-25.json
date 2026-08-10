@@ -1,0 +1,599 @@
+{
+  "obras": [
+    {
+      "id": "mrzqbhf6ejl3e",
+      "nome": "Quintais",
+      "endereco": "",
+      "pavimentos": [
+        {
+          "id": "mrzqbzfix6on4",
+          "nome": "Salão de festas",
+          "ambientes": [
+            {
+              "id": "mrzqd4j64e8wp",
+              "nome": "Banheiro",
+              "fvsList": [
+                {
+                  "instId": "mrzqdgp6ijv6n",
+                  "codigo": "FVS-19",
+                  "nome": "Execução de Revestimento de Piso Interno: Cerâmica e Porcelanato",
+                  "rev": "00",
+                  "normas": [
+                    "NBR 13818/NBR 15463 - Placas cerâmicas",
+                    "NBR 14081 (partes 1-5) - Argamassa colante"
+                  ],
+                  "itens": [
+                    {
+                      "texto": "Planeza e nivelamento do contrapiso antes do assentamento",
+                      "status": "ok",
+                      "obs": "",
+                      "foto": null,
+                      "subitens": [
+                        {
+                          "texto": "Régua de alumínio de 2 m não acusa vão maior que 3 mm sob a régua",
+                          "feito": true
+                        },
+                        {
+                          "texto": "Ausência de degraus ou desníveis perceptíveis ao tato entre painéis/trechos",
+                          "feito": true
+                        },
+                        {
+                          "texto": "Nível a laser ou mangueira de nível conferido em pelo menos 4 pontos do ambiente",
+                          "feito": true
+                        },
+                        {
+                          "texto": "Superfície seca e curada (sem umidade residual) antes da conferência",
+                          "feito": true
+                        }
+                      ]
+                    },
+                    {
+                      "texto": "Tempo em aberto da argamassa colante respeitado",
+                      "status": "pend",
+                      "obs": "",
+                      "foto": null,
+                      "subitens": [
+                        {
+                          "texto": "Tempo entre desempeno da argamassa e assentamento da peça dentro do tempo em aberto do fabricante",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Ajuste do tempo em aberto conforme temperatura/umidade do ambiente no dia da aplicação",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Ausência de película seca (pele) sobre a argamassa no momento do assentamento",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Área desempenada de cada vez compatível com o ritmo de assentamento (evita perda de tempo em aberto)",
+                          "feito": false
+                        }
+                      ]
+                    },
+                    {
+                      "texto": "Dupla colagem aplicada em porcelanatos de grande formato",
+                      "status": "pend",
+                      "obs": "",
+                      "foto": null,
+                      "subitens": [
+                        {
+                          "texto": "Argamassa desempenada tanto no contrapiso quanto no verso da peça em porcelanatos de grande formato",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Direção do desempeno no piso e na peça cruzadas (evita bolsões de ar)",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Cobertura de argamassa contínua, sem falhas visíveis nas bordas da peça",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Aplicação de dupla colagem obrigatória conforme formato/especificação do fabricante",
+                          "feito": false
+                        }
+                      ]
+                    },
+                    {
+                      "texto": "Percentual de argamassa aderida no verso conferido (amostral)",
+                      "status": "pend",
+                      "obs": "",
+                      "foto": null,
+                      "subitens": [
+                        {
+                          "texto": "Peça retirada amostralmente após assentamento (ainda fresco) para conferência do verso",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Percentual de argamassa aderida no verso conforme mínimo especificado (ex.: ≥90% em áreas internas, ≥95% externas/molhadas)",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Ausência de bolsões de ar concentrados (vazios maiores que o admissível)",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Verificação amostral registrada por ambiente/lote de assentamento",
+                          "feito": false
+                        }
+                      ]
+                    },
+                    {
+                      "texto": "Juntas de assentamento com largura e espaçadores conforme especificação",
+                      "status": "pend",
+                      "obs": "",
+                      "foto": null,
+                      "subitens": [
+                        {
+                          "texto": "Largura da junta conferida com espaçador/gabarito conforme especificação do projeto",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Espaçadores mantidos até a cura inicial da argamassa, sem deslocamento das peças",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Uniformidade da largura de junta em toda a área assentada",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Alinhamento das juntas (retas/paralelas) conferido com linha esticada",
+                          "feito": false
+                        }
+                      ]
+                    },
+                    {
+                      "texto": "Juntas de dilatação/movimentação a cada área e junto a paredes",
+                      "status": "pend",
+                      "obs": "",
+                      "foto": null,
+                      "subitens": [
+                        {
+                          "texto": "Junta perimetral (encontro piso-parede) presente em todo o perímetro do ambiente",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Juntas de movimentação intermediárias conforme especificação (espaçamento máximo entre juntas)",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Largura da junta de movimentação preenchida com material compressível/rejunte flexível",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Continuidade das juntas de dilatação estrutural do edifício respeitada no revestimento",
+                          "feito": false
+                        }
+                      ]
+                    },
+                    {
+                      "texto": "Caimento correto em áreas molhadas para ralos",
+                      "status": "pend",
+                      "obs": "",
+                      "foto": null,
+                      "subitens": [
+                        {
+                          "texto": "Caimento medido com nível/mangueira de nível em direção ao ralo (ex.: mín. 1%)",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Ausência de empoçamento em teste com água jogada no piso",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Caimento uniforme em todos os pontos do ambiente, sem contra-caimento",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Nível do ralo compatível com o caimento final do piso assentado",
+                          "feito": false
+                        }
+                      ]
+                    },
+                    {
+                      "texto": "Ausência de peças soltas (som cavo) antes do rejuntamento",
+                      "status": "pend",
+                      "obs": "",
+                      "foto": null,
+                      "subitens": [
+                        {
+                          "texto": "Percussão leve (cabo de martelo/moeda) realizada em 100% das peças assentadas",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Ausência de som cavo indicativo de falha de aderência em qualquer peça",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Peças com som cavo identificadas, marcadas e removidas/reassentadas antes do rejunte",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Verificação registrada por ambiente antes da liberação para rejuntamento",
+                          "feito": false
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "instId": "mrzqgbx2ukw87",
+                  "codigo": "FVS-05",
+                  "nome": "Tubulação a céu aberto",
+                  "rev": "00",
+                  "normas": [
+                    "NBR 5626:2020 - Água fria e água quente",
+                    "NBR 8160 - Esgoto sanitário",
+                    "NBR 10844 - Águas pluviais"
+                  ],
+                  "itens": [
+                    {
+                      "texto": "Declividade mínima conforme diâmetro e tipo de tubulação",
+                      "status": "nc",
+                      "obs": "🔧 Pendente: Sentido do caimento confere com o sentido de escoamento previsto em projeto; Declividade uniforme ao longo do trecho, sem contraflechas (pontos baixos); Verificação em pelo menos 3 pontos por trecho de tubulação",
+                      "foto": null,
+                      "subitens": [
+                        {
+                          "texto": "Declividade medida com nível/mangueira de nível confere com mínimo de projeto por trecho",
+                          "feito": true
+                        },
+                        {
+                          "texto": "Sentido do caimento confere com o sentido de escoamento previsto em projeto",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Declividade uniforme ao longo do trecho, sem contraflechas (pontos baixos)",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Verificação em pelo menos 3 pontos por trecho de tubulação",
+                          "feito": false
+                        }
+                      ]
+                    },
+                    {
+                      "texto": "Assentamento sobre berço de areia compactada",
+                      "status": "pend",
+                      "obs": "",
+                      "foto": null,
+                      "subitens": [
+                        {
+                          "texto": "Espessura do berço de areia conforme especificação (ex.: mín. 10 cm sob a geratriz inferior)",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Areia isenta de pedras, entulho ou material orgânico",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Compactação manual do berço realizada antes do assentamento do tubo",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Berço regularizado e nivelado ao longo de todo o trecho",
+                          "feito": false
+                        }
+                      ]
+                    },
+                    {
+                      "texto": "Profundidade mínima de cobertura sobre tubulação enterrada",
+                      "status": "pend",
+                      "obs": "",
+                      "foto": null,
+                      "subitens": [
+                        {
+                          "texto": "Profundidade da geratriz superior do tubo até o nível do terreno medida com trena/vara graduada",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Cobertura mínima conforme especificação de projeto respeitada em toda a extensão",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Cobertura adicional prevista em trechos sob tráfego de veículos/equipamentos",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Medição registrada em pontos de mudança de declividade e caixas",
+                          "feito": false
+                        }
+                      ]
+                    },
+                    {
+                      "texto": "Estanqueidade das juntas testada antes do reaterro",
+                      "status": "pend",
+                      "obs": "",
+                      "foto": null,
+                      "subitens": [
+                        {
+                          "texto": "Teste de estanqueidade (visual com água ou pressão, conforme tipo de rede) realizado antes do reaterro",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Ausência de vazamento visível em todas as juntas do trecho testado",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Tempo de observação do teste respeitado conforme procedimento",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Resultado do teste registrado e assinado antes da liberação para reaterro",
+                          "feito": false
+                        }
+                      ]
+                    },
+                    {
+                      "texto": "Proteção mecânica antes do reaterro",
+                      "status": "pend",
+                      "obs": "",
+                      "foto": null,
+                      "subitens": [
+                        {
+                          "texto": "Camada de proteção (areia ou material selecionado) envolvendo o tubo antes do reaterro comum",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Ausência de pedras ou material cortante em contato direto com a tubulação",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Compactação do material de proteção lateral realizada manualmente, sem impacto direto sobre o tubo",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Sinalização/faixa de advertência instalada acima da tubulação, quando especificado",
+                          "feito": false
+                        }
+                      ]
+                    },
+                    {
+                      "texto": "Caixas de passagem e inspeção niveladas e acessíveis",
+                      "status": "pend",
+                      "obs": "",
+                      "foto": null,
+                      "subitens": [
+                        {
+                          "texto": "Tampa da caixa nivelada com o piso/terreno acabado do entorno",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Caixa posicionada conforme locação de projeto, sem obstrução de acesso",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Fundo da caixa com caimento/calha conforme função (passagem, gordura, inspeção)",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Tampa com resistência adequada ao tráfego previsto no local (veicular/pedestre)",
+                          "feito": false
+                        }
+                      ]
+                    },
+                    {
+                      "texto": "Diâmetros e materiais conforme projeto hidrossanitário",
+                      "status": "pend",
+                      "obs": "",
+                      "foto": null,
+                      "subitens": [
+                        {
+                          "texto": "Diâmetro nominal do tubo confere com especificação de projeto por trecho",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Material da tubulação (PVC, ferro fundido, etc.) confere com o especificado",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Nota fiscal/etiqueta do material conferida com memorial descritivo",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Conexões e registros com diâmetro compatível ao tubo instalado",
+                          "feito": false
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "mrzqchmattajf",
+          "nome": "Térreo",
+          "ambientes": [
+            {
+              "id": "mrzqhaza83d7a",
+              "nome": "Fachada",
+              "fvsList": [
+                {
+                  "instId": "mrzqheoqx5mom",
+                  "codigo": "FVS-02",
+                  "nome": "Locação de Obra",
+                  "rev": "00",
+                  "normas": [
+                    "NBR 13133:2021 - Execução de levantamento topográfico"
+                  ],
+                  "itens": [
+                    {
+                      "texto": "Referência de nível (RN) e cotas conforme projeto",
+                      "status": "ok",
+                      "obs": "",
+                      "foto": null,
+                      "subitens": [
+                        {
+                          "texto": "RN física implantada em local protegido e não sujeito a movimentação",
+                          "feito": true
+                        },
+                        {
+                          "texto": "Cota da RN conferida por nivelamento topográfico com projeto de terraplenagem/implantação",
+                          "feito": true
+                        },
+                        {
+                          "texto": "Cotas de nível transportadas para pontos de controle da obra a partir da RN",
+                          "feito": true
+                        },
+                        {
+                          "texto": "Diferença entre cota de projeto e cota executada dentro da tolerância (ex.: ±1 cm)",
+                          "feito": true
+                        }
+                      ]
+                    },
+                    {
+                      "texto": "Esquadro dos eixos de locação conferido (3-4-5 ou estação total)",
+                      "status": "ok",
+                      "obs": "",
+                      "foto": null,
+                      "subitens": [
+                        {
+                          "texto": "Ângulo reto entre eixos conferido pelo método 3-4-5 ou com estação total",
+                          "feito": true
+                        },
+                        {
+                          "texto": "Diagonais dos retângulos de locação medidas e conferidas (diferença entre diagonais dentro da tolerância)",
+                          "feito": true
+                        },
+                        {
+                          "texto": "Erro de esquadro registrado inferior ao limite admissível de projeto",
+                          "feito": true
+                        },
+                        {
+                          "texto": "Pontos de locação materializados com piquetes/gabaritos travados",
+                          "feito": true
+                        }
+                      ]
+                    },
+                    {
+                      "texto": "Afastamentos/recuos conforme projeto legal aprovado",
+                      "status": "ok",
+                      "obs": "",
+                      "foto": null,
+                      "subitens": [
+                        {
+                          "texto": "Distância medida da edificação até as divisas confere com recuo mínimo do projeto legal aprovado",
+                          "feito": true
+                        },
+                        {
+                          "texto": "Afastamentos frontal, lateral e de fundo conferidos individualmente com trena/estação total",
+                          "feito": true
+                        },
+                        {
+                          "texto": "Projeção de platibandas, marquises e beirais não invade recuo mínimo exigido",
+                          "feito": true
+                        },
+                        {
+                          "texto": "Divisas do terreno confirmadas com levantamento planialtimétrico/escritura antes da medição",
+                          "feito": true
+                        }
+                      ]
+                    },
+                    {
+                      "texto": "Gabarito de madeira travado e nivelado",
+                      "status": "ok",
+                      "obs": "",
+                      "foto": null,
+                      "subitens": [
+                        {
+                          "texto": "Gabarito (tábuas corridas) fixado em estacas rígidas, sem folga ou balanço",
+                          "feito": true
+                        },
+                        {
+                          "texto": "Nível do gabarito conferido com nível óptico/laser em todo o perímetro",
+                          "feito": true
+                        },
+                        {
+                          "texto": "Marcações de eixos no gabarito legíveis e protegidas de apagamento",
+                          "feito": true
+                        },
+                        {
+                          "texto": "Gabarito posicionado a distância suficiente da escavação para não ser afetado",
+                          "feito": true
+                        }
+                      ]
+                    },
+                    {
+                      "texto": "Cotas de arrasamento e nível de soleira conferidos (tolerância de projeto)",
+                      "status": "ok",
+                      "obs": "",
+                      "foto": null,
+                      "subitens": [
+                        {
+                          "texto": "Cota de arrasamento de blocos/sapatas conferida com nível a laser em relação à RN",
+                          "feito": true
+                        },
+                        {
+                          "texto": "Nível de soleira (piso acabado) conferido com projeto arquitetônico",
+                          "feito": true
+                        },
+                        {
+                          "texto": "Diferença entre cota executada e cota de projeto dentro da tolerância (ex.: ±1 cm)",
+                          "feito": true
+                        },
+                        {
+                          "texto": "Cotas registradas em planilha/relatório topográfico assinado",
+                          "feito": true
+                        }
+                      ]
+                    },
+                    {
+                      "texto": "Alinhamento de pilares/eixos estruturais conferido",
+                      "status": "pend",
+                      "obs": "",
+                      "foto": null,
+                      "subitens": [
+                        {
+                          "texto": "Coordenadas (x,y) de cada pilar conferidas com projeto estrutural via estação total",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Desvio de eixo de pilar dentro da tolerância admissível (ex.: ±1 cm)",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Esquadro entre eixos de pórticos conferido em pelo menos dois pavimentos de referência",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Marcação de eixos transportada e conferida a cada pavimento (verticalidade)",
+                          "feito": false
+                        }
+                      ]
+                    },
+                    {
+                      "texto": "Memorial de locação assinado por responsável técnico",
+                      "status": "pend",
+                      "obs": "",
+                      "foto": null,
+                      "subitens": [
+                        {
+                          "texto": "Memorial de locação contém coordenadas, cotas de RN e croqui do levantamento",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Documento assinado e datado pelo responsável técnico (RT) com ART/RRT vinculada",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Memorial arquivado e disponível para consulta antes da liberação da fundação",
+                          "feito": false
+                        },
+                        {
+                          "texto": "Divergências entre locação e projeto legal, se houver, registradas e formalmente resolvidas",
+                          "feito": false
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

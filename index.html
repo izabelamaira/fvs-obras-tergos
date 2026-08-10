@@ -1,0 +1,2311 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>FVS OBRAS - TERGOS — Controle de Qualidade</title>
+<style>
+  :root{
+    --bg:#f7f5f0; --card:#fff; --text:#38384a; --muted:#878791; --border:#e6e2d6;
+    --primary:#e5736e; --primary-dark:#c85850;
+    --ok:#16a34a; --ok-bg:#e8f8ee;
+    --nc:#dc2626; --nc-bg:#fdeceb;
+    --na:#9ca3af; --na-bg:#f0f1f3;
+    --pend:#d97706; --pend-bg:#fef3e2;
+    --parcial:#0891b2; --parcial-bg:#e0f4f8;
+    --chart-good:#0ca30c; --chart-warning:#fab219; --chart-critical:#d03b3b;
+    --chart-seq:#2a78d6; --chart-seq-light:#cde2fb;
+    --chart-grid:#e1e0d9; --chart-muted:#898781;
+    --primary-tint:rgba(229,115,110,.10);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#1f1e2b; --card:#28273a; --text:#ebe3d1; --muted:#a19fa8; --border:#3c3b4f;
+      --ok-bg:#0f2a1a; --nc-bg:#301412; --na-bg:#20242a; --pend-bg:#332107; --parcial-bg:#0d3540;
+      --chart-seq:#3987e5; --chart-seq-light:#184f95;
+      --chart-grid:#2c2c2a; --chart-muted:#898781;
+      --primary-tint:rgba(229,115,110,.18); }
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);}
+  #app{max-width:900px;margin:0 auto;min-height:100vh;padding-bottom:80px;}
+  header.top{position:sticky;top:0;background:var(--primary);color:#fff;padding:14px 16px;display:flex;align-items:center;gap:10px;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,.15);}
+  header.top button.back{background:none;border:none;color:#fff;font-size:22px;cursor:pointer;padding:0 6px;line-height:1;}
+  header.top h1{font-size:17px;margin:0;font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  header.top.logo-header{background:var(--card);border-bottom:1px solid var(--border);}
+  header.top.logo-header button.back{color:var(--text);}
+  header.top.logo-header .logo-img{height:30px;flex:1;object-fit:contain;object-position:left center;}
+  main{padding:14px;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:10px;}
+  .list-item{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:8px;cursor:pointer;transition:background .1s;}
+  .list-item:active{background:var(--bg);}
+  .list-item.selecionado{border-color:var(--primary);background:var(--primary-tint);}
+  .list-item .icon{width:34px;height:34px;border-radius:8px;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;position:relative;background-size:cover;background-position:center;}
+  .list-item .icon.editable{cursor:pointer;}
+  .list-item .icon .edit-badge{position:absolute;right:-4px;bottom:-4px;width:16px;height:16px;border-radius:50%;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:9px;}
+  .list-item .info{flex:1;min-width:0;}
+  .list-item .info .title{font-weight:600;font-size:15px;}
+  .list-item .info .sub{font-size:13px;color:var(--muted);margin-top:2px;}
+  .list-item .chevron{color:var(--muted);font-size:18px;}
+  .progress-bar{height:8px;border-radius:4px;background:var(--border);overflow:hidden;margin-top:6px;}
+  .progress-bar > div{height:100%;background:var(--primary);border-radius:4px;transition:width .2s;}
+  .badge{font-size:11px;font-weight:700;padding:3px 8px;border-radius:20px;white-space:nowrap;}
+  .badge.ok{color:var(--ok);background:var(--ok-bg);}
+  .badge.nc{color:var(--nc);background:var(--nc-bg);}
+  .badge.na{color:var(--na);background:var(--na-bg);}
+  .badge.pend{color:var(--pend);background:var(--pend-bg);}
+  .fab{position:fixed;right:20px;bottom:24px;width:56px;height:56px;border-radius:50%;background:var(--primary);color:#fff;border:none;font-size:28px;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;z-index:20;}
+  .fab:active{background:var(--primary-dark);}
+  input,select,textarea{width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);font-size:15px;font-family:inherit;margin-top:4px;}
+  label{font-size:13px;color:var(--muted);font-weight:600;display:block;margin-top:12px;}
+  .btn{display:inline-block;padding:11px 18px;border-radius:8px;border:none;font-size:15px;font-weight:600;cursor:pointer;}
+  .btn.primary{background:var(--primary);color:#fff;width:100%;margin-top:16px;}
+  .btn.primary:active{background:var(--primary-dark);}
+  .btn.ghost{background:none;color:var(--nc);border:1px solid var(--nc);width:100%;margin-top:8px;}
+  .empty{text-align:center;color:var(--muted);padding:40px 20px;font-size:14px;}
+  .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:30;display:flex;align-items:flex-end;justify-content:center;}
+  .modal{background:var(--card);width:100%;max-width:900px;border-radius:16px 16px 0 0;padding:20px;max-height:90vh;overflow-y:auto;}
+  .modal h2{margin-top:0;font-size:18px;}
+  .checklist-item{border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px;}
+  .checklist-item .txt{font-size:14.5px;margin-bottom:8px;}
+  .item-status-badge{display:inline-block;font-size:11px;font-weight:700;padding:1px 8px;border-radius:10px;margin-left:6px;vertical-align:middle;background:var(--pend-bg);color:var(--pend);}
+  .item-status-badge.ok{background:var(--ok-bg);color:var(--ok);}
+  .item-status-badge.nc{background:var(--nc-bg);color:var(--nc);}
+  .item-status-badge.na{background:var(--na-bg);color:var(--na);}
+  .item-status-badge.parcial{background:var(--parcial-bg);color:var(--parcial);}
+  .sub-checks{display:flex;flex-direction:column;gap:10px;margin-bottom:4px;}
+  .sub-check-row{font-size:13px;}
+  .sub-check-row .sub-check-txt{display:block;margin-bottom:5px;}
+  .sub-check-row.disabled{opacity:.45;}
+  .sub-check-row .status-row-icons{gap:4px;}
+  .sub-check-row .status-icon-btn{font-size:14px;padding:5px 2px;}
+  .status-row-icons{display:flex;gap:6px;}
+  .status-icon-btn{flex:1;padding:8px 4px;border-radius:8px;border:1px solid var(--border);background:var(--card);font-size:19px;line-height:1;cursor:pointer;opacity:.55;}
+  .status-icon-btn.sel-ok{background:var(--ok-bg);border-color:var(--ok);opacity:1;}
+  .status-icon-btn.sel-nc{background:var(--nc-bg);border-color:var(--nc);opacity:1;}
+  .status-icon-btn.sel-na{background:var(--na-bg);border-color:var(--na);opacity:1;}
+  .status-icon-btn.sel-parcial{background:var(--parcial-bg);border-color:var(--parcial);opacity:1;}
+  .status-icon-btn.sel-pend{background:var(--pend-bg);border-color:var(--pend);opacity:1;}
+  .status-icon-btn:disabled{cursor:default;}
+  .na-btn{padding:8px 10px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;}
+  .na-btn.active{background:var(--na);color:#fff;border-color:var(--na);}
+  .reorder-btn{width:34px;height:24px;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:12px;cursor:pointer;flex-shrink:0;}
+  .reorder-btn:disabled{opacity:.3;cursor:default;}
+  .item-extra{margin-top:8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+  .item-extra textarea{min-height:36px;font-size:13px;}
+  .photo-thumb{width:52px;height:52px;border-radius:6px;object-fit:cover;border:1px solid var(--border);}
+  .photo-btn{width:52px;height:52px;border-radius:6px;border:1px dashed var(--border);background:none;color:var(--muted);font-size:20px;cursor:pointer;flex-shrink:0;}
+  .save-bar{position:sticky;bottom:-20px;background:var(--card);margin:16px -20px -20px;padding:12px 20px;border-top:1px solid var(--border);}
+  .btn.save-pending{background:var(--nc);}
+  .btn.save-ok{background:var(--ok);}
+  .normas-box{background:var(--bg);border-radius:8px;padding:10px 12px;font-size:12.5px;color:var(--muted);margin-bottom:12px;}
+  .normas-box b{color:var(--text);}
+  .tabs{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;}
+  .tab{padding:8px 14px;border-radius:20px;border:1px solid var(--border);background:var(--card);font-size:13px;font-weight:600;white-space:nowrap;cursor:pointer;color:var(--muted);}
+  .tab.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+  .search-box{margin-bottom:10px;}
+  .stat-row{display:flex;gap:8px;margin-bottom:14px;}
+  .stat{flex:1;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center;}
+  .stat .num{font-size:20px;font-weight:700;}
+  .stat .lbl{font-size:11px;color:var(--muted);margin-top:2px;}
+  .stat-cards-row{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+  .stat-card{flex:1;min-width:150px;border-radius:10px;padding:12px 14px;color:#fff;}
+  .stat-card.c-gray{background:#6b6a78;}
+  .stat-card.c-green{background:var(--ok);}
+  .stat-card.c-orange{background:var(--pend);}
+  .stat-card.c-red{background:var(--nc);}
+  .stat-card .nums{display:flex;justify-content:space-between;gap:10px;}
+  .stat-card .nums .num{font-size:19px;font-weight:700;line-height:1.1;}
+  .stat-card .nums .sub-lbl{font-size:10.5px;opacity:.9;margin-top:2px;}
+  .stat-card .pct-pill{display:inline-block;margin-top:6px;padding:2px 8px;border-radius:10px;background:rgba(255,255,255,.22);font-size:11px;font-weight:700;white-space:nowrap;}
+  .stat-card .cat-lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.02em;opacity:.9;margin-top:10px;}
+  .close-x{background:none;border:none;color:var(--muted);font-size:22px;float:right;cursor:pointer;line-height:1;}
+
+  #print-area{display:none;}
+  @media print{
+    body *{visibility:hidden;}
+    #print-area, #print-area *{visibility:visible;}
+    #print-area{display:block;position:absolute;top:0;left:0;width:100%;padding:0;margin:0;color:#000;background:#fff;}
+    .fab, header.top, .modal-bg{display:none !important;}
+  }
+  .rel-header{border-bottom:2px solid #222;padding-bottom:10px;margin-bottom:16px;}
+  .rel-header h1{font-size:20px;margin:0 0 4px 0;}
+  .rel-header .meta{font-size:12px;color:#444;}
+  .rel-fvs-bloco{margin-bottom:22px;page-break-inside:avoid;}
+  .rel-fvs-bloco h2{font-size:15px;background:#eee;padding:6px 10px;margin:0 0 8px 0;border-radius:4px;}
+  .rel-normas{font-size:11px;color:#444;margin-bottom:8px;}
+  .rel-item{border:1px solid #ccc;border-radius:6px;padding:8px 10px;margin-bottom:6px;font-size:12.5px;page-break-inside:avoid;}
+  .rel-item .rel-status{font-weight:700;padding:1px 8px;border-radius:10px;font-size:11px;display:inline-block;margin-left:6px;}
+  .rel-item .rel-status.ok{background:#e8f8ee;color:#16a34a;}
+  .rel-item .rel-status.nc{background:#fdeceb;color:#dc2626;}
+  .rel-item .rel-status.na{background:#f0f1f3;color:#666;}
+  .rel-item .rel-status.pend{background:#fef3e2;color:#b45309;}
+  .rel-item .rel-status.parcial{background:#e0f4f8;color:#0891b2;}
+  .rel-item .rel-obs{color:#444;margin-top:4px;}
+  .rel-item .rel-foto{max-width:160px;max-height:160px;display:block;margin-top:6px;border:1px solid #ccc;}
+  .rel-table{width:100%;border-collapse:collapse;font-size:12.5px;margin-bottom:16px;}
+  .rel-table th, .rel-table td{border:1px solid #ccc;padding:6px 8px;text-align:left;}
+  .rel-table th{background:#eee;}
+  .rel-resumo-cards{display:flex;gap:10px;margin-bottom:18px;}
+  .rel-resumo-cards div{flex:1;border:1px solid #ccc;border-radius:6px;padding:10px;text-align:center;}
+  .rel-resumo-cards .n{font-size:20px;font-weight:700;display:block;}
+
+  .chart-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:10px;}
+  .charts-row{display:flex;gap:10px;flex-wrap:wrap;}
+  .charts-row .chart-card{flex:1;min-width:230px;margin-bottom:10px;}
+  .chart-card h3{margin:0 0 12px 0;font-size:13.5px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.02em;}
+  .chart-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;font-size:12.5px;color:var(--text);}
+  .chart-legend .lg{display:flex;align-items:center;gap:6px;}
+  .chart-legend .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+  .bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+  .bar-row .lbl{width:84px;flex-shrink:0;font-size:12.5px;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .bar-row .track{flex:1;height:16px;border-radius:4px;background:var(--chart-seq-light);overflow:hidden;}
+  .bar-row .fill{height:100%;background:var(--chart-seq);border-radius:4px;}
+  .bar-row .val{width:38px;flex-shrink:0;text-align:right;font-size:12.5px;font-weight:600;color:var(--text);font-variant-numeric:tabular-nums;}
+
+  .import-item{border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:8px;}
+  .import-item .linha1{display:flex;align-items:center;gap:8px;}
+  .import-item .linha1 input[type=checkbox]{width:18px;height:18px;flex-shrink:0;}
+  .import-item .linha1 input[type=text]{margin-top:0;}
+  .import-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+  .import-chip{font-size:12px;padding:5px 10px;border-radius:16px;border:1px solid var(--border);background:var(--card);color:var(--muted);cursor:pointer;}
+  .import-chip.on{background:var(--primary);color:#fff;border-color:var(--primary);}
+  .import-grupo{border:1px solid var(--border);border-radius:10px;margin-bottom:10px;overflow:hidden;}
+  .import-grupo-header{display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--bg);}
+  .import-grupo-header input[type=checkbox]{width:18px;height:18px;flex-shrink:0;}
+  .import-grupo-header input[type=text]{margin-top:0;flex:1;font-weight:600;}
+  .import-grupo-info{font-size:11px;color:var(--muted);white-space:nowrap;flex-shrink:0;}
+  .import-grupo-corpo{padding:10px 12px;}
+  .import-subtitulo{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.02em;margin:10px 0 6px;}
+  .import-select-unid{width:auto;margin-top:0;font-size:12px;padding:4px 6px;flex-shrink:0;}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="print-area"></div>
+
+<script src="scripts/catalogo-fvs.js"></script>
+<script src="scripts/subchecks-fvs.js"></script>
+<script src="scripts/nomes-comodo.js"></script>
+<script>
+const STORAGE_KEY = "qualitab_obra_v1";
+
+function loadDB(){
+  try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)) || { obras: [] }; }
+  catch(e){ return { obras: [] }; }
+}
+function saveDB(db){ localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); }
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+
+var db = loadDB();
+var route = { view: "obras" };
+var pavimentosReordenando = false;
+
+function go(newRoute){ route = newRoute; render(); }
+
+function getObra(id){ return db.obras.find(o=>o.id===id); }
+function getPav(obra,id){ return obra.pavimentos.find(p=>p.id===id); }
+function getUnid(pav,id){ return pav.unidades.find(u=>u.id===id); }
+function getAmb(pav,id){ return pav.ambientes.find(a=>a.id===id); }
+function getFvsInst(amb,id){ return amb.fvsList.find(f=>f.instId===id); }
+
+function todosAmbientesDoPavimento(pav){
+  if(!pav.unidades) pav.unidades = [];
+  return pav.ambientes.concat(pav.unidades.flatMap(u=>u.ambientes));
+}
+function todosAmbientesDaObra(obra){
+  return obra.pavimentos.flatMap(pav=>todosAmbientesDoPavimento(pav));
+}
+// Como todosAmbientesDaObra, mas preservando pavimento/unidade/ambiente de cada FVS aplicada
+// (necessário pra rastrear qual fornecedor/encarregado é responsável por qual serviço, onde).
+function todasFvsComContexto(obra){
+  const out = [];
+  obra.pavimentos.forEach(pav=>{
+    if(!pav.unidades) pav.unidades = [];
+    pav.ambientes.forEach(amb=>amb.fvsList.forEach(fvsInst=>out.push({pav, unid:null, amb, fvsInst})));
+    pav.unidades.forEach(unid=>unid.ambientes.forEach(amb=>amb.fvsList.forEach(fvsInst=>out.push({pav, unid, amb, fvsInst}))));
+  });
+  return out;
+}
+
+function fornecedoresDaObra(obra){
+  if(!obra.fornecedores) obra.fornecedores = [];
+  return obra.fornecedores;
+}
+function getFornecedor(obra, id){ return fornecedoresDaObra(obra).find(f=>f.id===id); }
+
+function statusDeItem(item){ return item.status || "pend"; }
+
+function subChecksDoItem(codigo, rev, textoItem){
+  const grupo = window.FVS_SUBCHECKS && window.FVS_SUBCHECKS[codigo+"|"+rev];
+  return (grupo && grupo[textoItem]) || [];
+}
+
+function legendaStatusItem(item){
+  if(item.status==="ok") return "Conforme";
+  if(item.status==="nc") return "Não conf.";
+  if(item.status==="parcial") return "Parcial";
+  if(item.status==="na") return "N/A";
+  return "Pendente";
+}
+
+const OBS_AUTO_MARCADOR = "🔧 Pendente:";
+function atualizarObsAutomatica(item, pendentes){
+  const obsAtual = item.obs || "";
+  const linhas = obsAtual.split("\n");
+  const primeiraEhAuto = linhas[0] && linhas[0].startsWith(OBS_AUTO_MARCADOR);
+  const textoLivre = primeiraEhAuto ? linhas.slice(1).join("\n").replace(/^\n+/, "") : obsAtual;
+  if(pendentes.length===0){
+    item.obs = textoLivre;
+  } else {
+    const linhaAuto = OBS_AUTO_MARCADOR+" "+pendentes.join("; ");
+    item.obs = textoLivre ? (linhaAuto+"\n\n"+textoLivre) : linhaAuto;
+  }
+}
+
+function calcProgresso(itens){
+  if(!itens.length) return 0;
+  const feitos = itens.filter(i=> i.status==="ok" || i.status==="nc" || i.status==="parcial" || i.status==="na").length;
+  return Math.round((feitos/itens.length)*100);
+}
+function calcProgressoFvsList(fvsList){
+  if(!fvsList.length) return 0;
+  const total = fvsList.reduce((s,f)=>s+f.itens.length,0);
+  const feitos = fvsList.reduce((s,f)=>s+f.itens.filter(i=>i.status==="ok"||i.status==="nc"||i.status==="parcial"||i.status==="na").length,0);
+  return total? Math.round((feitos/total)*100) : 0;
+}
+function contarNC(fvsList){
+  return fvsList.reduce((s,f)=>s+f.itens.filter(i=>i.status==="nc").length,0);
+}
+
+// Status do item a partir do status de cada sub-check (ok/nc/parcial/na/pend):
+// ignora sub-checks N/A; sem nenhum avaliado -> pendente; todos conformes -> ok;
+// todos não conformes -> nc; qualquer mistura (inclusive parcialmente avaliado) -> parcial;
+// só sub-checks N/A -> item também N/A.
+function statusPorSubitens(subitens){
+  const semNA = subitens.filter(s=>s.status!=='na');
+  if(semNA.length===0) return "na";
+  const avaliados = semNA.filter(s=>s.status && s.status!=='pend');
+  if(avaliados.length===0) return "pend";
+  if(avaliados.length===semNA.length && avaliados.every(s=>s.status==='ok')) return "ok";
+  if(avaliados.length===semNA.length && avaliados.every(s=>s.status==='nc')) return "nc";
+  return "parcial";
+}
+// Item não conforme ou parcialmente conforme gera necessidade de reinspeção.
+function itemPrecisaReinspecao(item){
+  return item.status==="nc" || item.status==="parcial";
+}
+
+// ---------- APROVAÇÃO E REINSPEÇÃO (por FVS aplicada) ----------
+function fvsCompleto(fvsInst){ return calcProgresso(fvsInst.itens) === 100; }
+function fvsTemNC(fvsInst){ return fvsInst.itens.some(i=>i.status==="nc"); }
+function fvsAprovacao(fvsInst){
+  if(!fvsInst.aprovacao) fvsInst.aprovacao = { status:"pendente", aprovadoEm:null };
+  return fvsInst.aprovacao;
+}
+function fvsReinspecao(fvsInst){
+  if(!fvsInst.reinspecao) fvsInst.reinspecao = { agendadaPara:null };
+  return fvsInst.reinspecao;
+}
+// null | "a_aprovar" | "aprovado" — só se aplica quando a FVS está 100% verificada
+function statusAprovacao(fvsInst){
+  if(!fvsCompleto(fvsInst)) return null;
+  return fvsAprovacao(fvsInst).status==="aprovado" ? "aprovado" : "a_aprovar";
+}
+// null | "nao_agendada" | "agendada" | "vencida" — só se aplica enquanto houver item não conforme ou parcialmente conforme
+function statusReinspecao(fvsInst){
+  if(!fvsInst.itens.some(itemPrecisaReinspecao)) return null;
+  const agendadaPara = fvsReinspecao(fvsInst).agendadaPara;
+  if(!agendadaPara) return "nao_agendada";
+  const hoje = new Date().toISOString().slice(0,10);
+  return agendadaPara < hoje ? "vencida" : "agendada";
+}
+
+function blocoAprovacaoReinspecao(fvsInst){
+  const statusAprov = statusAprovacao(fvsInst); // null | "a_aprovar" | "aprovado"
+  const statusReinsp = statusReinspecao(fvsInst); // null | "nao_agendada" | "agendada" | "vencida"
+  if(!statusAprov && !statusReinsp) return "";
+
+  let html = `<div class="card">`;
+  if(statusAprov){
+    const aprovado = statusAprov==="aprovado";
+    html += `<div style="display:flex;align-items:center;justify-content:space-between;${statusReinsp?'margin-bottom:14px;':''}">
+      <div>
+        <div style="font-weight:600;font-size:14px;margin-bottom:4px;">Aprovação</div>
+        <span class="badge ${aprovado?'ok':'pend'}">${aprovado?'✓ Aprovado':'Aguardando aprovação'}</span>
+      </div>
+      <button class="btn ${aprovado?'':'primary'}" style="width:auto;margin:0;padding:9px 14px;font-size:13px;${aprovado?'background:none;border:1px solid var(--border);color:var(--text);':''}" id="m-toggle-aprovacao">${aprovado?'Desfazer':'✅ Aprovar'}</button>
+    </div>`;
+  }
+  if(statusReinsp){
+    const labelMap = { vencida:["Vencida","nc"], agendada:["Agendada","ok"], nao_agendada:["Não agendada","pend"] };
+    const [lbl,cls] = labelMap[statusReinsp];
+    const agendadaPara = fvsReinspecao(fvsInst).agendadaPara || "";
+    html += `<div style="font-weight:600;font-size:14px;margin-bottom:8px;">Reinspeção <span class="badge ${cls}">${lbl}</span></div>
+      <label style="margin-top:0;">Data agendada para reinspeção</label>
+      <input type="date" id="m-data-reinsp" value="${agendadaPara}">`;
+  }
+  html += `</div>`;
+  return html;
+}
+
+// ---------- GRÁFICOS (SVG puro, sem bibliotecas externas) ----------
+function svgEl(tag, attrs){
+  const el = document.createElementNS("http://www.w3.org/2000/svg", tag);
+  for(const k in attrs) el.setAttribute(k, attrs[k]);
+  return el;
+}
+
+function graficoRosca(okC, nc, pendC){
+  const card = document.createElement("div");
+  card.className="chart-card";
+  const total = okC + nc + pendC;
+  const h3 = document.createElement("h3"); h3.textContent="Distribuição geral dos itens";
+  card.appendChild(h3);
+
+  if(!total){
+    const p = document.createElement("div"); p.className="empty"; p.style.padding="10px";
+    p.textContent="Sem itens verificados ainda.";
+    card.appendChild(p);
+    return card;
+  }
+
+  const wrap = document.createElement("div");
+  wrap.style.display="flex"; wrap.style.alignItems="center"; wrap.style.gap="20px"; wrap.style.flexWrap="wrap";
+
+  const size=140, r=52, cx=size/2, cy=size/2, strokeW=22;
+  const circunf = 2*Math.PI*r;
+  const fatias = [
+    {v:okC, cor:"var(--chart-good)", label:"Conforme"},
+    {v:nc, cor:"var(--chart-critical)", label:"Não conforme"},
+    {v:pendC, cor:"var(--chart-warning)", label:"Pendente"}
+  ].filter(f=>f.v>0);
+
+  const svg = svgEl("svg", {width:size, height:size, viewBox:`0 0 ${size} ${size}`, role:"img", "aria-label":"Distribuição de itens: conforme, não conforme e pendente"});
+  const bg = svgEl("circle", {cx, cy, r, fill:"none", stroke:"var(--chart-grid)", "stroke-width":strokeW});
+  svg.appendChild(bg);
+
+  let acumulado = 0;
+  fatias.forEach(f=>{
+    const frac = f.v/total;
+    const dash = frac*circunf;
+    const gap = Math.max(circunf - dash - 2, 0); // 2px de separador entre fatias
+    const offset = -acumulado*circunf - 1;
+    const seg = svgEl("circle", {
+      cx, cy, r, fill:"none", stroke:f.cor, "stroke-width":strokeW,
+      "stroke-dasharray": `${Math.max(dash-2,0)} ${gap+2}`,
+      "stroke-dashoffset": offset,
+      transform: `rotate(-90 ${cx} ${cy})`
+    });
+    seg.setAttribute("stroke-linecap","round");
+    svg.appendChild(seg);
+    acumulado += frac;
+  });
+
+  const centroTxt = svgEl("text", {x:cx, y:cy-2, "text-anchor":"middle", "font-size":"22", "font-weight":"700", fill:"var(--text)"});
+  centroTxt.textContent = Math.round((okC/total)*100)+"%";
+  svg.appendChild(centroTxt);
+  const centroLbl = svgEl("text", {x:cx, y:cy+15, "text-anchor":"middle", "font-size":"9.5", fill:"var(--chart-muted)"});
+  centroLbl.textContent = "conforme";
+  svg.appendChild(centroLbl);
+
+  wrap.appendChild(svg);
+
+  const legend = document.createElement("div");
+  legend.className="chart-legend";
+  legend.style.flexDirection="column";
+  legend.style.gap="8px";
+  [{v:okC,cor:"var(--chart-good)",label:"Conforme"},{v:nc,cor:"var(--chart-critical)",label:"Não conforme"},{v:pendC,cor:"var(--chart-warning)",label:"Pendente"}].forEach(f=>{
+    const lg = document.createElement("div"); lg.className="lg";
+    lg.innerHTML = `<span class="dot" style="background:${f.cor}"></span>${f.label}: <b>${f.v}</b> (${total?Math.round(f.v/total*100):0}%)`;
+    legend.appendChild(lg);
+  });
+  wrap.appendChild(legend);
+  card.appendChild(wrap);
+  return card;
+}
+
+function graficoBarrasPavimentos(obra){
+  const card = document.createElement("div");
+  card.className="chart-card";
+  const h3 = document.createElement("h3"); h3.textContent="Progresso por pavimento";
+  card.appendChild(h3);
+
+  obra.pavimentos.forEach(pav=>{
+    const itens = todosAmbientesDoPavimento(pav).flatMap(a=>a.fvsList).flatMap(f=>f.itens);
+    const p = calcProgresso(itens);
+    const row = document.createElement("div");
+    row.className="bar-row";
+    row.innerHTML = `
+      <div class="lbl" title="${escapeHtml(pav.nome)}">${escapeHtml(pav.nome)}</div>
+      <div class="track"><div class="fill" style="width:${p}%"></div></div>
+      <div class="val">${p}%</div>`;
+    card.appendChild(row);
+  });
+  return card;
+}
+
+function graficoRankingFvsNC(obra){
+  const contagem = {}; // "FVS-XX / Nome" -> total de itens NC
+  obra.pavimentos.forEach(pav=>todosAmbientesDoPavimento(pav).forEach(amb=>amb.fvsList.forEach(fvsInst=>{
+    const ncCount = fvsInst.itens.filter(i=>i.status==="nc").length;
+    if(!ncCount) return;
+    const chave = `${fvsInst.codigo} / ${fvsInst.nome}`;
+    contagem[chave] = (contagem[chave]||0) + ncCount;
+  })));
+
+  const card = document.createElement("div");
+  card.className="chart-card";
+  const h3 = document.createElement("h3"); h3.textContent="Serviços com mais não conformidades";
+  card.appendChild(h3);
+
+  const ranking = Object.entries(contagem).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  if(!ranking.length){
+    const p = document.createElement("div"); p.className="empty"; p.style.padding="10px";
+    p.textContent="Nenhuma não conformidade registrada até o momento.";
+    card.appendChild(p);
+    return card;
+  }
+
+  const max = ranking[0][1];
+  ranking.forEach(([nome, qtd])=>{
+    const row = document.createElement("div");
+    row.className="bar-row";
+    const largura = Math.round((qtd/max)*100);
+    row.innerHTML = `
+      <div class="lbl" style="width:150px;" title="${escapeHtml(nome)}">${escapeHtml(nome)}</div>
+      <div class="track" style="background:var(--nc-bg);"><div class="fill" style="width:${largura}%;background:var(--chart-critical);"></div></div>
+      <div class="val">${qtd}</div>`;
+    card.appendChild(row);
+  });
+  return card;
+}
+
+function graficoAprovacoes(obra){
+  const todasFvs = todosAmbientesDaObra(obra).flatMap(a=>a.fvsList);
+  const completas = todasFvs.filter(fvsCompleto);
+
+  const card = document.createElement("div");
+  card.className="chart-card";
+  const h3 = document.createElement("h3"); h3.textContent="FVS's / Aprovações";
+  card.appendChild(h3);
+
+  if(!completas.length){
+    const p = document.createElement("div"); p.className="empty"; p.style.padding="10px";
+    p.textContent="Nenhuma FVS totalmente verificada ainda.";
+    card.appendChild(p);
+    return card;
+  }
+
+  const aprovadas = completas.filter(f=>fvsAprovacao(f).status==="aprovado").length;
+  const aAprovar = completas.length - aprovadas;
+
+  const wrap = document.createElement("div");
+  wrap.style.display="flex"; wrap.style.alignItems="center"; wrap.style.gap="20px"; wrap.style.flexWrap="wrap";
+
+  const size=140, r=52, cx=size/2, cy=size/2, strokeW=22;
+  const circunf = 2*Math.PI*r;
+  const fatias = [
+    {v:aprovadas, cor:"var(--chart-good)"},
+    {v:aAprovar, cor:"var(--chart-grid)"}
+  ].filter(f=>f.v>0);
+
+  const svg = svgEl("svg", {width:size, height:size, viewBox:`0 0 ${size} ${size}`, role:"img", "aria-label":"FVS aprovadas versus a aprovar"});
+  const bg = svgEl("circle", {cx, cy, r, fill:"none", stroke:"var(--chart-grid)", "stroke-width":strokeW});
+  svg.appendChild(bg);
+
+  let acumulado = 0;
+  fatias.forEach(f=>{
+    const frac = f.v/completas.length;
+    const dash = frac*circunf;
+    const gap = Math.max(circunf - dash - 2, 0);
+    const offset = -acumulado*circunf - 1;
+    const seg = svgEl("circle", {
+      cx, cy, r, fill:"none", stroke:f.cor, "stroke-width":strokeW,
+      "stroke-dasharray": `${Math.max(dash-2,0)} ${gap+2}`,
+      "stroke-dashoffset": offset,
+      transform: `rotate(-90 ${cx} ${cy})`
+    });
+    seg.setAttribute("stroke-linecap","round");
+    svg.appendChild(seg);
+    acumulado += frac;
+  });
+
+  const centroTxt = svgEl("text", {x:cx, y:cy-2, "text-anchor":"middle", "font-size":"22", "font-weight":"700", fill:"var(--text)"});
+  centroTxt.textContent = Math.round((aprovadas/completas.length)*100)+"%";
+  svg.appendChild(centroTxt);
+  const centroLbl = svgEl("text", {x:cx, y:cy+15, "text-anchor":"middle", "font-size":"9.5", fill:"var(--chart-muted)"});
+  centroLbl.textContent = "aprovadas";
+  svg.appendChild(centroLbl);
+  wrap.appendChild(svg);
+
+  const tabela = document.createElement("table");
+  tabela.style.cssText = "border-collapse:collapse;font-size:13px;";
+  tabela.innerHTML = `
+    <tr><td style="padding:5px 14px 5px 0;color:var(--muted);">FVS's Aprovadas</td><td style="padding:5px 0;font-weight:700;text-align:right;">${aprovadas}</td></tr>
+    <tr><td style="padding:5px 14px 5px 0;color:var(--muted);">FVS's à aprovar</td><td style="padding:5px 0;font-weight:700;text-align:right;">${aAprovar}</td></tr>`;
+  wrap.appendChild(tabela);
+
+  card.appendChild(wrap);
+  return card;
+}
+
+function painelReinspecoes(obra){
+  const todasFvs = todosAmbientesDaObra(obra).flatMap(a=>a.fvsList);
+  let vencidas=0, agendadas=0, naoAgendadas=0;
+  todasFvs.forEach(f=>{
+    const s = statusReinspecao(f);
+    if(s==="vencida") vencidas++;
+    else if(s==="agendada") agendadas++;
+    else if(s==="nao_agendada") naoAgendadas++;
+  });
+
+  const card = document.createElement("div");
+  card.className="chart-card";
+  const h3 = document.createElement("h3"); h3.textContent="Verificações com reinspeção pendente";
+  card.appendChild(h3);
+
+  if(!vencidas && !agendadas && !naoAgendadas){
+    const p = document.createElement("div"); p.className="empty"; p.style.padding="10px";
+    p.textContent="Nenhuma reinspeção pendente no momento.";
+    card.appendChild(p);
+    return card;
+  }
+
+  const row = document.createElement("div");
+  row.style.cssText = "display:flex;gap:8px;flex-wrap:wrap;";
+  [["Vencidas",vencidas,"var(--chart-critical)"],["Agendadas",agendadas,"var(--chart-good)"],["Não agendadas",naoAgendadas,"var(--chart-muted)"]].forEach(([lbl,n,cor])=>{
+    const box = document.createElement("div");
+    box.style.cssText = `flex:1;min-width:90px;border:1px solid ${cor};border-radius:10px;padding:10px;text-align:center;`;
+    box.innerHTML = `<div style="font-size:11px;font-weight:700;color:${cor};text-transform:uppercase;letter-spacing:.02em;margin-bottom:6px;">${lbl}</div><div style="font-size:20px;font-weight:700;">${n}</div>`;
+    row.appendChild(box);
+  });
+  card.appendChild(row);
+  return card;
+}
+
+function render(){
+  const app = document.getElementById("app");
+  app.innerHTML = "";
+  if(route.view==="obras") return renderObras(app);
+  if(route.view==="obra") return renderObra(app);
+  if(route.view==="pavimento") return renderPavimento(app);
+  if(route.view==="unidade") return renderUnidade(app);
+  if(route.view==="ambiente") return renderAmbiente(app);
+  if(route.view==="fornecedores") return renderFornecedores(app);
+  if(route.view==="fornecedor") return renderFornecedorDetalhe(app);
+}
+
+function header(title, onBack, actionBtn){
+  const h = document.createElement("header");
+  h.className="top";
+  if(onBack){
+    const b = document.createElement("button");
+    b.className="back"; b.textContent="←"; b.onclick=onBack;
+    h.appendChild(b);
+  }
+  const h1 = document.createElement("h1"); h1.textContent=title;
+  h.appendChild(h1);
+  if(actionBtn) h.appendChild(actionBtn);
+  return h;
+}
+
+function botaoExcluir(onConfirmar, mensagem){
+  const b = document.createElement("button");
+  b.className="back"; b.textContent="🗑️"; b.title="Excluir";
+  b.onclick=(e)=>{
+    e.stopPropagation();
+    if(confirm(mensagem)) onConfirmar();
+  };
+  return b;
+}
+
+// ---------- TELA: LISTA DE OBRAS ----------
+function renderObras(app){
+  const btnBackup = document.createElement("button");
+  btnBackup.className="back"; btnBackup.textContent="💾"; btnBackup.title="Exportar backup dos dados";
+  btnBackup.onclick=(e)=>{ e.stopPropagation(); exportarBackup(); };
+
+  const btnRestaurar = document.createElement("button");
+  btnRestaurar.className="back"; btnRestaurar.textContent="📤"; btnRestaurar.title="Restaurar backup";
+  btnRestaurar.onclick=(e)=>{ e.stopPropagation(); restaurarBackup(); };
+
+  const acoesWrap = document.createElement("div");
+  acoesWrap.style.display="flex";
+  acoesWrap.appendChild(btnBackup); acoesWrap.appendChild(btnRestaurar);
+
+  const h = document.createElement("header");
+  h.className="top logo-header";
+  const logo = document.createElement("img");
+  logo.className="logo-img"; logo.src="assets/logo-tergos-horizontal.webp"; logo.alt="Tergos Construtora Incorporadora";
+  h.appendChild(logo);
+  h.appendChild(acoesWrap);
+  app.appendChild(h);
+  const main = document.createElement("main");
+
+  if(!db.obras.length){
+    main.innerHTML = `<div class="empty">Nenhuma obra cadastrada.<br>Toque em "+" para criar a primeira.</div>`;
+  } else {
+    db.obras.forEach(obra=>{
+      const totalItens = todosAmbientesDaObra(obra).flatMap(a=>a.fvsList).flatMap(f=>f.itens);
+      const prog = calcProgresso(totalItens);
+      const nc = totalItens.filter(i=>i.status==="nc").length;
+      const item = document.createElement("div");
+      item.className="list-item";
+      item.onclick=()=>go({view:"obra", obraId:obra.id});
+      item.innerHTML = `
+        <div class="icon editable" style="${obra.foto?`background-image:url('${obra.foto}')`:""}">${obra.foto?"":"🏗️"}<span class="edit-badge">📷</span></div>
+        <div class="info">
+          <div class="title">${escapeHtml(obra.nome)}</div>
+          <div class="sub">${obra.pavimentos.length} pavimento(s) · ${prog}% concluído ${nc?` · ${nc} não conformidade(s)`:""}</div>
+          <div class="progress-bar"><div style="width:${prog}%"></div></div>
+        </div>
+        <div class="chevron">›</div>`;
+      const iconEl = item.querySelector(".icon");
+      iconEl.onclick=(e)=>{
+        e.stopPropagation();
+        const input = document.createElement("input");
+        input.type="file"; input.accept="image/*";
+        input.onchange=()=>{
+          const file = input.files[0];
+          if(!file) return;
+          const reader = new FileReader();
+          reader.onload=(ev)=>{
+            obra.foto = ev.target.result;
+            saveDB(db);
+            render();
+          };
+          reader.readAsDataURL(file);
+        };
+        input.click();
+      };
+      main.appendChild(item);
+    });
+  }
+  app.appendChild(main);
+
+  const fab = document.createElement("button");
+  fab.className="fab"; fab.textContent="+";
+  fab.onclick=()=>promptNovaObra();
+  app.appendChild(fab);
+}
+
+function promptNovaObra(){
+  openModal(`
+    <h2>Nova Obra</h2>
+    <label>Nome da obra</label>
+    <input id="m-nome" placeholder="Ex: Edifício Aurora">
+    <label>Endereço (opcional)</label>
+    <input id="m-endereco" placeholder="Ex: Rua das Flores, 123">
+    <button class="btn primary" id="m-salvar">Criar obra</button>
+  `);
+  document.getElementById("m-salvar").onclick=()=>{
+    const nome = document.getElementById("m-nome").value.trim();
+    if(!nome) return alert("Digite o nome da obra.");
+    const obra = { id:uid(), nome, endereco:document.getElementById("m-endereco").value.trim(), pavimentos:[] };
+    db.obras.push(obra); saveDB(db); closeModal();
+    go({view:"obra", obraId:obra.id});
+  };
+}
+
+// ---------- TELA: OBRA (lista de pavimentos) ----------
+function renderObra(app){
+  const obra = getObra(route.obraId);
+  app.appendChild(header(obra.nome, ()=>{ pavimentosReordenando = false; go({view:"obras"}); }, botaoExcluir(()=>{
+    db.obras = db.obras.filter(o=>o.id!==obra.id);
+    saveDB(db); go({view:"obras"});
+  }, `Excluir a obra "${obra.nome}" e todos os seus pavimentos, ambientes e verificações? Essa ação não pode ser desfeita.`)));
+  const main = document.createElement("main");
+
+  const todasFvsInst = todosAmbientesDaObra(obra).flatMap(a=>a.fvsList);
+  const totalItens = todasFvsInst.flatMap(f=>f.itens);
+  const prog = calcProgresso(totalItens);
+  const nc = totalItens.filter(i=>i.status==="nc").length;
+  const okC = totalItens.filter(i=>i.status==="ok").length;
+  const pendC = totalItens.filter(i=>!i.status || i.status==="pend").length;
+  const pctOk = totalItens.length ? Math.round((okC/totalItens.length)*100) : 0;
+  const fvsComNC = todasFvsInst.filter(fvsTemNC).length;
+  const fvsCompletas = todasFvsInst.filter(fvsCompleto).length;
+  const aprovadas = todasFvsInst.filter(f=>statusAprovacao(f)==="aprovado").length;
+  const fvsAAprovar = todasFvsInst.filter(f=>statusAprovacao(f)==="a_aprovar").length;
+  const reinspPendentes = todasFvsInst.filter(f=>{
+    const s = statusReinspecao(f);
+    return s==="agendada" || s==="vencida";
+  }).length;
+
+  const pct = (n, total)=> total ? Math.round((n/total)*100) : 0;
+  const pctFvsCompletas = pct(fvsCompletas, todasFvsInst.length);
+  const pctAprovadas = pct(aprovadas, fvsCompletas);
+  const pctFvsAAprovar = pct(fvsAAprovar, fvsCompletas);
+  const pctReinsp = pct(reinspPendentes, todasFvsInst.length);
+  const pctNC = pct(nc, totalItens.length);
+  const pctFvsComNC = pct(fvsComNC, todasFvsInst.length);
+
+  main.innerHTML += `<div class="stat-cards-row">
+    <div class="stat-card c-gray">
+      <div class="nums">
+        <div><div class="num">${todasFvsInst.length}</div><div class="sub-lbl">FVS aplicadas</div><div class="pct-pill">${pctFvsCompletas}% completas</div></div>
+        <div style="text-align:right;"><div class="num">${totalItens.length}</div><div class="sub-lbl">Verificações</div><div class="pct-pill">${prog}% avaliadas</div></div>
+      </div>
+      <div class="cat-lbl">Total</div>
+    </div>
+    <div class="stat-card c-green">
+      <div class="nums">
+        <div><div class="num">${okC}</div><div class="sub-lbl">Conformes</div><div class="pct-pill">${pctOk}% do total</div></div>
+        <div style="text-align:right;"><div class="num">${aprovadas}</div><div class="sub-lbl">FVS aprovadas</div><div class="pct-pill">${pctAprovadas}% das completas</div></div>
+      </div>
+      <div class="cat-lbl">Conformidades</div>
+    </div>
+    <div class="stat-card c-orange">
+      <div class="nums">
+        <div><div class="num">${fvsAAprovar}</div><div class="sub-lbl">A aprovar</div><div class="pct-pill">${pctFvsAAprovar}% das completas</div></div>
+        <div style="text-align:right;"><div class="num">${reinspPendentes}</div><div class="sub-lbl">Reinspeções</div><div class="pct-pill">${pctReinsp}% das FVS</div></div>
+      </div>
+      <div class="cat-lbl">Aprovações / Reinsp.</div>
+    </div>
+    <div class="stat-card c-red">
+      <div class="nums">
+        <div><div class="num">${nc}</div><div class="sub-lbl">Não conf.</div><div class="pct-pill">${pctNC}% do total</div></div>
+        <div style="text-align:right;"><div class="num">${fvsComNC}</div><div class="sub-lbl">FVS com NC</div><div class="pct-pill">${pctFvsComNC}% das FVS</div></div>
+      </div>
+      <div class="cat-lbl">Não conformidades</div>
+    </div>
+  </div>`;
+
+  if(nc>0) main.appendChild(graficoRankingFvsNC(obra));
+
+  const chartsRow = document.createElement("div");
+  chartsRow.className = "charts-row";
+  if(totalItens.length) chartsRow.appendChild(graficoRosca(okC, nc, pendC));
+  chartsRow.appendChild(graficoAprovacoes(obra));
+  chartsRow.appendChild(painelReinspecoes(obra));
+  main.appendChild(chartsRow);
+
+  if(obra.pavimentos.length) main.appendChild(graficoBarrasPavimentos(obra));
+
+  const btnPdf = document.createElement("button");
+  btnPdf.className="btn primary"; btnPdf.style.marginTop="0"; btnPdf.textContent="📄 Exportar relatório resumo (PDF)";
+  btnPdf.onclick=()=>exportarRelatorioObra(obra);
+  main.appendChild(btnPdf);
+
+  const fornecedores = fornecedoresDaObra(obra);
+  const itemForn = document.createElement("div");
+  itemForn.className="list-item"; itemForn.style.marginTop="10px";
+  itemForn.onclick=()=>go({view:"fornecedores", obraId:obra.id});
+  itemForn.innerHTML = `
+    <div class="icon">👷</div>
+    <div class="info">
+      <div class="title">Fornecedores / Encarregados</div>
+      <div class="sub">${fornecedores.length} cadastrado(s)</div>
+    </div>
+    <div class="chevron">›</div>`;
+  main.appendChild(itemForn);
+
+  if(!obra.pavimentos.length){
+    main.innerHTML += `<div class="empty">Nenhum pavimento cadastrado.<br>Toque em "+" para adicionar (ex: Térreo, 1º Andar).</div>`;
+  } else {
+    if(obra.pavimentos.length > 1){
+      const btnReordenar = document.createElement("button");
+      btnReordenar.className="btn";
+      btnReordenar.style.cssText = "width:100%;border:1px solid var(--border);background:none;color:var(--text);margin-top:0;margin-bottom:10px;";
+      btnReordenar.textContent = pavimentosReordenando ? "✓ Concluir reordenação" : "↕️ Reordenar pavimentos";
+      btnReordenar.onclick=()=>{ pavimentosReordenando = !pavimentosReordenando; render(); };
+      main.appendChild(btnReordenar);
+    }
+    obra.pavimentos.forEach((pav, idx)=>{
+      const ambs = todosAmbientesDoPavimento(pav);
+      const itens = ambs.flatMap(a=>a.fvsList).flatMap(f=>f.itens);
+      const p = calcProgresso(itens);
+      const ncP = itens.filter(i=>i.status==="nc").length;
+      const div = document.createElement("div");
+      div.className="list-item";
+      if(pavimentosReordenando){
+        div.innerHTML = `
+          <div class="icon">🏢</div>
+          <div class="info">
+            <div class="title">${escapeHtml(pav.nome)}</div>
+            <div class="sub">${ambs.length} ambiente(s)</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:3px;">
+            <button class="reorder-btn" data-dir="up" ${idx===0?'disabled':''}>▲</button>
+            <button class="reorder-btn" data-dir="down" ${idx===obra.pavimentos.length-1?'disabled':''}>▼</button>
+          </div>`;
+        div.querySelector('[data-dir="up"]').onclick=()=>moverPavimento(obra, idx, -1);
+        div.querySelector('[data-dir="down"]').onclick=()=>moverPavimento(obra, idx, 1);
+      } else {
+        div.onclick=()=>go({view:"pavimento", obraId:obra.id, pavId:pav.id});
+        div.innerHTML = `
+          <div class="icon">🏢</div>
+          <div class="info">
+            <div class="title">${escapeHtml(pav.nome)}</div>
+            <div class="sub">${ambs.length} ambiente(s)${pav.unidades&&pav.unidades.length?` · ${pav.unidades.length} unidade(s)`:""} · ${p}%${ncP?` · ${ncP} NC`:""}</div>
+            <div class="progress-bar"><div style="width:${p}%"></div></div>
+          </div>
+          <div class="chevron">›</div>`;
+      }
+      main.appendChild(div);
+    });
+  }
+  app.appendChild(main);
+
+  const fab = document.createElement("button");
+  fab.className="fab"; fab.textContent="+";
+  fab.onclick=()=>promptNovoPavimento(obra);
+  app.appendChild(fab);
+}
+
+function promptNovoPavimento(obra){
+  openModal(`
+    <h2>Novo Pavimento</h2>
+    <label>Nome do pavimento</label>
+    <input id="m-nome" placeholder="Ex: Térreo, 1º Andar, Cobertura">
+    <button class="btn primary" id="m-salvar">Adicionar</button>
+  `);
+  document.getElementById("m-salvar").onclick=()=>{
+    const nome = document.getElementById("m-nome").value.trim();
+    if(!nome) return alert("Digite o nome do pavimento.");
+    obra.pavimentos.push({ id:uid(), nome, ambientes:[], unidades:[] });
+    saveDB(db); closeModal();
+    render();
+  };
+}
+
+function promptRenomearPavimento(pav){
+  openModal(`
+    <h2>Renomear Pavimento</h2>
+    <label>Nome do pavimento</label>
+    <input id="m-nome" value="${escapeHtml(pav.nome)}">
+    <button class="btn primary" id="m-salvar">Salvar</button>
+  `);
+  const input = document.getElementById("m-nome");
+  input.focus(); input.select();
+  document.getElementById("m-salvar").onclick=()=>{
+    const nome = input.value.trim();
+    if(!nome) return alert("Digite o nome do pavimento.");
+    pav.nome = nome;
+    saveDB(db); closeModal();
+    render();
+  };
+}
+
+function moverPavimento(obra, idx, delta){
+  const novoIdx = idx + delta;
+  if(novoIdx < 0 || novoIdx >= obra.pavimentos.length) return;
+  const [item] = obra.pavimentos.splice(idx, 1);
+  obra.pavimentos.splice(novoIdx, 0, item);
+  saveDB(db);
+  render();
+}
+
+// ---------- TELA: FORNECEDORES/ENCARREGADOS (lista) ----------
+function renderFornecedores(app){
+  const obra = getObra(route.obraId);
+  const fornecedores = fornecedoresDaObra(obra);
+  app.appendChild(header(`${obra.nome} · Fornecedores`, ()=>go({view:"obra", obraId:obra.id})));
+  const main = document.createElement("main");
+
+  if(!fornecedores.length){
+    main.innerHTML = `<div class="empty">Nenhum fornecedor/encarregado cadastrado.<br>Toque em "+" para cadastrar o primeiro.</div>`;
+  } else {
+    const todasFvs = todasFvsComContexto(obra);
+    fornecedores.forEach(forn=>{
+      const atribuidas = todasFvs.filter(t=>t.fvsInst.fornecedorId===forn.id);
+      const ncCount = atribuidas.reduce((s,t)=>s+t.fvsInst.itens.filter(i=>i.status==="nc").length,0);
+      const item = document.createElement("div");
+      item.className="list-item";
+      item.onclick=()=>go({view:"fornecedor", obraId:obra.id, fornecedorId:forn.id});
+      item.innerHTML = `
+        <div class="icon">👷</div>
+        <div class="info">
+          <div class="title">${escapeHtml(forn.nome)}</div>
+          <div class="sub">${escapeHtml(forn.telefone||"sem telefone")} · ${atribuidas.length} serviço(s)${ncCount?` · ${ncCount} NC`:""}</div>
+        </div>
+        <div class="chevron">›</div>`;
+      main.appendChild(item);
+    });
+  }
+  app.appendChild(main);
+
+  const fab = document.createElement("button");
+  fab.className="fab"; fab.textContent="+";
+  fab.onclick=()=>promptFornecedor(obra);
+  app.appendChild(fab);
+}
+
+function promptFornecedor(obra, existente){
+  openModal(`
+    <h2>${existente? 'Editar' : 'Novo'} Fornecedor/Encarregado</h2>
+    <label>Nome</label>
+    <input id="m-nome" placeholder="Ex: João Silva" value="${existente?escapeHtml(existente.nome):''}">
+    <label>Telefone</label>
+    <input id="m-telefone" type="tel" placeholder="Ex: (31) 99999-9999" value="${existente?escapeHtml(existente.telefone||''):''}">
+    <button class="btn primary" id="m-salvar">${existente?'Salvar':'Cadastrar'}</button>
+  `);
+  document.getElementById("m-salvar").onclick=()=>{
+    const nome = document.getElementById("m-nome").value.trim();
+    if(!nome) return alert("Digite o nome.");
+    const telefone = document.getElementById("m-telefone").value.trim();
+    if(existente){
+      existente.nome = nome; existente.telefone = telefone;
+    } else {
+      fornecedoresDaObra(obra).push({ id:uid(), nome, telefone });
+    }
+    saveDB(db); closeModal(); render();
+  };
+}
+
+// ---------- TELA: FORNECEDOR (detalhe + relatório de não conformidades) ----------
+function renderFornecedorDetalhe(app){
+  const obra = getObra(route.obraId);
+  const forn = getFornecedor(obra, route.fornecedorId);
+  app.appendChild(header(forn.nome, ()=>go({view:"fornecedores", obraId:obra.id}), botaoExcluir(()=>{
+    obra.fornecedores = fornecedoresDaObra(obra).filter(f=>f.id!==forn.id);
+    todasFvsComContexto(obra).forEach(t=>{ if(t.fvsInst.fornecedorId===forn.id) t.fvsInst.fornecedorId=null; });
+    saveDB(db); go({view:"fornecedores", obraId:obra.id});
+  }, `Excluir "${forn.nome}"? Os serviços já atribuídos a ele ficarão sem responsável definido.`)));
+  const main = document.createElement("main");
+
+  main.innerHTML += `<div class="card">
+    <div style="font-size:13px;color:var(--muted);">Telefone</div>
+    <div style="font-size:16px;font-weight:600;">${escapeHtml(forn.telefone||'—')}</div>
+  </div>`;
+
+  const btnEditar = document.createElement("button");
+  btnEditar.className="btn"; btnEditar.style.cssText="width:100%;border:1px solid var(--border);background:none;color:var(--text);margin-top:0;margin-bottom:10px;";
+  btnEditar.textContent="✏️ Editar dados";
+  btnEditar.onclick=()=>promptFornecedor(obra, forn);
+  main.appendChild(btnEditar);
+
+  const atribuidas = todasFvsComContexto(obra).filter(t=>t.fvsInst.fornecedorId===forn.id);
+  const itensNC = [];
+  atribuidas.forEach(t=>t.fvsInst.itens.forEach((item,idx)=>{ if(itemPrecisaReinspecao(item)) itensNC.push({...t, item, idx}); }));
+
+  main.innerHTML += `<div class="stat-row">
+    <div class="stat"><div class="num">${atribuidas.length}</div><div class="lbl">Serviços atribuídos</div></div>
+    <div class="stat"><div class="num" style="color:var(--nc)">${itensNC.length}</div><div class="lbl">NC / Parcial</div></div>
+  </div>`;
+
+  const btnPdf = document.createElement("button");
+  btnPdf.className="btn primary"; btnPdf.style.marginTop="0";
+  btnPdf.textContent="📄 Exportar relatório de não conformidades (PDF)";
+  if(!itensNC.length){ btnPdf.disabled = true; btnPdf.style.opacity=".5"; }
+  btnPdf.onclick=()=>exportarRelatorioFornecedor(obra, forn, itensNC);
+  main.appendChild(btnPdf);
+
+  main.appendChild(subtituloSecao("Serviços atribuídos", 16));
+  if(!atribuidas.length){
+    main.innerHTML += `<div class="empty">Nenhum serviço atribuído a este responsável ainda.<br>Atribua dentro do checklist de cada FVS, no ambiente.</div>`;
+  } else {
+    atribuidas.forEach(t=>{
+      const p = calcProgresso(t.fvsInst.itens);
+      const ncF = t.fvsInst.itens.filter(i=>i.status==="nc").length;
+      const div = document.createElement("div");
+      div.className="list-item";
+      div.onclick=()=>abrirChecklist(obra, t.pav, t.amb, t.fvsInst);
+      div.innerHTML = `
+        <div class="icon">📋</div>
+        <div class="info">
+          <div class="title">${escapeHtml(t.fvsInst.codigo)} / ${escapeHtml(t.fvsInst.nome)}</div>
+          <div class="sub">${escapeHtml(t.pav.nome)}${t.unid?` · ${escapeHtml(t.unid.nome)}`:""} · ${escapeHtml(t.amb.nome)} · ${p}%${ncF?` · ${ncF} NC`:""}</div>
+          <div class="progress-bar"><div style="width:${p}%"></div></div>
+        </div>
+        <div class="chevron">›</div>`;
+      main.appendChild(div);
+    });
+  }
+
+  app.appendChild(main);
+}
+
+// ---------- LISTAGEM DE AMBIENTES (compartilhada entre Pavimento e Unidade) ----------
+function renderListaAmbientes(main, container, montarRota, mensagemVazia){
+  if(!container.ambientes.length){
+    const div = document.createElement("div");
+    div.className="empty";
+    div.innerHTML = mensagemVazia || `Nenhum ambiente cadastrado.<br>Toque em "+" para adicionar (ex: Sala, Banheiro, Cozinha).`;
+    main.appendChild(div);
+    return;
+  }
+  container.ambientes.forEach(amb=>{
+    const p = calcProgressoFvsList(amb.fvsList);
+    const ncA = contarNC(amb.fvsList);
+    const div = document.createElement("div");
+    div.className="list-item";
+    div.onclick=()=>go(montarRota(amb));
+    div.innerHTML = `
+      <div class="icon">🚪</div>
+      <div class="info">
+        <div class="title">${escapeHtml(amb.nome)}</div>
+        <div class="sub">${amb.fvsList.length} serviço(s) · ${p}%${ncA?` · ${ncA} NC`:""}</div>
+        <div class="progress-bar"><div style="width:${p}%"></div></div>
+      </div>
+      <div class="chevron">›</div>`;
+    main.appendChild(div);
+  });
+}
+
+function subtituloSecao(texto, margemTopo){
+  const h3 = document.createElement("h3");
+  h3.textContent = texto;
+  h3.style.cssText = `font-size:13.5px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.02em;margin:${margemTopo}px 0 8px;`;
+  return h3;
+}
+
+// ---------- TELA: PAVIMENTO (lista de unidades + ambientes comuns) ----------
+function renderPavimento(app){
+  const obra = getObra(route.obraId);
+  const pav = getPav(obra, route.pavId);
+  if(!pav.unidades) pav.unidades = [];
+
+  const btnRenomear = document.createElement("button");
+  btnRenomear.className="back"; btnRenomear.textContent="✏️"; btnRenomear.title="Renomear pavimento";
+  btnRenomear.onclick=(e)=>{ e.stopPropagation(); promptRenomearPavimento(pav); };
+
+  const acoesWrap = document.createElement("div");
+  acoesWrap.style.display="flex";
+  acoesWrap.appendChild(btnRenomear);
+  acoesWrap.appendChild(botaoExcluir(()=>{
+    obra.pavimentos = obra.pavimentos.filter(p=>p.id!==pav.id);
+    saveDB(db); go({view:"obra", obraId:obra.id});
+  }, `Excluir o pavimento "${pav.nome}" e todas as suas unidades, ambientes e verificações? Essa ação não pode ser desfeita.`));
+
+  app.appendChild(header(`${obra.nome} · ${pav.nome}`, ()=>go({view:"obra", obraId:obra.id}), acoesWrap));
+  const main = document.createElement("main");
+
+  if(pav.unidades.length){
+    main.appendChild(subtituloSecao("Unidades", 4));
+    pav.unidades.forEach(unid=>{
+      const p = calcProgressoFvsList(unid.ambientes.flatMap(a=>a.fvsList));
+      const ncU = contarNC(unid.ambientes.flatMap(a=>a.fvsList));
+      const div = document.createElement("div");
+      div.className="list-item";
+      div.onclick=()=>go({view:"unidade", obraId:obra.id, pavId:pav.id, unidId:unid.id});
+      div.innerHTML = `
+        <div class="icon">🔑</div>
+        <div class="info">
+          <div class="title">${escapeHtml(unid.nome)}</div>
+          <div class="sub">${unid.ambientes.length} ambiente(s) · ${p}%${ncU?` · ${ncU} NC`:""}</div>
+          <div class="progress-bar"><div style="width:${p}%"></div></div>
+        </div>
+        <div class="chevron">›</div>`;
+      main.appendChild(div);
+    });
+    main.appendChild(subtituloSecao("Ambientes comuns", 20));
+  }
+
+  const mensagemVaziaPav = pav.unidades.length ? null :
+    `Nenhuma unidade ou ambiente cadastrado.<br>Toque em "+" para adicionar uma <b>Unidade Autônoma</b> (ex: Apto 101) ou uma <b>Área/Ambiente Comum</b> (ex: Hall, Escada, Sala).`;
+  renderListaAmbientes(main, pav, amb=>({view:"ambiente", obraId:obra.id, pavId:pav.id, ambId:amb.id}), mensagemVaziaPav);
+
+  app.appendChild(main);
+
+  const fab = document.createElement("button");
+  fab.className="fab"; fab.textContent="+";
+  fab.onclick=()=>abrirMenuAdicionarPavimento(obra, pav);
+  app.appendChild(fab);
+}
+
+function abrirMenuAdicionarPavimento(obra, pav){
+  openModal(`
+    <h2>Adicionar ao pavimento</h2>
+    <button class="btn primary" id="m-amb">🚪 Novo Ambiente (comum)</button>
+    <button class="btn primary" id="m-unid">🔑 Nova Unidade</button>
+    <button class="btn primary" id="m-importar">📐 Importar planta (PDF/DXF)</button>
+  `);
+  document.getElementById("m-amb").onclick=()=>{ closeModal(); promptNovoAmbiente(pav); };
+  document.getElementById("m-unid").onclick=()=>{ closeModal(); promptNovaUnidade(pav); };
+  document.getElementById("m-importar").onclick=()=>{ closeModal(); abrirImportarPlanta(obra, pav, null); };
+}
+
+function promptNovaUnidade(pav){
+  openModal(`
+    <h2>Nova Unidade</h2>
+    <label>Nome da unidade</label>
+    <input id="m-nome" placeholder="Ex: Apto 301, Loja 02">
+    <button class="btn primary" id="m-salvar">Adicionar</button>
+  `);
+  document.getElementById("m-salvar").onclick=()=>{
+    const nome = document.getElementById("m-nome").value.trim();
+    if(!nome) return alert("Digite o nome da unidade.");
+    if(!pav.unidades) pav.unidades = [];
+    pav.unidades.push({ id:uid(), nome, ambientes:[] });
+    saveDB(db); closeModal();
+    render();
+  };
+}
+
+const SUGESTOES_AMBIENTE_UNIDADE = [
+  "Sala Estar / Jantar", "Lavabo", "Quintal/Terraço", "Cozinha", "Área de Serviço",
+  "Despensa/Depósito", "Laje Técnica", "Jardineira", "Circulação", "Suíte Master",
+  "Closet", "Banho Suíte Master", "Semi Suíte 1", "Semi Suíte 2", "Toucador", "Banho Semi Suíte"
+];
+
+function promptNovoAmbiente(container, sugestoes){
+  const selecionados = new Set();
+  const jaExistentes = new Set(container.ambientes.map(a=>a.nome.toLowerCase()));
+  let chipsHtml = "";
+  if(sugestoes && sugestoes.length){
+    chipsHtml = `<label>Sugestões (toque para selecionar, pode escolher várias)</label>
+      <div class="import-chips" id="m-chips" style="margin-top:6px;">
+        ${sugestoes.map(nome=>{
+          const jaTem = jaExistentes.has(nome.toLowerCase());
+          return `<button type="button" class="import-chip" data-nome="${escapeHtml(nome)}" ${jaTem?'disabled style="opacity:.4;"':''}>${escapeHtml(nome)}${jaTem?' ✓':''}</button>`;
+        }).join("")}
+      </div>`;
+  }
+  openModal(`
+    <h2>Novo Ambiente</h2>
+    ${chipsHtml}
+    <label style="margin-top:${sugestoes&&sugestoes.length?'16px':'0'};">Nome do ambiente (opcional, além das sugestões)</label>
+    <input id="m-nome" placeholder="Ex: Banheiro 1, Fachada Norte">
+    <button class="btn primary" id="m-salvar">Adicionar</button>
+  `);
+  if(sugestoes && sugestoes.length){
+    document.querySelectorAll("#m-chips .import-chip").forEach(chip=>{
+      if(chip.disabled) return;
+      chip.onclick=()=>{
+        const nome = chip.dataset.nome;
+        if(selecionados.has(nome)) selecionados.delete(nome); else selecionados.add(nome);
+        chip.classList.toggle("on", selecionados.has(nome));
+      };
+    });
+  }
+  document.getElementById("m-salvar").onclick=()=>{
+    const nomeLivre = document.getElementById("m-nome").value.trim();
+    const nomes = [...selecionados];
+    if(nomeLivre) nomes.push(nomeLivre);
+    if(!nomes.length) return alert("Selecione uma sugestão ou digite um nome.");
+    nomes.forEach(nome=>container.ambientes.push({ id:uid(), nome, fvsList:[] }));
+    saveDB(db); closeModal();
+    render();
+  };
+}
+
+// ---------- TELA: UNIDADE (lista de ambientes dentro de uma unidade) ----------
+function renderUnidade(app){
+  const obra = getObra(route.obraId);
+  const pav = getPav(obra, route.pavId);
+  if(!pav.unidades) pav.unidades = [];
+  const unid = getUnid(pav, route.unidId);
+  app.appendChild(header(`${pav.nome} · ${unid.nome}`, ()=>go({view:"pavimento", obraId:obra.id, pavId:pav.id}), botaoExcluir(()=>{
+    pav.unidades = pav.unidades.filter(u=>u.id!==unid.id);
+    saveDB(db); go({view:"pavimento", obraId:obra.id, pavId:pav.id});
+  }, `Excluir a unidade "${unid.nome}" e todos os seus ambientes e verificações? Essa ação não pode ser desfeita.`)));
+  const main = document.createElement("main");
+
+  renderListaAmbientes(main, unid, amb=>({view:"ambiente", obraId:obra.id, pavId:pav.id, unidId:unid.id, ambId:amb.id}));
+
+  app.appendChild(main);
+
+  const fab = document.createElement("button");
+  fab.className="fab"; fab.textContent="+";
+  fab.onclick=()=>abrirMenuAdicionarUnidade(obra, pav, unid);
+  app.appendChild(fab);
+}
+
+function abrirMenuAdicionarUnidade(obra, pav, unid){
+  openModal(`
+    <h2>Adicionar à unidade</h2>
+    <button class="btn primary" id="m-amb">🚪 Novo Ambiente</button>
+    <button class="btn primary" id="m-importar">📐 Importar planta (PDF/DXF)</button>
+  `);
+  document.getElementById("m-amb").onclick=()=>{ closeModal(); promptNovoAmbiente(unid, SUGESTOES_AMBIENTE_UNIDADE); };
+  document.getElementById("m-importar").onclick=()=>{ closeModal(); abrirImportarPlanta(obra, pav, unid); };
+}
+
+// ---------- TELA: AMBIENTE (lista de FVS aplicadas + checklist) ----------
+function renderAmbiente(app){
+  const obra = getObra(route.obraId);
+  const pav = getPav(obra, route.pavId);
+  if(!pav.unidades) pav.unidades = [];
+  const unid = route.unidId ? getUnid(pav, route.unidId) : null;
+  const container = unid || pav;
+  const amb = getAmb(container, route.ambId);
+  const voltarRota = unid ? {view:"unidade", obraId:obra.id, pavId:pav.id, unidId:unid.id} : {view:"pavimento", obraId:obra.id, pavId:pav.id};
+  const tituloPai = unid ? `${pav.nome} · ${unid.nome}` : pav.nome;
+  app.appendChild(header(`${tituloPai} · ${amb.nome}`, ()=>go(voltarRota), botaoExcluir(()=>{
+    container.ambientes = container.ambientes.filter(a=>a.id!==amb.id);
+    saveDB(db); go(voltarRota);
+  }, `Excluir o ambiente "${amb.nome}" e todas as suas verificações? Essa ação não pode ser desfeita.`)));
+  const main = document.createElement("main");
+
+  if(amb.fvsList.length){
+    const btnPdf = document.createElement("button");
+    btnPdf.className="btn primary"; btnPdf.style.marginTop="0"; btnPdf.textContent="📄 Exportar ficha de vistoria (PDF)";
+    btnPdf.onclick=()=>exportarRelatorioAmbiente(obra,pav,amb,unid);
+    main.appendChild(btnPdf);
+  }
+
+  if(!amb.fvsList.length){
+    main.innerHTML = `<div class="empty">Nenhum serviço (FVS) adicionado a este ambiente.<br>Toque em "+" para escolher um serviço do catálogo.</div>`;
+  } else {
+    amb.fvsList.forEach(fvsInst=>{
+      const p = calcProgresso(fvsInst.itens);
+      const ncF = fvsInst.itens.filter(i=>i.status==="nc").length;
+      const forn = fvsInst.fornecedorId ? getFornecedor(obra, fvsInst.fornecedorId) : null;
+      const div = document.createElement("div");
+      div.className="list-item";
+      div.onclick=()=>abrirChecklist(obra,pav,amb,fvsInst);
+      div.innerHTML = `
+        <div class="icon">📋</div>
+        <div class="info">
+          <div class="title">${escapeHtml(fvsInst.codigo)} / ${escapeHtml(fvsInst.nome)}</div>
+          <div class="sub">Rev.: ${escapeHtml(fvsInst.rev)} · ${p}%${ncF?` · ${ncF} NC`:""}${forn?` · 👷 ${escapeHtml(forn.nome)}`:""}</div>
+          <div class="progress-bar"><div style="width:${p}%"></div></div>
+        </div>
+        <div class="chevron">›</div>`;
+      main.appendChild(div);
+    });
+  }
+  app.appendChild(main);
+
+  const fab = document.createElement("button");
+  fab.className="fab"; fab.textContent="+";
+  fab.onclick=()=>abrirCatalogo(amb);
+  app.appendChild(fab);
+}
+
+function abrirCatalogo(amb){
+  const jaAdicionados = new Set(amb.fvsList.map(f=>f.codigo+"|"+f.rev));
+  const selecionados = new Set();
+  let html = `<h2>Adicionar Serviço (FVS)</h2><input class="search-box" id="m-busca" placeholder="Buscar por código ou nome...">`;
+  html += `<div id="m-lista"></div>`;
+  html += `<div class="save-bar"><button class="btn primary" id="m-adicionar-sel" disabled>Adicionar (0 selecionado(s))</button></div>`;
+  openModal(html);
+
+  function atualizarBotao(){
+    const btn = document.getElementById("m-adicionar-sel");
+    btn.textContent = `Adicionar (${selecionados.size} selecionado${selecionados.size===1?'':'s'})`;
+    btn.disabled = selecionados.size===0;
+  }
+
+  function renderLista(filtro){
+    const lista = document.getElementById("m-lista");
+    if(!window.FVS_CATALOGO || !window.FVS_CATALOGO.length){
+      lista.innerHTML = `<div class="empty">Catálogo de FVS não carregado neste computador ainda.<br>Peça o arquivo scripts/catalogo-fvs.js para habilitar esta tela.</div>`;
+      return;
+    }
+    const f = (filtro||"").toLowerCase();
+    const filtrados = FVS_CATALOGO.filter(fvs =>
+      fvs.codigo.toLowerCase().includes(f) || fvs.nome.toLowerCase().includes(f)
+    );
+    lista.innerHTML = filtrados.map((fvs)=>{
+      const key = fvs.codigo+"|"+fvs.rev;
+      const jaTem = jaAdicionados.has(key);
+      const sel = selecionados.has(key);
+      return `<div class="list-item ${sel?'selecionado':''}" style="${jaTem?'opacity:.45;pointer-events:none;':''}" data-idx="${FVS_CATALOGO.indexOf(fvs)}">
+        <input type="checkbox" ${sel?'checked':''} ${jaTem?'disabled':''} style="width:18px;height:18px;flex-shrink:0;margin:0;">
+        <div class="icon">📋</div>
+        <div class="info">
+          <div class="title">${escapeHtml(fvs.codigo)} / ${escapeHtml(fvs.nome)}</div>
+          <div class="sub">Rev.: ${escapeHtml(fvs.rev)} ${jaTem?' · já adicionado':''}</div>
+        </div>
+      </div>`;
+    }).join("") || `<div class="empty">Nenhum serviço encontrado.</div>`;
+    lista.querySelectorAll(".list-item").forEach(el=>{
+      const fvs = FVS_CATALOGO[parseInt(el.dataset.idx)];
+      const key = fvs.codigo+"|"+fvs.rev;
+      const cb = el.querySelector("input[type=checkbox]");
+      const alternar = ()=>{
+        if(jaAdicionados.has(key)) return;
+        if(selecionados.has(key)) selecionados.delete(key); else selecionados.add(key);
+        el.classList.toggle("selecionado", selecionados.has(key));
+        cb.checked = selecionados.has(key);
+        atualizarBotao();
+      };
+      el.onclick=(e)=>{ if(e.target!==cb) alternar(); };
+      cb.onclick=(e)=>{ e.stopPropagation(); alternar(); };
+    });
+  }
+  renderLista("");
+  document.getElementById("m-busca").oninput=(e)=>renderLista(e.target.value);
+  document.getElementById("m-adicionar-sel").onclick=()=>{
+    if(!selecionados.size) return;
+    selecionados.forEach(key=>{
+      const fvs = FVS_CATALOGO.find(f=>f.codigo+"|"+f.rev===key);
+      if(fvs) amb.fvsList.push(criarInstanciaFvs(fvs));
+    });
+    saveDB(db); closeModal(); render();
+  };
+}
+
+function criarInstanciaFvs(fvs){
+  return {
+    instId: uid(),
+    codigo: fvs.codigo, nome: fvs.nome, rev: fvs.rev, normas: fvs.normas,
+    itens: fvs.itens.map(txt=>({
+      texto:txt, status:"pend", obs:"", foto:null,
+      subitens: subChecksDoItem(fvs.codigo, fvs.rev, txt).map(s=>({ texto:s, status:"pend" }))
+    })),
+    aprovacao: { status:"pendente", aprovadoEm:null },
+    reinspecao: { agendadaPara:null },
+    fornecedorId: null
+  };
+}
+
+// ---------- CHECKLIST DE UMA FVS ----------
+function abrirChecklist(obra,pav,amb,fvsInst){
+  let dirty = false;
+  function fecharComConfirmacao(){
+    if(dirty && !confirm("Você tem alterações não salvas. Sair mesmo assim?")) return;
+    closeModal();
+  }
+  function atualizarBotaoSalvar(){
+    const btn = document.getElementById("m-salvar-fvs");
+    if(!btn) return;
+    btn.textContent = dirty? '💾 Salvar' : '✅ Salvo';
+    btn.className = "btn primary "+(dirty?'save-pending':'save-ok');
+  }
+  function draw(){
+    const normasHtml = fvsInst.normas.map(n=>`• ${escapeHtml(n)}`).join("<br>");
+    const fornecedores = fornecedoresDaObra(obra);
+    const opcoesFornecedor = fornecedores.map(f=>`<option value="${f.id}" ${fvsInst.fornecedorId===f.id?'selected':''}>${escapeHtml(f.nome)}</option>`).join("");
+    let html = `<button class="close-x" id="m-close">×</button>
+      <h2>${escapeHtml(fvsInst.codigo)} / ${escapeHtml(fvsInst.nome)}</h2>
+      <div class="normas-box"><b>Normas de referência:</b><br>${normasHtml}</div>
+      <label>Fornecedor/Encarregado responsável</label>
+      <select id="m-fornecedor">
+        <option value="">— Nenhum —</option>
+        ${opcoesFornecedor}
+      </select>
+      <div id="m-aprov-reinsp-wrap">${blocoAprovacaoReinspecao(fvsInst)}</div>
+      <div id="m-itens"></div>
+      <div class="save-bar">
+        <button class="btn primary ${dirty?'save-pending':'save-ok'}" id="m-salvar-fvs">${dirty? '💾 Salvar' : '✅ Salvo'}</button>
+      </div>
+      <button class="btn ghost" id="m-remover">Remover este serviço do ambiente</button>`;
+    openModal(html);
+    document.getElementById("m-close").onclick=fecharComConfirmacao;
+    document.getElementById("modal-bg").onclick=(e)=>{ if(e.target.id==="modal-bg") fecharComConfirmacao(); };
+    document.getElementById("m-salvar-fvs").onclick=()=>{
+      saveDB(db);
+      dirty = false;
+      atualizarBotaoSalvar();
+    };
+    document.getElementById("m-remover").onclick=()=>{
+      if(confirm("Remover "+fvsInst.codigo+" deste ambiente? Isso apaga os registros de verificação feitos.")){
+        amb.fvsList = amb.fvsList.filter(f=>f.instId!==fvsInst.instId);
+        saveDB(db); closeModal(); render();
+      }
+    };
+
+    function atualizarBlocoAprovacaoReinspecao(){
+      const wrap = document.getElementById("m-aprov-reinsp-wrap");
+      if(!wrap) return;
+      wrap.innerHTML = blocoAprovacaoReinspecao(fvsInst);
+      wireBlocoAprovacaoReinspecao();
+    }
+    function wireBlocoAprovacaoReinspecao(){
+      const btnToggleAprov = document.getElementById("m-toggle-aprovacao");
+      if(btnToggleAprov) btnToggleAprov.onclick=()=>{
+        const aprov = fvsAprovacao(fvsInst);
+        if(aprov.status==="aprovado"){ aprov.status="pendente"; aprov.aprovadoEm=null; }
+        else { aprov.status="aprovado"; aprov.aprovadoEm=Date.now(); }
+        dirty = true; atualizarBotaoSalvar();
+        atualizarBlocoAprovacaoReinspecao();
+      };
+      const inputReinsp = document.getElementById("m-data-reinsp");
+      if(inputReinsp) inputReinsp.onchange=()=>{
+        fvsReinspecao(fvsInst).agendadaPara = inputReinsp.value || null;
+        dirty = true; atualizarBotaoSalvar();
+        atualizarBlocoAprovacaoReinspecao();
+      };
+    }
+    wireBlocoAprovacaoReinspecao();
+
+    document.getElementById("m-fornecedor").onchange=(e)=>{
+      fvsInst.fornecedorId = e.target.value || null;
+      dirty = true; atualizarBotaoSalvar();
+    };
+    const cont = document.getElementById("m-itens");
+    fvsInst.itens.forEach((item, idx)=>{
+      if(!item.subitens) item.subitens = [];
+      item.subitens.forEach(s=>{ if(s.status===undefined) s.status = s.feito ? "ok" : "pend"; });
+      const box = document.createElement("div");
+      box.className="checklist-item";
+
+      const iconesStatus = (statusAtual, extraAttrs)=>`
+        <div class="status-row-icons" ${extraAttrs||""}>
+          <button class="status-icon-btn ${statusAtual==='ok'?'sel-ok':''}" data-s="ok" title="Conforme" ${item.status==='na'&&extraAttrs?'disabled':''}>👍</button>
+          <button class="status-icon-btn ${statusAtual==='nc'?'sel-nc':''}" data-s="nc" title="Não conforme" ${item.status==='na'&&extraAttrs?'disabled':''}>👎</button>
+          <button class="status-icon-btn ${statusAtual==='parcial'?'sel-parcial':''}" data-s="parcial" title="Parcialmente conforme" ${item.status==='na'&&extraAttrs?'disabled':''}>💬</button>
+          <button class="status-icon-btn ${statusAtual==='na'?'sel-na':''}" data-s="na" title="Não aplicável" ${item.status==='na'&&extraAttrs?'disabled':''}>🚫</button>
+          <button class="status-icon-btn ${(!statusAtual||statusAtual==='pend')?'sel-pend':''}" data-s="pend" title="Pendente" ${item.status==='na'&&extraAttrs?'disabled':''}>⏳</button>
+        </div>`;
+
+      const temSub = item.subitens.length > 0;
+      const subChecksHtml = temSub ? `
+        <div class="sub-checks">
+          ${item.subitens.map((s,si)=>`
+            <div class="sub-check-row ${item.status==='na'?'disabled':''}">
+              <span class="sub-check-txt">${escapeHtml(s.texto)}</span>
+              ${iconesStatus(s.status, `data-si="${si}"`)}
+            </div>`).join("")}
+        </div>` : iconesStatus(item.status);
+
+      box.innerHTML = `
+        <div class="txt">${idx+1}. ${escapeHtml(item.texto)}
+          <span class="item-status-badge ${item.status||'pend'}">${legendaStatusItem(item)}</span>
+        </div>
+        ${subChecksHtml}
+        <div class="item-extra">
+          ${temSub? `<button class="na-btn ${item.status==='na'?'active':''}" data-act="na">${item.status==='na'?'✓ N/A':'Marcar como N/A'}</button>` : ""}
+          <button class="photo-btn" data-act="foto">📷</button>
+          ${item.foto? `<img class="photo-thumb" src="${item.foto}">` : ""}
+          <textarea placeholder="Observação (opcional)">${escapeHtml(item.obs||"")}</textarea>
+        </div>
+      `;
+
+      function recalcularStatusItem(){
+        if(item.status==='na') return;
+        if(!temSub){ return; }
+        item.status = statusPorSubitens(item.subitens);
+        const pendentes = item.subitens.filter(s=>s.status!=='ok' && s.status!=='na').map(s=>s.texto);
+        atualizarObsAutomatica(item, pendentes);
+        const badge = box.querySelector(".item-status-badge");
+        badge.className = "item-status-badge "+item.status;
+        badge.textContent = legendaStatusItem(item);
+        const textarea = box.querySelector("textarea");
+        textarea.value = item.obs||"";
+        atualizarBlocoAprovacaoReinspecao();
+      }
+
+      if(temSub){
+        box.querySelectorAll('.sub-check-row .status-row-icons').forEach(rowIcons=>{
+          const si = parseInt(rowIcons.dataset.si);
+          rowIcons.querySelectorAll(".status-icon-btn").forEach(btn=>{
+            btn.onclick=()=>{
+              item.subitens[si].status = btn.dataset.s;
+              dirty = true;
+              rowIcons.querySelectorAll(".status-icon-btn").forEach(b=>b.classList.remove("sel-ok","sel-nc","sel-parcial","sel-na","sel-pend"));
+              btn.classList.add("sel-"+btn.dataset.s);
+              recalcularStatusItem();
+              atualizarBotaoSalvar();
+            };
+          });
+        });
+      } else {
+        box.querySelectorAll(".status-icon-btn").forEach(btn=>{
+          btn.onclick=()=>{
+            item.status = btn.dataset.s;
+            dirty = true;
+            box.querySelectorAll(".status-icon-btn").forEach(b=>b.classList.remove("sel-ok","sel-nc","sel-parcial","sel-na","sel-pend"));
+            btn.classList.add("sel-"+btn.dataset.s);
+            const badge = box.querySelector(".item-status-badge");
+            badge.className = "item-status-badge "+item.status;
+            badge.textContent = legendaStatusItem(item);
+            atualizarBotaoSalvar();
+            atualizarBlocoAprovacaoReinspecao();
+            if(btn.dataset.s==="parcial") box.querySelector("textarea").focus();
+          };
+        });
+      }
+
+      const naBtn = box.querySelector('[data-act="na"]');
+      if(naBtn) naBtn.onclick=()=>{
+        item.status = (item.status==='na') ? statusPorSubitens(item.subitens) : 'na';
+        dirty = true;
+        draw();
+      };
+
+      const fotoBtn = box.querySelector('[data-act="foto"]');
+      fotoBtn.onclick=()=>{
+        const input = document.createElement("input");
+        input.type="file"; input.accept="image/*"; input.capture="environment";
+        input.onchange=()=>{
+          const file = input.files[0];
+          if(!file) return;
+          const reader = new FileReader();
+          reader.onload=(e)=>{
+            item.foto = e.target.result;
+            dirty = true;
+            let thumb = box.querySelector(".photo-thumb");
+            if(!thumb){
+              thumb = document.createElement("img");
+              thumb.className = "photo-thumb";
+              fotoBtn.insertAdjacentElement("afterend", thumb);
+            }
+            thumb.src = item.foto;
+            atualizarBotaoSalvar();
+          };
+          reader.readAsDataURL(file);
+        };
+        input.click();
+      };
+      const textarea = box.querySelector("textarea");
+      textarea.oninput=()=>{ item.obs = textarea.value; dirty = true; atualizarBotaoSalvar(); };
+      cont.appendChild(box);
+    });
+  }
+  draw();
+}
+
+// ---------- IMPORTAR PLANTA (PDF/DXF) ----------
+// Bibliotecas carregadas sob demanda (só quando o usuário abre essa tela), via CDN.
+// Precisa de internet nesse momento — o resto do app funciona offline normalmente.
+const PDFJS_VERSAO = "4.7.76";
+const CDN_PDFJS = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${PDFJS_VERSAO}/pdf.min.mjs`;
+const CDN_PDFJS_WORKER = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${PDFJS_VERSAO}/pdf.worker.min.mjs`;
+const CDN_DXFPARSER = "https://cdn.jsdelivr.net/npm/dxf-parser@1.1.2/dist/dxf-parser.js";
+
+const _scriptsCarregados = {};
+function carregarScript(src){
+  if(_scriptsCarregados[src]) return _scriptsCarregados[src];
+  _scriptsCarregados[src] = new Promise((resolve,reject)=>{
+    const s = document.createElement("script");
+    s.src = src;
+    s.onload = ()=>resolve();
+    s.onerror = ()=>reject(new Error("não consegui carregar um componente necessário (verifique sua internet)"));
+    document.head.appendChild(s);
+  });
+  return _scriptsCarregados[src];
+}
+
+let _pdfjsLibPromise = null;
+function carregarPdfJs(){
+  if(_pdfjsLibPromise) return _pdfjsLibPromise;
+  _pdfjsLibPromise = import(CDN_PDFJS).then(mod=>{
+    mod.GlobalWorkerOptions.workerSrc = CDN_PDFJS_WORKER;
+    return mod;
+  }).catch(()=>{
+    _pdfjsLibPromise = null;
+    throw new Error("não consegui carregar o leitor de PDF (verifique sua internet)");
+  });
+  return _pdfjsLibPromise;
+}
+
+function textoPareceAmbiente(t){
+  if(!t) return false;
+  t = t.trim();
+  if(t.length < 2 || t.length > 40) return false;
+  if(/^[\d.,;:\-\/°ºm²\s]+$/i.test(t)) return false; // só números/medidas, não é nome
+  return true;
+}
+
+function ordenarCandidatos(lista){
+  return lista.slice().sort((a,b)=> (b.y-a.y) || (a.x-b.x)); // topo→baixo, esquerda→direita
+}
+
+function limparTextoMTEXT(t){
+  return (t||"")
+    .replace(/\\P/g, " ")
+    .replace(/\\[A-Za-z][^;]*;/g, "")
+    .replace(/[{}]/g, "")
+    .replace(/%%[cCdDpP]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function escolherPaginaPdf(numPaginas){
+  return new Promise(resolve=>{
+    let opts = "";
+    for(let i=1;i<=numPaginas;i++) opts += `<option value="${i}">Página ${i}</option>`;
+    openModal(`
+      <h2>Qual página é este pavimento?</h2>
+      <p style="font-size:13px;color:var(--muted);">Esse PDF tem ${numPaginas} páginas. A importação lê uma página por vez.</p>
+      <select id="m-pagina">${opts}</select>
+      <button class="btn primary" id="m-continuar">Continuar</button>
+    `);
+    document.getElementById("m-continuar").onclick=()=>{
+      const pagina = parseInt(document.getElementById("m-pagina").value);
+      closeModal();
+      resolve(pagina);
+    };
+  });
+}
+
+async function extrairTextosDePdf(file, statusEl){
+  statusEl.textContent = "Carregando leitor de PDF...";
+  const pdfjsLib = await carregarPdfJs();
+  const buffer = await file.arrayBuffer();
+  const doc = await pdfjsLib.getDocument({data:buffer}).promise;
+  let pagina = 1;
+  if(doc.numPages > 1) pagina = await escolherPaginaPdf(doc.numPages);
+  statusEl.textContent = "Lendo texto da página...";
+  const page = await doc.getPage(pagina);
+  const content = await page.getTextContent();
+  const candidatos = content.items
+    .map(it=>({ texto:(it.str||"").trim(), x:it.transform[4], y:it.transform[5] }))
+    .filter(it=>textoPareceAmbiente(it.texto));
+  return ordenarCandidatos(candidatos);
+}
+
+// Extração crua: todo texto do DXF, sem nenhum filtro de classificação ainda.
+// Reaproveitada tanto pelo import de um pavimento quanto pelo import do prédio inteiro.
+// Retorna { textos, layers }: textos = só entidades TEXT/MTEXT; layers = nome de
+// TODAS as layers do desenho (inclusive as que só têm linha/geometria, sem texto —
+// importante porque a layer do pavimento pode não ter texto nenhum nela mesma,
+// só nas layers satélite de disciplina, ex.: "P04" sem texto + "5-TEXTOS4" com texto).
+async function extrairEntidadesDxf(file, statusEl){
+  if(statusEl) statusEl.textContent = "Carregando leitor de DXF...";
+  await carregarScript(CDN_DXFPARSER);
+  const texto = await file.text();
+  if(statusEl) statusEl.textContent = "Lendo entidades do DXF...";
+  const parser = new window.DxfParser();
+  const dxf = parser.parseSync(texto);
+  const todasEntidades = dxf.entities || [];
+  const layers = [...new Set(todasEntidades.map(e=> e.layer || "0"))];
+  const textos = todasEntidades
+    .filter(e=>e.type==="TEXT"||e.type==="MTEXT")
+    .map(e=>({
+      texto: limparTextoMTEXT(e.text||""),
+      x: e.position ? e.position.x : (e.startPoint ? e.startPoint.x : 0),
+      y: e.position ? e.position.y : (e.startPoint ? e.startPoint.y : 0),
+      layer: e.layer || "0"
+    }));
+  return { textos, layers };
+}
+
+async function extrairTextosDeDxf(file, statusEl){
+  const { textos } = await extrairEntidadesDxf(file, statusEl);
+  return ordenarCandidatos(textos.filter(it=>textoPareceAmbiente(it.texto)));
+}
+
+// Sugestão de FVS por tipo de ambiente (casamento por palavra-chave no nome)
+const SUGESTOES_FVS_POR_AMBIENTE = [
+  { palavras:["banheiro","lavabo","wc"], codigos:["FVS-19","FVS-23","FVS-41","FVS-42","FVS-10"] },
+  { palavras:["cozinha"], codigos:["FVS-19","FVS-23","FVS-37","FVS-41","FVS-10"] },
+  { palavras:["fachada"], codigos:["FVS-18","FVS-28"] },
+  { palavras:["sala","quarto","dormitorio","suite","escritorio"], codigos:["FVS-21","FVS-22","FVS-40"] },
+  { palavras:["varanda","sacada","terraco"], codigos:["FVS-18","FVS-19"] },
+  { palavras:["area de servico","lavanderia"], codigos:["FVS-19","FVS-23","FVS-10"] },
+  { palavras:["hall","corredor","circulacao"], codigos:["FVS-21","FVS-22"] },
+  { palavras:["garagem","estacionamento"], codigos:["FVS-22"] },
+];
+
+function normalizarTexto(t){
+  const s = (t||"").toLowerCase().normalize("NFD");
+  let out = "";
+  for(const ch of s){
+    const code = ch.codePointAt(0);
+    if(code >= 0x300 && code <= 0x36f) continue; // remove marcas diacríticas (acentos) após normalize("NFD")
+    out += ch;
+  }
+  return out;
+}
+
+function sugerirFvsPara(nomeAmbiente){
+  const n = normalizarTexto(nomeAmbiente);
+  const codigos = new Set();
+  SUGESTOES_FVS_POR_AMBIENTE.forEach(grupo=>{
+    if(grupo.palavras.some(p=>n.includes(normalizarTexto(p)))) grupo.codigos.forEach(c=>codigos.add(c));
+  });
+  if(!window.FVS_CATALOGO) return [];
+  return [...codigos].map(cod=>window.FVS_CATALOGO.find(f=>f.codigo===cod)).filter(Boolean);
+}
+
+// ---------- IMPORTAÇÃO DO PROJETO COMPLETO (DXF, vários pavimentos de uma vez) ----------
+function distancia(a,b){ const dx=a.x-b.x, dy=a.y-b.y; return Math.sqrt(dx*dx+dy*dy); }
+
+function textoBateEmLista(texto, lista){
+  const n = normalizarTexto(texto);
+  return lista.some(termo=> n.includes(normalizarTexto(termo)));
+}
+
+function escapeRegexBasico(s){ return s.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"); }
+
+function textoEhNomeDeComodo(t){
+  const n = normalizarTexto(t);
+  return (window.NOMES_COMODO||[]).some(termo=>{
+    const re = new RegExp("(^|[^a-z0-9])"+escapeRegexBasico(normalizarTexto(termo))+"([^a-z0-9]|$)");
+    return re.test(n);
+  });
+}
+
+const MARCADORES_UNIDADE = ["apto","apartamento","unidade","und","loja","sala comercial"];
+const MARCADORES_AREA_ESPECIAL = [
+  "escada","hall","corredor","circulacao","area comum",
+  "casa de maquinas","barrilete","reservatorio",
+  "gerador","subestacao","area tecnica","dce",
+  "portaria","guarita","poco de elevador","lixeira"
+];
+
+// Separa uma lista plana de textos (já filtrados por textoPareceAmbiente) em:
+// rótulos de unidade autônoma, áreas comuns/técnicas/especiais, e nomes de cômodo
+// (só os que batem na whitelist), associando cada cômodo à unidade mais próxima.
+// Reaproveitada tanto pelo import do prédio inteiro (por grupo de layer) quanto
+// pelo import de um pavimento/unidade por vez (sobre todo o texto do arquivo).
+function classificarTextosPlanos(textos){
+  const rotulosUnidade = textos.filter(it=>textoBateEmLista(it.texto, MARCADORES_UNIDADE));
+  const rotulosSet = new Set(rotulosUnidade);
+  const areasEspeciais = textos.filter(it=> !rotulosSet.has(it) && textoBateEmLista(it.texto, MARCADORES_AREA_ESPECIAL));
+  const areasSet = new Set(areasEspeciais);
+  const restante = textos.filter(it=> !rotulosSet.has(it) && !areasSet.has(it));
+  const candidatosComodo = restante.filter(it=>textoEhNomeDeComodo(it.texto));
+  const naoReconhecidos = restante.filter(it=>!candidatosComodo.includes(it));
+
+  const unidades = rotulosUnidade.map(rotulo=>({ id:uid(), nome: rotulo.texto.trim(), origem: rotulo }));
+
+  const comodos = candidatosComodo.map(c=>{
+    let unidadeId = null;
+    if(unidades.length){
+      let melhor = unidades[0], melhorDist = distancia(c, unidades[0].origem);
+      for(let i=1;i<unidades.length;i++){
+        const d = distancia(c, unidades[i].origem);
+        if(d < melhorDist){ melhorDist = d; melhor = unidades[i]; }
+      }
+      unidadeId = melhor.id;
+    }
+    return { texto: c.texto, unidadeId };
+  });
+
+  const comuns = areasEspeciais.map(a=>a.texto)
+    .concat(comodos.filter(c=>c.unidadeId===null).map(c=>c.texto));
+
+  return {
+    unidades: unidades.map(u=>({ id:u.id, nome:u.nome })),
+    comodosPorUnidade: comodos.filter(c=>c.unidadeId!==null),
+    comuns,
+    naoReconhecidos: naoReconhecidos.map(n=>n.texto)
+  };
+}
+
+function prepararEstadoPavimento(pClass){
+  function criarEstadoItem(texto, unidadeId){
+    const sugeridos = sugerirFvsPara(texto);
+    return { id:uid(), texto, usar:true, unidadeId,
+      fvsSugeridos: sugeridos, fvsSelecionados: new Set(sugeridos.map(f=>f.codigo)) };
+  }
+  const itens = pClass.comodosPorUnidade.map(c=>criarEstadoItem(c.texto, c.unidadeId))
+    .concat(pClass.comuns.map(t=>criarEstadoItem(t, null)));
+  return {
+    id: uid(), nome: pClass.nome, usar: true,
+    unidades: pClass.unidades.map(u=>({ id:u.id, nome:u.nome, usar:true })),
+    itens,
+    naoReconhecidos: pClass.naoReconhecidos.map(t=>({ id:uid(), texto:t, usar:false }))
+  };
+}
+
+function abrirRevisaoImportacaoPredio(obra, resultado, textoIntro){
+  const pavimentosEstado = resultado.pavimentos.map(prepararEstadoPavimento);
+  const intro = textoIntro || `${pavimentosEstado.length} pavimento(s) identificado(s) pelas layers do DXF. Confira nomes, unidades e ambientes antes de criar — desmarque o que estiver errado, e use o menu ao lado de cada ambiente pra corrigir a unidade, se precisar.`;
+
+  openModal(`
+    <h2>Revisar itens encontrados</h2>
+    <p style="font-size:13px;color:var(--muted);">${intro}</p>
+    <div id="m-arvore-import"></div>
+    <button class="btn primary" id="m-confirmar-predio">Criar tudo</button>
+  `);
+  const raiz = document.getElementById("m-arvore-import");
+
+  function desenharItemComodo(it, pav){
+    const itemDiv = document.createElement("div");
+    itemDiv.className = "import-item";
+    const linha1 = document.createElement("div");
+    linha1.className = "linha1";
+    const chk = document.createElement("input");
+    chk.type="checkbox"; chk.checked = it.usar;
+    chk.onchange = ()=>{ it.usar = chk.checked; };
+    const txt = document.createElement("input");
+    txt.type="text"; txt.value = it.texto;
+    txt.oninput = ()=>{ it.texto = txt.value; };
+    linha1.appendChild(chk); linha1.appendChild(txt);
+
+    if(pav.unidades.length){
+      const sel = document.createElement("select");
+      sel.className = "import-select-unid";
+      const optComum = document.createElement("option");
+      optComum.value=""; optComum.textContent="Ambiente comum";
+      sel.appendChild(optComum);
+      pav.unidades.forEach(u=>{
+        const opt = document.createElement("option");
+        opt.value=u.id; opt.textContent=u.nome;
+        if(it.unidadeId===u.id) opt.selected = true;
+        sel.appendChild(opt);
+      });
+      sel.onchange = ()=>{ it.unidadeId = sel.value || null; redesenharCorpo(pav); };
+      linha1.appendChild(sel);
+    }
+    itemDiv.appendChild(linha1);
+
+    if(it.fvsSugeridos.length){
+      const chips = document.createElement("div");
+      chips.className = "import-chips";
+      it.fvsSugeridos.forEach(fvs=>{
+        const chip = document.createElement("button");
+        chip.type="button";
+        chip.className = "import-chip"+(it.fvsSelecionados.has(fvs.codigo)?" on":"");
+        chip.textContent = fvs.codigo; chip.title = fvs.nome;
+        chip.onclick = ()=>{
+          if(it.fvsSelecionados.has(fvs.codigo)) it.fvsSelecionados.delete(fvs.codigo);
+          else it.fvsSelecionados.add(fvs.codigo);
+          chip.classList.toggle("on");
+        };
+        chips.appendChild(chip);
+      });
+      itemDiv.appendChild(chips);
+    }
+    return itemDiv;
+  }
+
+  function redesenharCorpo(pav){
+    const corpo = pav._corpoEl;
+    corpo.innerHTML = "";
+    pav.unidades.forEach(unid=>{
+      const bloco = document.createElement("div");
+      bloco.style.cssText = "margin-bottom:10px;padding-left:10px;border-left:2px solid var(--border);";
+      const tituloUnid = document.createElement("div");
+      tituloUnid.style.cssText = "display:flex;align-items:center;gap:8px;margin-bottom:6px;";
+      const chkUnid = document.createElement("input");
+      chkUnid.type="checkbox"; chkUnid.checked = unid.usar;
+      chkUnid.onchange = ()=>{ unid.usar = chkUnid.checked; };
+      const nomeUnid = document.createElement("input");
+      nomeUnid.type="text"; nomeUnid.value = unid.nome;
+      nomeUnid.style.cssText = "margin-top:0;flex:1;font-weight:600;";
+      nomeUnid.oninput = ()=>{ unid.nome = nomeUnid.value; };
+      tituloUnid.appendChild(chkUnid); tituloUnid.appendChild(nomeUnid);
+      bloco.appendChild(tituloUnid);
+      pav.itens.filter(it=>it.unidadeId===unid.id).forEach(it=> bloco.appendChild(desenharItemComodo(it, pav)));
+      corpo.appendChild(bloco);
+    });
+
+    const comuns = pav.itens.filter(it=>it.unidadeId===null);
+    if(comuns.length){
+      const tit = document.createElement("div");
+      tit.className = "import-subtitulo";
+      tit.textContent = "Ambientes comuns";
+      corpo.appendChild(tit);
+      comuns.forEach(it=> corpo.appendChild(desenharItemComodo(it, pav)));
+    }
+
+    if(pav.naoReconhecidos.length){
+      const det = document.createElement("details");
+      det.style.marginTop = "10px";
+      const sum = document.createElement("summary");
+      sum.style.cssText = "font-size:12px;color:var(--muted);cursor:pointer;";
+      sum.textContent = `Outros textos encontrados, não reconhecidos como cômodo (${pav.naoReconhecidos.length})`;
+      det.appendChild(sum);
+      pav.naoReconhecidos.forEach(it=>{
+        const row = document.createElement("label");
+        row.className = "sub-check-row";
+        row.style.marginTop = "6px";
+        const chkNr = document.createElement("input");
+        chkNr.type="checkbox"; chkNr.checked = it.usar;
+        chkNr.onchange = ()=>{ it.usar = chkNr.checked; };
+        const span = document.createElement("span");
+        span.textContent = it.texto;
+        row.appendChild(chkNr); row.appendChild(span);
+        det.appendChild(row);
+      });
+      corpo.appendChild(det);
+    }
+  }
+
+  function desenharPavimento(pav){
+    const div = document.createElement("div");
+    div.className = "import-grupo";
+
+    const header = document.createElement("div");
+    header.className = "import-grupo-header";
+    const chk = document.createElement("input");
+    chk.type="checkbox"; chk.checked = pav.usar;
+    chk.onchange = ()=>{ pav.usar = chk.checked; };
+    const nomeInput = document.createElement("input");
+    nomeInput.type="text"; nomeInput.value = pav.nome;
+    nomeInput.oninput = ()=>{ pav.nome = nomeInput.value; };
+    const info = document.createElement("span");
+    info.className = "import-grupo-info";
+    info.textContent = `${pav.unidades.length} unidade(s) · ${pav.itens.length} ambiente(s)`;
+    header.appendChild(chk); header.appendChild(nomeInput); header.appendChild(info);
+    div.appendChild(header);
+
+    const corpo = document.createElement("div");
+    corpo.className = "import-grupo-corpo";
+    pav._corpoEl = corpo;
+    div.appendChild(corpo);
+    redesenharCorpo(pav);
+    return div;
+  }
+
+  pavimentosEstado.forEach(pav=> raiz.appendChild(desenharPavimento(pav)));
+
+  document.getElementById("m-confirmar-predio").onclick = ()=>{
+    pavimentosEstado.forEach(pav=>{
+      if(!pav.usar) return;
+      let pavReal = obra.pavimentos.find(p=> normalizarTexto(p.nome)===normalizarTexto(pav.nome));
+      if(!pavReal){
+        pavReal = { id:uid(), nome: pav.nome.trim(), ambientes:[], unidades:[] };
+        obra.pavimentos.push(pavReal);
+      }
+      if(!pavReal.unidades) pavReal.unidades = [];
+
+      const mapaUnidId = {};
+      pav.unidades.forEach(u=>{
+        if(!u.usar) return;
+        let unidReal = pavReal.unidades.find(x=> normalizarTexto(x.nome)===normalizarTexto(u.nome));
+        if(!unidReal){
+          unidReal = { id:uid(), nome:u.nome.trim(), ambientes:[] };
+          pavReal.unidades.push(unidReal);
+        }
+        mapaUnidId[u.id] = unidReal;
+      });
+
+      pav.itens.filter(it=>it.usar && it.texto.trim()).forEach(it=>{
+        const amb = { id:uid(), nome: it.texto.trim(), fvsList:[] };
+        it.fvsSelecionados.forEach(codigo=>{
+          const fvs = window.FVS_CATALOGO && window.FVS_CATALOGO.find(f=>f.codigo===codigo);
+          if(fvs) amb.fvsList.push(criarInstanciaFvs(fvs));
+        });
+        const destino = (it.unidadeId && mapaUnidId[it.unidadeId]) ? mapaUnidId[it.unidadeId] : pavReal;
+        destino.ambientes.push(amb);
+      });
+    });
+
+    saveDB(db); closeModal(); render();
+  };
+}
+
+function abrirImportarPlanta(obra, pav, unid){
+  openModal(`
+    <h2>Importar planta (PDF/DXF)</h2>
+    <p style="font-size:13px;color:var(--muted);">
+      Funciona com PDF exportado do CAD (com texto selecionável) ou arquivo DXF — não funciona com PDF escaneado/foto.
+      Precisa de internet só nesta etapa; o resto do app continua funcionando offline.
+    </p>
+    <input type="file" id="m-arquivo-planta" accept=".pdf,.dxf">
+    <div id="m-import-status" style="margin-top:12px;font-size:13px;color:var(--muted);"></div>
+  `);
+  document.getElementById("m-arquivo-planta").onchange = async (e)=>{
+    const file = e.target.files[0];
+    if(!file) return;
+    const status = document.getElementById("m-import-status");
+    status.textContent = "Lendo arquivo...";
+    try{
+      const ext = file.name.toLowerCase().split(".").pop();
+      let textosBrutos;
+      if(ext==="pdf") textosBrutos = await extrairTextosDePdf(file, status);
+      else if(ext==="dxf") textosBrutos = await extrairTextosDeDxf(file, status);
+      else { status.textContent = "Formato não suportado. Escolha um arquivo .pdf ou .dxf."; return; }
+
+      if(!textosBrutos.length){
+        status.textContent = "Não encontrei texto nesse arquivo. Se for um PDF escaneado/foto, essa importação automática não funciona — cadastre manualmente com \"Novo Ambiente\".";
+        return;
+      }
+
+      const classificado = classificarTextosPlanos(textosBrutos);
+      const totalCandidatos = classificado.comodosPorUnidade.length + classificado.comuns.length;
+      if(!totalCandidatos){
+        status.textContent = "Encontrei texto no arquivo, mas nenhum nome de cômodo reconhecido (ex.: Sala, Quarto, Banheiro...). Pode ser que a grafia seja diferente da lista da ferramenta — nesse caso, cadastre manualmente com \"Novo Ambiente\".";
+        return;
+      }
+
+      if(unid){
+        const candidatosParaUnidade = classificado.comodosPorUnidade.map(c=>({texto:c.texto}))
+          .concat(classificado.comuns.map(t=>({texto:t})));
+        abrirRevisaoImportacao(obra, pav, unid, candidatosParaUnidade);
+      } else {
+        abrirRevisaoImportacaoPredio(obra, { ok:true, pavimentos:[{ nomeLayer:null, nome: pav.nome, ...classificado }] },
+          "Confira os ambientes identificados no arquivo antes de criar — desmarque o que estiver errado, e use o menu ao lado de cada ambiente pra corrigir a unidade, se precisar.");
+      }
+    }catch(err){
+      status.textContent = "Não consegui ler esse arquivo: "+err.message;
+    }
+  };
+}
+
+function abrirRevisaoImportacao(obra, pav, unid, candidatosBrutos){
+  const itens = candidatosBrutos.map(c=>{
+    const sugeridos = sugerirFvsPara(c.texto);
+    return {
+      id: uid(), texto: c.texto, usar: true, unidadeTmp: null,
+      fvsSugeridos: sugeridos,
+      fvsSelecionados: new Set(sugeridos.map(f=>f.codigo))
+    };
+  });
+  const gruposUnidadeTmp = {};
+
+  let html = `<h2>Revisar itens encontrados (${itens.length})</h2>
+    <p style="font-size:13px;color:var(--muted);">Desmarque o que não for nome de ambiente (medidas, títulos, notas). Edite o nome se precisar. Os serviços sugeridos já vêm marcados — desmarque os que não fizerem sentido.</p>`;
+  if(!unid){
+    html += `<button class="btn" id="m-agrupar" style="width:100%;border:1px solid var(--primary);color:var(--primary);background:none;border-radius:8px;padding:10px;font-weight:600;margin-bottom:12px;">🔑 Agrupar marcados em nova unidade</button>`;
+  }
+  html += `<div id="m-lista-import"></div>
+    <button class="btn primary" id="m-confirmar">Criar ambientes selecionados</button>`;
+  openModal(html);
+
+  const lista = document.getElementById("m-lista-import");
+
+  function desenharItem(it){
+    const div = document.createElement("div");
+    div.className = "import-item";
+
+    const linha1 = document.createElement("div");
+    linha1.className = "linha1";
+    const chk = document.createElement("input");
+    chk.type = "checkbox"; chk.checked = it.usar;
+    chk.onchange = ()=>{ it.usar = chk.checked; };
+    const txt = document.createElement("input");
+    txt.type = "text"; txt.value = it.texto;
+    txt.oninput = ()=>{ it.texto = txt.value; };
+    linha1.appendChild(chk); linha1.appendChild(txt);
+    div.appendChild(linha1);
+
+    if(it.unidadeTmp){
+      const tagUnid = document.createElement("div");
+      tagUnid.style.cssText = "font-size:11px;color:var(--primary);margin-top:4px;";
+      tagUnid.textContent = "🔑 "+gruposUnidadeTmp[it.unidadeTmp];
+      div.appendChild(tagUnid);
+    }
+
+    if(it.fvsSugeridos.length){
+      const chips = document.createElement("div");
+      chips.className = "import-chips";
+      it.fvsSugeridos.forEach(fvs=>{
+        const chip = document.createElement("button");
+        chip.type = "button";
+        chip.className = "import-chip"+(it.fvsSelecionados.has(fvs.codigo)?" on":"");
+        chip.textContent = fvs.codigo;
+        chip.title = fvs.nome;
+        chip.onclick = ()=>{
+          if(it.fvsSelecionados.has(fvs.codigo)) it.fvsSelecionados.delete(fvs.codigo);
+          else it.fvsSelecionados.add(fvs.codigo);
+          chip.classList.toggle("on");
+        };
+        chips.appendChild(chip);
+      });
+      div.appendChild(chips);
+    }
+    return div;
+  }
+
+  function redesenharLista(){
+    lista.innerHTML = "";
+    itens.forEach(it=> lista.appendChild(desenharItem(it)));
+  }
+  redesenharLista();
+
+  if(!unid){
+    document.getElementById("m-agrupar").onclick = ()=>{
+      const marcados = itens.filter(it=>it.usar && !it.unidadeTmp);
+      if(!marcados.length) return alert("Marque os itens que você quer agrupar antes.");
+      const nome = prompt("Nome da unidade (ex: Apto 301):");
+      if(!nome || !nome.trim()) return;
+      const grupoId = uid();
+      gruposUnidadeTmp[grupoId] = nome.trim();
+      marcados.forEach(it=>{ it.unidadeTmp = grupoId; });
+      redesenharLista();
+    };
+  }
+
+  document.getElementById("m-confirmar").onclick = ()=>{
+    const selecionados = itens.filter(it=>it.usar && it.texto.trim());
+    if(!selecionados.length){ closeModal(); return; }
+
+    function montarAmbiente(it){
+      const amb = { id:uid(), nome: it.texto.trim(), fvsList:[] };
+      it.fvsSelecionados.forEach(codigo=>{
+        const fvs = window.FVS_CATALOGO && window.FVS_CATALOGO.find(f=>f.codigo===codigo);
+        if(fvs) amb.fvsList.push(criarInstanciaFvs(fvs));
+      });
+      return amb;
+    }
+
+    if(unid){
+      selecionados.forEach(it=> unid.ambientes.push(montarAmbiente(it)));
+    } else {
+      const porUnidadeTmp = {};
+      selecionados.forEach(it=>{
+        if(it.unidadeTmp) (porUnidadeTmp[it.unidadeTmp] = porUnidadeTmp[it.unidadeTmp]||[]).push(it);
+        else pav.ambientes.push(montarAmbiente(it));
+      });
+      if(!pav.unidades) pav.unidades = [];
+      Object.keys(porUnidadeTmp).forEach(grupoId=>{
+        pav.unidades.push({ id:uid(), nome:gruposUnidadeTmp[grupoId], ambientes: porUnidadeTmp[grupoId].map(montarAmbiente) });
+      });
+    }
+
+    saveDB(db); closeModal(); render();
+  };
+}
+
+// ---------- MODAL genérico ----------
+function openModal(innerHtml){
+  closeModal();
+  const bg = document.createElement("div");
+  bg.className="modal-bg"; bg.id="modal-bg";
+  bg.onclick=(e)=>{ if(e.target===bg) closeModal(); };
+  const modal = document.createElement("div");
+  modal.className="modal";
+  modal.innerHTML = innerHtml;
+  bg.appendChild(modal);
+  document.body.appendChild(bg);
+}
+function closeModal(){
+  const bg = document.getElementById("modal-bg");
+  if(bg) bg.remove();
+}
+
+// ---------- BACKUP / RESTAURAÇÃO DOS DADOS ----------
+function exportarBackup(){
+  const dataStr = JSON.stringify(db, null, 2);
+  const blob = new Blob([dataStr], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  const dataFmt = new Date().toISOString().slice(0,10);
+  a.href = url; a.download = `fvs-obras-tergos-backup-${dataFmt}.json`;
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+}
+
+function restaurarBackup(){
+  const input = document.createElement("input");
+  input.type="file"; input.accept="application/json,.json";
+  input.onchange=()=>{
+    const file = input.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload=(e)=>{
+      let novoDb;
+      try{ novoDb = JSON.parse(e.target.result); }
+      catch(err){ return alert("Arquivo inválido. Selecione um backup .json exportado por este sistema."); }
+      if(!novoDb || !Array.isArray(novoDb.obras)){
+        return alert("Arquivo inválido. Selecione um backup .json exportado por este sistema.");
+      }
+      if(db.obras.length && !confirm(`Restaurar este backup vai SUBSTITUIR os dados atuais (${db.obras.length} obra(s) cadastrada(s) agora). Deseja continuar?`)){
+        return;
+      }
+      db = novoDb;
+      saveDB(db);
+      render();
+      alert("Backup restaurado com sucesso.");
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+// ---------- EXPORTAÇÃO DE RELATÓRIOS EM PDF (via impressão do navegador) ----------
+const STATUS_LABEL = { ok:"Conforme", nc:"Não Conforme", parcial:"Parcialmente Conforme", na:"N/A", pend:"Pendente" };
+
+function dataHoraAtual(){
+  return new Date().toLocaleString("pt-BR");
+}
+
+function imprimirRelatorio(html){
+  const area = document.getElementById("print-area");
+  area.innerHTML = html;
+  window.print();
+}
+
+function exportarRelatorioAmbiente(obra, pav, amb, unid){
+  let html = `
+    <div class="rel-header">
+      <h1>Ficha de Vistoria — ${escapeHtml(obra.nome)}</h1>
+      <div class="meta">Pavimento: ${escapeHtml(pav.nome)}${unid?` · Unidade: ${escapeHtml(unid.nome)}`:""} · Ambiente: ${escapeHtml(amb.nome)}<br>Gerado em: ${dataHoraAtual()}</div>
+    </div>`;
+
+  amb.fvsList.forEach(fvsInst=>{
+    html += `<div class="rel-fvs-bloco">
+      <h2>${escapeHtml(fvsInst.codigo)} / ${escapeHtml(fvsInst.nome)} — Rev.: ${escapeHtml(fvsInst.rev)}</h2>
+      <div class="rel-normas"><b>Normas de referência:</b> ${fvsInst.normas.map(escapeHtml).join(" · ")}</div>`;
+    fvsInst.itens.forEach((item, idx)=>{
+      const st = item.status || "pend";
+      html += `<div class="rel-item">
+        ${idx+1}. ${escapeHtml(item.texto)}
+        <span class="rel-status ${st}">${STATUS_LABEL[st]}</span>
+        ${item.obs? `<div class="rel-obs"><b>Obs.:</b> ${escapeHtml(item.obs)}</div>` : ""}
+        ${item.foto? `<img class="rel-foto" src="${item.foto}">` : ""}
+      </div>`;
+    });
+    html += `</div>`;
+  });
+
+  html += `<div class="meta" style="margin-top:30px;">Responsável técnico: _______________________________ &nbsp;&nbsp; Data: ___/___/______</div>`;
+  imprimirRelatorio(html);
+}
+
+function exportarRelatorioObra(obra){
+  const totalItens = todosAmbientesDaObra(obra).flatMap(a=>a.fvsList).flatMap(f=>f.itens);
+  const prog = calcProgresso(totalItens);
+  const nc = totalItens.filter(i=>i.status==="nc").length;
+  const okC = totalItens.filter(i=>i.status==="ok").length;
+  const pendC = totalItens.filter(i=>!i.status || i.status==="pend").length;
+
+  let html = `
+    <div class="rel-header">
+      <h1>Relatório de Progresso — ${escapeHtml(obra.nome)}</h1>
+      <div class="meta">${obra.endereco? escapeHtml(obra.endereco)+"<br>":""}Gerado em: ${dataHoraAtual()}</div>
+    </div>
+    <div class="rel-resumo-cards">
+      <div><span class="n">${okC}</span>Conformes</div>
+      <div><span class="n">${nc}</span>Não conf.</div>
+      <div><span class="n">${pendC}</span>Pendentes</div>
+      <div><span class="n">${prog}%</span>Progresso geral</div>
+    </div>
+    <table class="rel-table">
+      <tr><th>Pavimento</th><th>Unidade</th><th>Ambiente</th><th>Serviços (FVS)</th><th>Progresso</th><th>Não conf.</th></tr>`;
+
+  obra.pavimentos.forEach(pav=>{
+    if(!pav.unidades) pav.unidades = [];
+    const linhas = pav.ambientes.map(amb=>({unidade:"—", amb}))
+      .concat(pav.unidades.flatMap(unid=>unid.ambientes.map(amb=>({unidade:unid.nome, amb}))));
+    if(!linhas.length){
+      html += `<tr><td>${escapeHtml(pav.nome)}</td><td colspan="5">Nenhum ambiente cadastrado</td></tr>`;
+      return;
+    }
+    linhas.forEach(({unidade, amb})=>{
+      const p = calcProgressoFvsList(amb.fvsList);
+      const ncA = contarNC(amb.fvsList);
+      html += `<tr>
+        <td>${escapeHtml(pav.nome)}</td>
+        <td>${escapeHtml(unidade)}</td>
+        <td>${escapeHtml(amb.nome)}</td>
+        <td>${amb.fvsList.map(f=>escapeHtml(f.codigo)).join(", ") || "—"}</td>
+        <td>${p}%</td>
+        <td>${ncA || "—"}</td>
+      </tr>`;
+    });
+  });
+
+  html += `</table>`;
+
+  const itensNC = [];
+  obra.pavimentos.forEach(pav=>todosAmbientesDoPavimento(pav).forEach(amb=>amb.fvsList.forEach(fvsInst=>{
+    fvsInst.itens.forEach((item,idx)=>{
+      if(itemPrecisaReinspecao(item)) itensNC.push({pav:pav.nome, amb:amb.nome, fvs:fvsInst.codigo, texto:item.texto, obs:item.obs, status:item.status, idx});
+    });
+  })));
+  if(itensNC.length){
+    html += `<h2 style="font-size:15px;margin-top:20px;">Não conformidades e reinspeções pendentes</h2>`;
+    itensNC.forEach(it=>{
+      html += `<div class="rel-item">
+        <b>${escapeHtml(it.pav)} · ${escapeHtml(it.amb)} · ${escapeHtml(it.fvs)}</b>
+        <span class="rel-status ${it.status}">${STATUS_LABEL[it.status]}</span><br>
+        ${it.idx+1}. ${escapeHtml(it.texto)}
+        ${it.obs? `<div class="rel-obs"><b>Obs.:</b> ${escapeHtml(it.obs)}</div>` : ""}
+      </div>`;
+    });
+  }
+
+  imprimirRelatorio(html);
+}
+
+function exportarRelatorioFornecedor(obra, forn, itensNC){
+  let html = `
+    <div class="rel-header">
+      <h1>Relatório de Não Conformidades — ${escapeHtml(forn.nome)}</h1>
+      <div class="meta">Obra: ${escapeHtml(obra.nome)}${forn.telefone?` · Tel.: ${escapeHtml(forn.telefone)}`:""}<br>Gerado em: ${dataHoraAtual()}</div>
+    </div>`;
+
+  itensNC.forEach(t=>{
+    html += `<div class="rel-item">
+      <b>${escapeHtml(t.pav.nome)}${t.unid?` · ${escapeHtml(t.unid.nome)}`:""} · ${escapeHtml(t.amb.nome)} · ${escapeHtml(t.fvsInst.codigo)} / ${escapeHtml(t.fvsInst.nome)}</b>
+      <span class="rel-status ${t.item.status}">${STATUS_LABEL[t.item.status]}</span><br>
+      ${t.idx+1}. ${escapeHtml(t.item.texto)}
+      ${t.item.obs? `<div class="rel-obs"><b>Obs.:</b> ${escapeHtml(t.item.obs)}</div>` : ""}
+      ${t.item.foto? `<img class="rel-foto" src="${t.item.foto}">` : ""}
+    </div>`;
+  });
+
+  html += `<div class="meta" style="margin-top:30px;">Ciente do responsável: _______________________________ &nbsp;&nbsp; Data: ___/___/______</div>`;
+  imprimirRelatorio(html);
+}
+
+function escapeHtml(str){
+  if(str==null) return "";
+  return String(str).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+render();
+</script>
+</body>
+</html>
