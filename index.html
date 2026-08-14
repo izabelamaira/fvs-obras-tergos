@@ -1581,12 +1581,28 @@ function parseSufixosElementos(texto){
   return (texto||"").split(/[,\n]/).map(s=>s.trim()).filter(Boolean);
 }
 
+// Nome base sugerido -> FVS do catálogo já pré-marcada no passo seguinte (quando existir uma FVS
+// com o mesmo assunto). O nome base continua 100% livre — isso é só um atalho, não uma trava.
+const SUGESTOES_BASE_ELEMENTOS_NUMERADOS = [
+  { nome:"Estacas Hélice Contínua", fvs:["FVS-03|00"] },
+  { nome:"Blocos de Fundação e Cintas", fvs:["FVS-04|00"] },
+  { nome:"Bloco de Coroamento", fvs:[] },
+  { nome:"Tubulão", fvs:[] },
+  { nome:"Pilar", fvs:[] },
+  { nome:"Viga", fvs:[] }
+];
+
 function promptElementosNumerados(pav){
+  let fvsPreSelecionadas = [];
   openModal(`
     <h2>Criar elementos numerados</h2>
-    <p style="font-size:13px;color:var(--muted);">Para elementos individuais como tubulões ou blocos de coroamento, onde cada um precisa do seu próprio checklist (ex: "Tubulão T1", "Tubulão T2"...).</p>
-    <label>Nome base</label>
-    <input id="m-base" placeholder="Ex: Tubulão, Bloco de Coroamento">
+    <p style="font-size:13px;color:var(--muted);">Para elementos individuais — de qualquer tipo — onde cada um precisa do seu próprio checklist (ex: "Estacas Hélice Contínua E1", "E2"... ou "Tubulão T1", "T2"...).</p>
+    <label>Sugestões de nome base (opcional, pode digitar qualquer outro)</label>
+    <div class="import-chips" id="m-chips-base" style="margin-top:6px;">
+      ${SUGESTOES_BASE_ELEMENTOS_NUMERADOS.map(s=>`<button type="button" class="import-chip" data-nome="${escapeHtml(s.nome)}">${escapeHtml(s.nome)}</button>`).join("")}
+    </div>
+    <label style="margin-top:16px;">Nome base</label>
+    <input id="m-base" placeholder="Ex: Tubulão, Bloco de Coroamento, Estacas Hélice Contínua...">
     <label>Sufixos (separados por vírgula ou uma linha por sufixo)</label>
     <textarea id="m-sufixos" placeholder="Ex: T1, T2, T3, T7A, T7B, T18" style="min-height:80px;"></textarea>
     <div id="m-preview" style="font-size:12px;color:var(--muted);margin-top:8px;"></div>
@@ -1595,6 +1611,15 @@ function promptElementosNumerados(pav){
   const baseInput = document.getElementById("m-base");
   const sufixosInput = document.getElementById("m-sufixos");
   const preview = document.getElementById("m-preview");
+  document.querySelectorAll("#m-chips-base .import-chip").forEach(chip=>{
+    chip.onclick=()=>{
+      baseInput.value = chip.dataset.nome;
+      const sugestao = SUGESTOES_BASE_ELEMENTOS_NUMERADOS.find(s=>s.nome===chip.dataset.nome);
+      fvsPreSelecionadas = sugestao ? sugestao.fvs : [];
+      document.querySelectorAll("#m-chips-base .import-chip").forEach(c=>c.classList.toggle("on", c===chip));
+      atualizarPreview();
+    };
+  });
   function atualizarPreview(){
     const base = baseInput.value.trim();
     const sufixos = parseSufixosElementos(sufixosInput.value);
@@ -1602,19 +1627,23 @@ function promptElementosNumerados(pav){
     const nomes = sufixos.map(s=>`${base} ${s}`);
     preview.textContent = `${nomes.length} elemento(s): ` + nomes.slice(0,6).join(", ") + (nomes.length>6?"...":"");
   }
-  baseInput.oninput = atualizarPreview;
+  baseInput.oninput = ()=>{
+    document.querySelectorAll("#m-chips-base .import-chip").forEach(c=>c.classList.toggle("on", c.dataset.nome===baseInput.value.trim()));
+    if(!SUGESTOES_BASE_ELEMENTOS_NUMERADOS.some(s=>s.nome===baseInput.value.trim())) fvsPreSelecionadas = [];
+    atualizarPreview();
+  };
   sufixosInput.oninput = atualizarPreview;
   document.getElementById("m-avancar").onclick=()=>{
     const base = baseInput.value.trim();
     const sufixos = parseSufixosElementos(sufixosInput.value);
     if(!base) return alert("Digite o nome base.");
     if(!sufixos.length) return alert("Digite ao menos um sufixo.");
-    abrirEscolhaFvsElementosNumerados(pav, sufixos.map(s=>`${base} ${s}`));
+    abrirEscolhaFvsElementosNumerados(pav, sufixos.map(s=>`${base} ${s}`), fvsPreSelecionadas);
   };
 }
 
-function abrirEscolhaFvsElementosNumerados(pav, nomes){
-  const selecionados = new Set();
+function abrirEscolhaFvsElementosNumerados(pav, nomes, preSelecionadas){
+  const selecionados = new Set(preSelecionadas||[]);
   let html = `<h2>Aplicar FVS aos ${nomes.length} elementos</h2>
     <p style="font-size:13px;color:var(--muted);">Escolha o(s) serviço(s) que já vão ser aplicados a cada um dos elementos criados. Pode pular e adicionar depois, um por um.</p>
     <input class="search-box" id="m-busca" placeholder="Buscar por código ou nome...">
