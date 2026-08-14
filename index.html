@@ -560,6 +560,49 @@ function hexToRgb01(hex){
   return [((n>>16)&255)/255, ((n>>8)&255)/255, (n&255)/255];
 }
 
+// Mesma lógica de corPavimentoIFC, mas por FVS aplicada (em vez de por pavimento inteiro).
+function categoriaFVS(fvsInst){
+  if(fvsInst.itens.some(i=>i.status==="nc")) return "nc";
+  if(calcProgresso(fvsInst.itens)>=100) return "completo";
+  return "andamento";
+}
+
+function abrirListaPorCategoria3D(obra, pareamento, categoria, labelCategoria){
+  const idsPareados = new Set(pareamento.filter(st=>st.pavimentoId).map(st=>st.pavimentoId));
+  const todasComContexto = todasFvsComContexto(obra).filter(t=>idsPareados.has(t.pav.id));
+
+  if(categoria==="sem_dado"){
+    const pavIdsComFvs = new Set(todasComContexto.map(t=>t.pav.id));
+    const nomes = [];
+    obra.pavimentos.forEach(p=>{ if(idsPareados.has(p.id) && !pavIdsComFvs.has(p.id)) nomes.push(p.nome); });
+    pareamento.forEach(st=>{ if(!st.pavimentoId) nomes.push(st.nome+" (não pareado com nenhum pavimento cadastrado)"); });
+    const corpo = nomes.length
+      ? `<div class="empty" style="padding:10px;text-align:left;">${nomes.map(n=>`• ${escapeHtml(n)}`).join("<br>")}</div>`
+      : `<div class="empty">Nenhum pavimento nessa categoria.</div>`;
+    openModal(`<h2>${escapeHtml(labelCategoria)}</h2>${corpo}`);
+    return;
+  }
+
+  const filtradas = todasComContexto.filter(t=>categoriaFVS(t.fvsInst)===categoria);
+  openModal(`<h2>${escapeHtml(labelCategoria)}</h2><div class="ifc-cat-lista">${filtradas.length?"":'<div class="empty">Nenhuma FVS nessa categoria.</div>'}</div>`);
+  const lista = document.querySelector(".ifc-cat-lista");
+  filtradas.forEach(t=>{
+    const p = calcProgresso(t.fvsInst.itens);
+    const ncF = t.fvsInst.itens.filter(i=>i.status==="nc").length;
+    const div = document.createElement("div");
+    div.className="list-item";
+    div.onclick=()=>{ closeModal(); abrirChecklist(obra, t.pav, t.amb, t.fvsInst); };
+    div.innerHTML = `
+      <div class="icon">${icon('clipboard')}</div>
+      <div class="info">
+        <div class="title">${escapeHtml(t.fvsInst.codigo)} / ${escapeHtml(t.fvsInst.nome)}</div>
+        <div class="sub">${escapeHtml(t.pav.nome)}${t.unid?` · ${escapeHtml(t.unid.nome)}`:""} · ${escapeHtml(t.amb.nome)} · ${p}%${ncF?` · ${ncF} NC`:""}</div>
+      </div>
+      <div class="chevron">${icon('chevron')}</div>`;
+    lista.appendChild(div);
+  });
+}
+
 function cardModelo3D(obra){
   const card = document.createElement("div");
   card.className="chart-card";
@@ -690,11 +733,11 @@ function renderizarCena3D(body, obra, pareamento, elementoParaStorey, ifcAPI, mo
 
   body.innerHTML = `
     <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
-      <div class="chart-legend" style="margin-top:0;">
-        <div class="lg"><span class="dot" style="background:#16a34a"></span>Completo</div>
-        <div class="lg"><span class="dot" style="background:#d97706"></span>Em andamento</div>
-        <div class="lg"><span class="dot" style="background:#dc2626"></span>Com NC</div>
-        <div class="lg"><span class="dot" style="background:#bfbfc4"></span>Sem dado</div>
+      <div class="chart-legend ifc-legend" style="margin-top:0;">
+        <div class="lg" data-cat="completo" style="cursor:pointer;"><span class="dot" style="background:#16a34a"></span>Completo</div>
+        <div class="lg" data-cat="andamento" style="cursor:pointer;"><span class="dot" style="background:#d97706"></span>Em andamento</div>
+        <div class="lg" data-cat="nc" style="cursor:pointer;"><span class="dot" style="background:#dc2626"></span>Com NC</div>
+        <div class="lg" data-cat="sem_dado" style="cursor:pointer;"><span class="dot" style="background:#bfbfc4"></span>Sem dado</div>
       </div>
       <button class="btn ifc-trocar" style="width:auto;margin:0;padding:6px 10px;font-size:12px;border:1px solid var(--border);background:none;color:var(--text);">Trocar modelo</button>
     </div>
@@ -705,6 +748,10 @@ function renderizarCena3D(body, obra, pareamento, elementoParaStorey, ifcAPI, mo
     limparIfcBytes(obra.id);
     renderPromptImportarIFC(body, obra);
   };
+  const LABELS_CATEGORIA_3D = {completo:"Completo", andamento:"Em andamento", nc:"Com NC", sem_dado:"Sem dado"};
+  body.querySelectorAll(".ifc-legend .lg").forEach(el=>{
+    el.onclick=()=>abrirListaPorCategoria3D(obra, pareamento, el.dataset.cat, LABELS_CATEGORIA_3D[el.dataset.cat]);
+  });
 
   const wrap = body.querySelector(".ifc-canvas-wrap");
   const w = wrap.clientWidth || 300, h = wrap.clientHeight || 340;
