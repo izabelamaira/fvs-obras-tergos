@@ -15,7 +15,7 @@
     --pend:#d97706; --pend-bg:#fef3e2;
     --parcial:#0891b2; --parcial-bg:#e0f4f8;
     --chart-good:#0ca30c; --chart-warning:#fab219; --chart-critical:#d03b3b;
-    --chart-seq:#2a78d6; --chart-seq-light:#cde2fb;
+    --chart-seq:#38384a; --chart-seq-light:#dfdee6;
     --chart-grid:#e1e0d9; --chart-muted:#898781;
     --accent-tint:rgba(229,115,110,.10);
   }
@@ -23,7 +23,7 @@
     :root{ --bg:#1f1e2b; --card:#28273a; --text:#ebe3d1; --muted:#a19fa8; --border:#3c3b4f;
       --primary:#4a4a60; --primary-dark:#5c5c78;
       --ok-bg:#0f2a1a; --nc-bg:#301412; --na-bg:#20242a; --pend-bg:#332107; --parcial-bg:#0d3540;
-      --chart-seq:#3987e5; --chart-seq-light:#184f95;
+      --chart-seq:#9a9ab5; --chart-seq-light:#3a3950;
       --chart-grid:#2c2c2a; --chart-muted:#898781;
       --accent-tint:rgba(229,115,110,.18); }
   }
@@ -161,11 +161,11 @@
   .chart-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;font-size:12.5px;color:var(--text);}
   .chart-legend .lg{display:flex;align-items:center;gap:6px;}
   .chart-legend .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
-  .bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
-  .bar-row .lbl{width:84px;flex-shrink:0;font-size:12.5px;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .bar-row .track{flex:1;height:16px;border-radius:4px;background:var(--chart-seq-light);overflow:hidden;}
+  .bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+  .bar-row .lbl{width:150px;flex-shrink:0;font-size:12px;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .bar-row .track{flex:1;height:14px;border-radius:4px;background:var(--chart-seq-light);overflow:hidden;}
   .bar-row .fill{height:100%;background:var(--chart-seq);border-radius:4px;}
-  .bar-row .val{width:38px;flex-shrink:0;text-align:right;font-size:12.5px;font-weight:600;color:var(--text);font-variant-numeric:tabular-nums;}
+  .bar-row .val{width:36px;flex-shrink:0;text-align:right;font-size:12.5px;font-weight:600;color:var(--text);font-variant-numeric:tabular-nums;}
 
   .import-item{border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:8px;}
   .import-item .linha1{display:flex;align-items:center;gap:8px;}
@@ -466,13 +466,16 @@ function graficoBarrasPavimentos(obra){
   const h3 = document.createElement("h3"); h3.textContent="Progresso por pavimento";
   card.appendChild(h3);
 
-  obra.pavimentos.forEach(pav=>{
+  const linhas = obra.pavimentos.map(pav=>{
     const itens = todosAmbientesDoPavimento(pav).flatMap(a=>a.fvsList).flatMap(f=>f.itens);
-    const p = calcProgresso(itens);
+    return { nome: pav.nome, p: calcProgresso(itens) };
+  }).sort((a,b)=>b.p-a.p);
+
+  linhas.forEach(({nome, p})=>{
     const row = document.createElement("div");
     row.className="bar-row";
     row.innerHTML = `
-      <div class="lbl" title="${escapeHtml(pav.nome)}">${escapeHtml(pav.nome)}</div>
+      <div class="lbl" title="${escapeHtml(nome)}">${escapeHtml(nome)}</div>
       <div class="track"><div class="fill" style="width:${p}%"></div></div>
       <div class="val">${p}%</div>`;
     card.appendChild(row);
