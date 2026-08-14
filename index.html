@@ -36,7 +36,7 @@
   header.top h1{font-size:17px;margin:0;font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   header.top.logo-header{background:var(--card);border-bottom:1px solid var(--border);}
   header.top.logo-header button.back{color:var(--text);}
-  header.top.logo-header .logo-img{height:30px;flex:1;object-fit:contain;object-position:left center;}
+  header.top.logo-header .logo-img{height:46px;flex-shrink:0;object-fit:contain;}
   main{padding:14px;}
   .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:10px;}
   .list-item{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:8px;cursor:pointer;transition:background .1s;}
@@ -1015,13 +1015,17 @@ function renderObras(app){
   btnRestaurar.onclick=(e)=>{ e.stopPropagation(); restaurarBackup(); };
 
   const acoesWrap = document.createElement("div");
-  acoesWrap.style.display="flex";
+  acoesWrap.style.cssText = "display:flex;flex:1;justify-content:flex-end;";
   acoesWrap.appendChild(btnBackup); acoesWrap.appendChild(btnRestaurar);
+
+  const espacador = document.createElement("div");
+  espacador.style.flex = "1";
 
   const h = document.createElement("header");
   h.className="top logo-header";
   const logo = document.createElement("img");
   logo.className="logo-img"; logo.src="assets/logo-tergos-horizontal.webp"; logo.alt="Tergos Construtora Incorporadora";
+  h.appendChild(espacador);
   h.appendChild(logo);
   h.appendChild(acoesWrap);
   app.appendChild(h);
