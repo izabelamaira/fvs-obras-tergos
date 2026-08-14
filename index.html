@@ -154,13 +154,13 @@
   .rel-resumo-cards div{flex:1;border:1px solid #ccc;border-radius:6px;padding:10px;text-align:center;}
   .rel-resumo-cards .n{font-size:20px;font-weight:700;display:block;}
 
-  .chart-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:10px;}
-  .charts-row{display:flex;gap:10px;flex-wrap:wrap;}
-  .charts-row .chart-card{flex:1;min-width:230px;margin-bottom:10px;}
-  .chart-card h3{margin:0 0 12px 0;font-size:13.5px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.02em;}
-  .chart-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;font-size:12.5px;color:var(--text);}
-  .chart-legend .lg{display:flex;align-items:center;gap:6px;}
-  .chart-legend .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+  .chart-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:10px;}
+  .charts-row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-start;}
+  .charts-row .chart-card{flex:1;min-width:210px;margin-bottom:10px;}
+  .chart-card h3{margin:0 0 8px 0;font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.02em;}
+  .chart-legend{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;font-size:11px;color:var(--text);}
+  .chart-legend .lg{display:flex;align-items:center;gap:5px;}
+  .chart-legend .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
   .bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
   .bar-row .lbl{width:150px;flex-shrink:0;font-size:12px;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .bar-row .track{flex:1;height:14px;border-radius:4px;background:var(--chart-seq-light);overflow:hidden;}
@@ -415,9 +415,9 @@ function graficoRosca(okC, nc, pendC){
   }
 
   const wrap = document.createElement("div");
-  wrap.style.display="flex"; wrap.style.alignItems="center"; wrap.style.gap="20px"; wrap.style.flexWrap="wrap";
+  wrap.style.display="flex"; wrap.style.alignItems="center"; wrap.style.gap="12px"; wrap.style.flexWrap="wrap";
 
-  const size=140, r=52, cx=size/2, cy=size/2, strokeW=22;
+  const size=96, r=34, cx=size/2, cy=size/2, strokeW=14;
   const circunf = 2*Math.PI*r;
   const fatias = [
     {v:okC, cor:"var(--chart-good)", label:"Conforme"},
@@ -446,10 +446,10 @@ function graficoRosca(okC, nc, pendC){
     acumulado += frac;
   });
 
-  const centroTxt = svgEl("text", {x:cx, y:cy-2, "text-anchor":"middle", "font-size":"22", "font-weight":"700", fill:"var(--text)"});
+  const centroTxt = svgEl("text", {x:cx, y:cy-1, "text-anchor":"middle", "font-size":"15", "font-weight":"700", fill:"var(--text)"});
   centroTxt.textContent = Math.round((okC/total)*100)+"%";
   svg.appendChild(centroTxt);
-  const centroLbl = svgEl("text", {x:cx, y:cy+15, "text-anchor":"middle", "font-size":"9.5", fill:"var(--chart-muted)"});
+  const centroLbl = svgEl("text", {x:cx, y:cy+11, "text-anchor":"middle", "font-size":"7.5", fill:"var(--chart-muted)"});
   centroLbl.textContent = "conforme";
   svg.appendChild(centroLbl);
 
@@ -458,7 +458,7 @@ function graficoRosca(okC, nc, pendC){
   const legend = document.createElement("div");
   legend.className="chart-legend";
   legend.style.flexDirection="column";
-  legend.style.gap="8px";
+  legend.style.gap="5px";
   [{v:okC,cor:"var(--chart-good)",label:"Conforme"},{v:nc,cor:"var(--chart-critical)",label:"Não conforme"},{v:pendC,cor:"var(--chart-warning)",label:"Pendente"}].forEach(f=>{
     const lg = document.createElement("div"); lg.className="lg";
     lg.innerHTML = `<span class="dot" style="background:${f.cor}"></span>${f.label}: <b>${f.v}</b> (${total?Math.round(f.v/total*100):0}%)`;
@@ -838,9 +838,9 @@ function graficoAprovacoes(obra){
   const aAprovar = completas.length - aprovadas;
 
   const wrap = document.createElement("div");
-  wrap.style.display="flex"; wrap.style.alignItems="center"; wrap.style.gap="20px"; wrap.style.flexWrap="wrap";
+  wrap.style.display="flex"; wrap.style.alignItems="center"; wrap.style.gap="12px"; wrap.style.flexWrap="wrap";
 
-  const size=140, r=52, cx=size/2, cy=size/2, strokeW=22;
+  const size=96, r=34, cx=size/2, cy=size/2, strokeW=14;
   const circunf = 2*Math.PI*r;
   const fatias = [
     {v:aprovadas, cor:"var(--chart-good)"},
@@ -868,19 +868,19 @@ function graficoAprovacoes(obra){
     acumulado += frac;
   });
 
-  const centroTxt = svgEl("text", {x:cx, y:cy-2, "text-anchor":"middle", "font-size":"22", "font-weight":"700", fill:"var(--text)"});
+  const centroTxt = svgEl("text", {x:cx, y:cy-1, "text-anchor":"middle", "font-size":"15", "font-weight":"700", fill:"var(--text)"});
   centroTxt.textContent = Math.round((aprovadas/completas.length)*100)+"%";
   svg.appendChild(centroTxt);
-  const centroLbl = svgEl("text", {x:cx, y:cy+15, "text-anchor":"middle", "font-size":"9.5", fill:"var(--chart-muted)"});
+  const centroLbl = svgEl("text", {x:cx, y:cy+11, "text-anchor":"middle", "font-size":"7.5", fill:"var(--chart-muted)"});
   centroLbl.textContent = "aprovadas";
   svg.appendChild(centroLbl);
   wrap.appendChild(svg);
 
   const tabela = document.createElement("table");
-  tabela.style.cssText = "border-collapse:collapse;font-size:13px;";
+  tabela.style.cssText = "border-collapse:collapse;font-size:11.5px;";
   tabela.innerHTML = `
-    <tr><td style="padding:5px 14px 5px 0;color:var(--muted);">FVS's Aprovadas</td><td style="padding:5px 0;font-weight:700;text-align:right;">${aprovadas}</td></tr>
-    <tr><td style="padding:5px 14px 5px 0;color:var(--muted);">FVS's à aprovar</td><td style="padding:5px 0;font-weight:700;text-align:right;">${aAprovar}</td></tr>`;
+    <tr><td style="padding:3px 10px 3px 0;color:var(--muted);">FVS's Aprovadas</td><td style="padding:3px 0;font-weight:700;text-align:right;">${aprovadas}</td></tr>
+    <tr><td style="padding:3px 10px 3px 0;color:var(--muted);">FVS's à aprovar</td><td style="padding:3px 0;font-weight:700;text-align:right;">${aAprovar}</td></tr>`;
   wrap.appendChild(tabela);
 
   card.appendChild(wrap);
@@ -913,8 +913,8 @@ function painelReinspecoes(obra){
   row.style.cssText = "display:flex;gap:8px;flex-wrap:wrap;";
   [["Vencidas",vencidas,"var(--chart-critical)"],["Agendadas",agendadas,"var(--chart-good)"],["Não agendadas",naoAgendadas,"var(--chart-muted)"]].forEach(([lbl,n,cor])=>{
     const box = document.createElement("div");
-    box.style.cssText = `flex:1;min-width:90px;border:1px solid ${cor};border-radius:10px;padding:10px;text-align:center;`;
-    box.innerHTML = `<div style="font-size:11px;font-weight:700;color:${cor};text-transform:uppercase;letter-spacing:.02em;margin-bottom:6px;">${lbl}</div><div style="font-size:20px;font-weight:700;">${n}</div>`;
+    box.style.cssText = `flex:1;min-width:80px;border:1px solid ${cor};border-radius:8px;padding:7px;text-align:center;`;
+    box.innerHTML = `<div style="font-size:9.5px;font-weight:700;color:${cor};text-transform:uppercase;letter-spacing:.02em;margin-bottom:4px;">${lbl}</div><div style="font-size:16px;font-weight:700;">${n}</div>`;
     row.appendChild(box);
   });
   card.appendChild(row);
