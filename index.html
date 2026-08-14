@@ -183,6 +183,15 @@
   .import-subtitulo{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.02em;margin:10px 0 6px;}
   .import-select-unid{width:auto;margin-top:0;font-size:12px;padding:4px 6px;flex-shrink:0;}
 </style>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/",
+    "web-ifc": "https://cdn.jsdelivr.net/npm/web-ifc@0.0.77/web-ifc-api.js"
+  }
+}
+</script>
 </head>
 <body>
 <div id="app"></div>
@@ -460,27 +469,317 @@ function graficoRosca(okC, nc, pendC){
   return card;
 }
 
-function graficoBarrasPavimentos(obra){
+// ---------- MODELO 3D (IFC) — progresso da obra sobre a estrutura real ----------
+const CDN_THREE_VERSION = "0.170.0";
+const CDN_WEBIFC_VERSION = "0.0.77";
+let _ifcLibsPromise = null;
+function carregarLibsIFC(){
+  if(_ifcLibsPromise) return _ifcLibsPromise;
+  _ifcLibsPromise = Promise.all([
+    import("three"),
+    import("three/addons/controls/OrbitControls.js"),
+    import("three/addons/utils/BufferGeometryUtils.js"),
+    import("web-ifc")
+  ]).then(([THREE, OrbitControlsMod, BufferGeometryUtils, WebIFC])=>({
+    THREE, OrbitControls: OrbitControlsMod.OrbitControls, BufferGeometryUtils, WebIFC
+  })).catch(err=>{ _ifcLibsPromise = null; throw err; });
+  return _ifcLibsPromise;
+}
+
+const IFC_DB_NAME = "qualitab_obra_ifc";
+const IFC_DB_STORE = "arquivos";
+function abrirIfcDB(){
+  return new Promise((resolve, reject)=>{
+    const req = indexedDB.open(IFC_DB_NAME, 1);
+    req.onupgradeneeded = ()=>{ req.result.createObjectStore(IFC_DB_STORE); };
+    req.onsuccess = ()=>resolve(req.result);
+    req.onerror = ()=>reject(req.error);
+  });
+}
+async function salvarIfcBytes(obraId, bytes){
+  const dbIfc = await abrirIfcDB();
+  return new Promise((resolve, reject)=>{
+    const tx = dbIfc.transaction(IFC_DB_STORE, "readwrite");
+    tx.objectStore(IFC_DB_STORE).put(bytes, obraId);
+    tx.oncomplete = ()=>resolve();
+    tx.onerror = ()=>reject(tx.error);
+  });
+}
+async function carregarIfcBytes(obraId){
+  const dbIfc = await abrirIfcDB();
+  return new Promise((resolve, reject)=>{
+    const tx = dbIfc.transaction(IFC_DB_STORE, "readonly");
+    const req = tx.objectStore(IFC_DB_STORE).get(obraId);
+    req.onsuccess = ()=>resolve(req.result || null);
+    req.onerror = ()=>reject(req.error);
+  });
+}
+async function limparIfcBytes(obraId){
+  const dbIfc = await abrirIfcDB();
+  return new Promise((resolve)=>{
+    const tx = dbIfc.transaction(IFC_DB_STORE, "readwrite");
+    tx.objectStore(IFC_DB_STORE).delete(obraId);
+    tx.oncomplete = ()=>resolve();
+  });
+}
+
+function normalizarParaComparacaoIFC(s){
+  const semAcento = (s||"").toUpperCase().normalize("NFD");
+  let out = "";
+  for(const ch of semAcento){
+    const code = ch.codePointAt(0);
+    if(code >= 0x300 && code <= 0x36f) continue; // remove marcas diacríticas
+    if(/[A-Z0-9]/.test(ch)) out += ch; // só letras/números, ignora espaços, º/°, barras etc.
+  }
+  return out;
+}
+function melhorPavimentoParaNome(obra, nomeIFC){
+  const alvo = normalizarParaComparacaoIFC(nomeIFC);
+  let melhor = null, melhorScore = 0;
+  obra.pavimentos.forEach(pav=>{
+    const cand = normalizarParaComparacaoIFC(pav.nome);
+    if(!cand || !alvo) return;
+    let score = 0;
+    if(alvo.includes(cand) || cand.includes(alvo)) score = Math.min(cand.length, alvo.length);
+    if(score > melhorScore){ melhorScore = score; melhor = pav; }
+  });
+  return melhorScore >= 3 ? melhor : null;
+}
+
+// Cor por pavimento, alinhada com os status já usados no resto do app.
+function corPavimentoIFC(pav){
+  if(!pav) return [0.75,0.75,0.76];
+  const itens = todosAmbientesDoPavimento(pav).flatMap(a=>a.fvsList).flatMap(f=>f.itens);
+  if(!itens.length) return [0.75,0.75,0.76];
+  if(itens.some(i=>i.status==="nc")) return hexToRgb01("#dc2626");
+  if(calcProgresso(itens)>=100) return hexToRgb01("#16a34a");
+  return hexToRgb01("#d97706");
+}
+function hexToRgb01(hex){
+  const n = parseInt(hex.slice(1),16);
+  return [((n>>16)&255)/255, ((n>>8)&255)/255, (n&255)/255];
+}
+
+function cardModelo3D(obra){
   const card = document.createElement("div");
   card.className="chart-card";
-  const h3 = document.createElement("h3"); h3.textContent="Progresso por pavimento";
+  const h3 = document.createElement("h3"); h3.textContent="Modelo 3D — progresso por pavimento";
   card.appendChild(h3);
+  const body = document.createElement("div");
+  card.appendChild(body);
 
-  const linhas = obra.pavimentos.map(pav=>{
-    const itens = todosAmbientesDoPavimento(pav).flatMap(a=>a.fvsList).flatMap(f=>f.itens);
-    return { nome: pav.nome, p: calcProgresso(itens) };
-  }).sort((a,b)=>b.p-a.p);
+  (async ()=>{
+    let bytes = null;
+    try{ bytes = await carregarIfcBytes(obra.id); }catch(e){}
+    if(bytes) renderVisualizador3D(body, obra, bytes);
+    else renderPromptImportarIFC(body, obra);
+  })();
 
-  linhas.forEach(({nome, p})=>{
-    const row = document.createElement("div");
-    row.className="bar-row";
-    row.innerHTML = `
-      <div class="lbl" title="${escapeHtml(nome)}">${escapeHtml(nome)}</div>
-      <div class="track"><div class="fill" style="width:${p}%"></div></div>
-      <div class="val">${p}%</div>`;
-    card.appendChild(row);
-  });
   return card;
+}
+
+function renderPromptImportarIFC(body, obra){
+  body.innerHTML = `
+    <p style="font-size:13px;color:var(--muted);margin:0 0 10px;">Importe o modelo 3D (arquivo .ifc) da obra para visualizar o progresso das verificações sobre a estrutura real do prédio.</p>
+    <input type="file" accept=".ifc">
+    <div class="ifc-status" style="font-size:12px;color:var(--muted);margin-top:8px;"></div>
+  `;
+  const input = body.querySelector('input[type="file"]');
+  const status = body.querySelector(".ifc-status");
+  input.onchange = async ()=>{
+    const file = input.files[0];
+    if(!file) return;
+    status.textContent = "Lendo arquivo...";
+    try{
+      const bytes = new Uint8Array(await file.arrayBuffer());
+      await salvarIfcBytes(obra.id, bytes);
+      renderVisualizador3D(body, obra, bytes);
+    }catch(e){
+      status.textContent = "Não consegui ler esse arquivo.";
+    }
+  };
+}
+
+async function renderVisualizador3D(body, obra, bytes){
+  body.innerHTML = `<div style="font-size:13px;color:var(--muted);padding:20px 0;text-align:center;">Carregando modelo 3D...</div>`;
+  let libs;
+  try{
+    libs = await carregarLibsIFC();
+  }catch(e){
+    body.innerHTML = `<div class="empty">Não consegui carregar as bibliotecas de visualização 3D (verifique sua internet).</div>`;
+    return;
+  }
+  const { WebIFC } = libs;
+  const ifcAPI = new WebIFC.IfcAPI();
+  ifcAPI.SetWasmPath(`https://cdn.jsdelivr.net/npm/web-ifc@${CDN_WEBIFC_VERSION}/`);
+  await ifcAPI.Init();
+
+  let modelID;
+  try{
+    modelID = ifcAPI.OpenModel(bytes, { COORDINATE_TO_ORIGIN: true });
+  }catch(e){
+    body.innerHTML = `<div class="empty">Não consegui interpretar esse arquivo IFC.</div>`;
+    return;
+  }
+
+  const storeyIDs = ifcAPI.GetLineIDsWithType(modelID, WebIFC.IFCBUILDINGSTOREY);
+  const storeys = [];
+  for(let i=0;i<storeyIDs.size();i++){
+    const id = storeyIDs.get(i);
+    const line = ifcAPI.GetLine(modelID, id);
+    storeys.push({ expressID:id, nome: (line.Name && line.Name.value) ? line.Name.value : ("Pavimento "+id) });
+  }
+
+  const elementoParaStorey = {};
+  const relIDs = ifcAPI.GetLineIDsWithType(modelID, WebIFC.IFCRELCONTAINEDINSPATIALSTRUCTURE);
+  for(let i=0;i<relIDs.size();i++){
+    const rel = ifcAPI.GetLine(modelID, relIDs.get(i));
+    const storeyID = rel.RelatingStructure && rel.RelatingStructure.value;
+    if(storeyID==null) continue;
+    (rel.RelatedElements||[]).forEach(item=>{ elementoParaStorey[item.value] = storeyID; });
+  }
+
+  const mapaSalvo = obra.ifcStoreyMap || null;
+  const pareamento = storeys.map(st=>{
+    if(mapaSalvo && mapaSalvo[st.nome] !== undefined) return { ...st, pavimentoId: mapaSalvo[st.nome] };
+    const auto = melhorPavimentoParaNome(obra, st.nome);
+    return { ...st, pavimentoId: auto ? auto.id : "" };
+  });
+
+  if(!mapaSalvo){
+    abrirRevisaoParesIFC(body, obra, storeys, pareamento, elementoParaStorey, ifcAPI, modelID, libs);
+    return;
+  }
+  renderizarCena3D(body, obra, pareamento, elementoParaStorey, ifcAPI, modelID, libs);
+}
+
+function abrirRevisaoParesIFC(body, obra, storeys, pareamento, elementoParaStorey, ifcAPI, modelID, libs){
+  const opcoesPav = obra.pavimentos.map(p=>`<option value="${p.id}">${escapeHtml(p.nome)}</option>`).join("");
+  body.innerHTML = `
+    <p style="font-size:13px;color:var(--muted);margin:0 0 10px;">Confira o pareamento entre os pavimentos do IFC e os pavimentos já cadastrados nesta obra:</p>
+    <div class="ifc-pares"></div>
+    <button class="btn primary" style="margin-top:10px;">Confirmar e visualizar</button>
+  `;
+  const paresDiv = body.querySelector(".ifc-pares");
+  paresDiv.innerHTML = pareamento.map((st,idx)=>`
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+      <div style="flex:1;font-size:12.5px;" title="${escapeHtml(st.nome)}">${escapeHtml(st.nome)}</div>
+      <select data-idx="${idx}" style="flex:1;margin-top:0;">
+        <option value="">— Ignorar —</option>
+        ${opcoesPav}
+      </select>
+    </div>`).join("");
+  paresDiv.querySelectorAll("select").forEach(sel=>{
+    const idx = parseInt(sel.dataset.idx);
+    sel.value = pareamento[idx].pavimentoId || "";
+    sel.onchange = ()=>{ pareamento[idx].pavimentoId = sel.value; };
+  });
+  body.querySelector(".btn.primary").onclick=()=>{
+    const mapa = {};
+    pareamento.forEach(st=>{ mapa[st.nome] = st.pavimentoId || ""; });
+    obra.ifcStoreyMap = mapa;
+    saveDB(db);
+    renderizarCena3D(body, obra, pareamento, elementoParaStorey, ifcAPI, modelID, libs);
+  };
+}
+
+function renderizarCena3D(body, obra, pareamento, elementoParaStorey, ifcAPI, modelID, libs){
+  const {THREE, OrbitControls, BufferGeometryUtils} = libs;
+  const storeyPorID = {};
+  pareamento.forEach(st=>{ storeyPorID[st.expressID] = st; });
+
+  body.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
+      <div class="chart-legend" style="margin-top:0;">
+        <div class="lg"><span class="dot" style="background:#16a34a"></span>Completo</div>
+        <div class="lg"><span class="dot" style="background:#d97706"></span>Em andamento</div>
+        <div class="lg"><span class="dot" style="background:#dc2626"></span>Com NC</div>
+        <div class="lg"><span class="dot" style="background:#bfbfc4"></span>Sem dado</div>
+      </div>
+      <button class="btn ifc-trocar" style="width:auto;margin:0;padding:6px 10px;font-size:12px;border:1px solid var(--border);background:none;color:var(--text);">Trocar modelo</button>
+    </div>
+    <div class="ifc-canvas-wrap" style="position:relative;width:100%;height:340px;border-radius:8px;overflow:hidden;background:#dfe0e6;"></div>
+  `;
+  body.querySelector(".ifc-trocar").onclick=()=>{
+    obra.ifcStoreyMap = null; saveDB(db);
+    limparIfcBytes(obra.id);
+    renderPromptImportarIFC(body, obra);
+  };
+
+  const wrap = body.querySelector(".ifc-canvas-wrap");
+  const w = wrap.clientWidth || 300, h = wrap.clientHeight || 340;
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0xdfe0e6);
+  const camera = new THREE.PerspectiveCamera(45, w/h, 0.1, 2000);
+  const renderer = new THREE.WebGLRenderer({antialias:true});
+  renderer.setSize(w,h);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+  wrap.appendChild(renderer.domElement);
+
+  scene.add(new THREE.AmbientLight(0xffffff, 0.9));
+  const dl = new THREE.DirectionalLight(0xffffff, 1.2);
+  dl.position.set(1,1,1);
+  scene.add(dl);
+
+  const geometrias = [];
+  ifcAPI.StreamAllMeshes(modelID, (flatMesh)=>{
+    const storeyID = elementoParaStorey[flatMesh.expressID];
+    const st = storeyID!=null ? storeyPorID[storeyID] : null;
+    const pav = st && st.pavimentoId ? getPav(obra, st.pavimentoId) : null;
+    const corRGB = corPavimentoIFC(pav);
+    const placedGeometries = flatMesh.geometries;
+    for(let i=0;i<placedGeometries.size();i++){
+      const pg = placedGeometries.get(i);
+      const geometry = ifcAPI.GetGeometry(modelID, pg.geometryExpressID);
+      const vertexData = ifcAPI.GetVertexArray(geometry.GetVertexData(), geometry.GetVertexDataSize());
+      const indexData = ifcAPI.GetIndexArray(geometry.GetIndexData(), geometry.GetIndexDataSize());
+      geometry.delete();
+      const vertexCount = vertexData.length/6;
+      const positions = new Float32Array(vertexCount*3);
+      const normals = new Float32Array(vertexCount*3);
+      const colors = new Float32Array(vertexCount*3);
+      for(let v=0; v<vertexCount; v++){
+        const src=v*6, d3=v*3;
+        positions[d3]=vertexData[src]; positions[d3+1]=vertexData[src+1]; positions[d3+2]=vertexData[src+2];
+        normals[d3]=vertexData[src+3]; normals[d3+1]=vertexData[src+4]; normals[d3+2]=vertexData[src+5];
+        colors[d3]=corRGB[0]; colors[d3+1]=corRGB[1]; colors[d3+2]=corRGB[2];
+      }
+      const buffGeo = new THREE.BufferGeometry();
+      buffGeo.setAttribute('position', new THREE.BufferAttribute(positions,3));
+      buffGeo.setAttribute('normal', new THREE.BufferAttribute(normals,3));
+      buffGeo.setAttribute('color', new THREE.BufferAttribute(colors,3));
+      buffGeo.setIndex(new THREE.BufferAttribute(indexData,1));
+      buffGeo.applyMatrix4(new THREE.Matrix4().fromArray(pg.flatTransformation));
+      geometrias.push(buffGeo);
+    }
+  });
+  ifcAPI.CloseModel(modelID);
+
+  if(!geometrias.length){
+    wrap.innerHTML = '<div class="empty" style="padding:60px 20px;">Nenhuma geometria encontrada nesse arquivo.</div>';
+    return;
+  }
+
+  const merged = BufferGeometryUtils.mergeGeometries(geometrias);
+  merged.computeBoundingSphere();
+  const mat = new THREE.MeshLambertMaterial({vertexColors:true, side:THREE.DoubleSide});
+  scene.add(new THREE.Mesh(merged, mat));
+
+  const sphere = merged.boundingSphere;
+  const dist = sphere.radius * 2.4;
+  camera.position.set(sphere.center.x+dist, sphere.center.y+dist*0.6, sphere.center.z+dist);
+  camera.lookAt(sphere.center);
+
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.target.copy(sphere.center);
+  controls.update();
+
+  (function animate(){
+    requestAnimationFrame(animate);
+    controls.update();
+    renderer.render(scene, camera);
+  })();
 }
 
 function graficoRankingFvsNC(obra){
@@ -819,7 +1118,7 @@ function renderObra(app){
   chartsRow.appendChild(painelReinspecoes(obra));
   main.appendChild(chartsRow);
 
-  if(obra.pavimentos.length) main.appendChild(graficoBarrasPavimentos(obra));
+  if(obra.pavimentos.length) main.appendChild(cardModelo3D(obra));
 
   const btnPdf = document.createElement("button");
   btnPdf.className="btn primary"; btnPdf.style.marginTop="0"; btnPdf.innerHTML=icon('document')+" Exportar relatório resumo (PDF)";
