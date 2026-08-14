@@ -1497,10 +1497,12 @@ function abrirMenuAdicionarPavimento(obra, pav){
   openModal(`
     <h2>Adicionar ao pavimento</h2>
     <button class="btn primary" id="m-amb">${icon('door')} Novo Ambiente (comum)</button>
+    <button class="btn primary" id="m-numerados">${icon('clipboard')} Criar elementos numerados</button>
     <button class="btn primary" id="m-unid">${icon('key')} Nova Unidade</button>
     <button class="btn primary" id="m-importar">${icon('ruler')} Importar planta (PDF/DXF)</button>
   `);
-  document.getElementById("m-amb").onclick=()=>{ closeModal(); promptNovoAmbiente(pav); };
+  document.getElementById("m-amb").onclick=()=>{ closeModal(); promptNovoAmbiente(pav, SUGESTOES_AMBIENTE_COMUM); };
+  document.getElementById("m-numerados").onclick=()=>{ closeModal(); promptElementosNumerados(pav); };
   document.getElementById("m-unid").onclick=()=>{ closeModal(); promptNovaUnidade(pav); };
   document.getElementById("m-importar").onclick=()=>{ closeModal(); abrirImportarPlanta(obra, pav, null); };
 }
@@ -1526,6 +1528,11 @@ const SUGESTOES_AMBIENTE_UNIDADE = [
   "Sala Estar / Jantar", "Lavabo", "Quintal/Terraço", "Cozinha", "Área de Serviço",
   "Despensa/Depósito", "Laje Técnica", "Jardineira", "Circulação", "Suíte Master",
   "Closet", "Banho Suíte Master", "Semi Suíte 1", "Semi Suíte 2", "Toucador", "Banho Semi Suíte"
+];
+
+const SUGESTOES_AMBIENTE_COMUM = [
+  "Estrutura", "Lajes e Vigas", "Pilares", "Escada", "Hall", "Fachada",
+  "Garagem", "Depósito", "Casa de Máquinas", "Reservatório", "Poço do Elevador"
 ];
 
 function promptNovoAmbiente(container, sugestoes){
@@ -1566,6 +1573,99 @@ function promptNovoAmbiente(container, sugestoes){
     nomes.forEach(nome=>container.ambientes.push({ id:uid(), nome, fvsList:[] }));
     saveDB(db); closeModal();
     render();
+  };
+}
+
+// ---------- CRIAR ELEMENTOS NUMERADOS (ex.: Tubulão T1..T18) ----------
+function parseSufixosElementos(texto){
+  return (texto||"").split(/[,\n]/).map(s=>s.trim()).filter(Boolean);
+}
+
+function promptElementosNumerados(pav){
+  openModal(`
+    <h2>Criar elementos numerados</h2>
+    <p style="font-size:13px;color:var(--muted);">Para elementos individuais como tubulões ou blocos de coroamento, onde cada um precisa do seu próprio checklist (ex: "Tubulão T1", "Tubulão T2"...).</p>
+    <label>Nome base</label>
+    <input id="m-base" placeholder="Ex: Tubulão, Bloco de Coroamento">
+    <label>Sufixos (separados por vírgula ou uma linha por sufixo)</label>
+    <textarea id="m-sufixos" placeholder="Ex: T1, T2, T3, T7A, T7B, T18" style="min-height:80px;"></textarea>
+    <div id="m-preview" style="font-size:12px;color:var(--muted);margin-top:8px;"></div>
+    <button class="btn primary" id="m-avancar">Avançar</button>
+  `);
+  const baseInput = document.getElementById("m-base");
+  const sufixosInput = document.getElementById("m-sufixos");
+  const preview = document.getElementById("m-preview");
+  function atualizarPreview(){
+    const base = baseInput.value.trim();
+    const sufixos = parseSufixosElementos(sufixosInput.value);
+    if(!base || !sufixos.length){ preview.textContent=""; return; }
+    const nomes = sufixos.map(s=>`${base} ${s}`);
+    preview.textContent = `${nomes.length} elemento(s): ` + nomes.slice(0,6).join(", ") + (nomes.length>6?"...":"");
+  }
+  baseInput.oninput = atualizarPreview;
+  sufixosInput.oninput = atualizarPreview;
+  document.getElementById("m-avancar").onclick=()=>{
+    const base = baseInput.value.trim();
+    const sufixos = parseSufixosElementos(sufixosInput.value);
+    if(!base) return alert("Digite o nome base.");
+    if(!sufixos.length) return alert("Digite ao menos um sufixo.");
+    abrirEscolhaFvsElementosNumerados(pav, sufixos.map(s=>`${base} ${s}`));
+  };
+}
+
+function abrirEscolhaFvsElementosNumerados(pav, nomes){
+  const selecionados = new Set();
+  let html = `<h2>Aplicar FVS aos ${nomes.length} elementos</h2>
+    <p style="font-size:13px;color:var(--muted);">Escolha o(s) serviço(s) que já vão ser aplicados a cada um dos elementos criados. Pode pular e adicionar depois, um por um.</p>
+    <input class="search-box" id="m-busca" placeholder="Buscar por código ou nome...">
+    <div id="m-lista"></div>
+    <div class="save-bar"><button class="btn primary" id="m-criar">Criar ${nomes.length} elemento(s)</button></div>`;
+  openModal(html);
+
+  function renderLista(filtro){
+    const lista = document.getElementById("m-lista");
+    if(!window.FVS_CATALOGO || !window.FVS_CATALOGO.length){
+      lista.innerHTML = `<div class="empty">Catálogo de FVS não carregado neste computador ainda.</div>`;
+      return;
+    }
+    const f = (filtro||"").toLowerCase();
+    const filtrados = FVS_CATALOGO.filter(fvs => fvs.codigo.toLowerCase().includes(f) || fvs.nome.toLowerCase().includes(f));
+    lista.innerHTML = filtrados.map((fvs)=>{
+      const key = fvs.codigo+"|"+fvs.rev;
+      const sel = selecionados.has(key);
+      return `<div class="list-item ${sel?'selecionado':''}" data-idx="${FVS_CATALOGO.indexOf(fvs)}">
+        <input type="checkbox" ${sel?'checked':''} style="width:18px;height:18px;flex-shrink:0;margin:0;">
+        <div class="icon">${icon('clipboard')}</div>
+        <div class="info">
+          <div class="title">${escapeHtml(fvs.codigo)} / ${escapeHtml(fvs.nome)}</div>
+          <div class="sub">Rev.: ${escapeHtml(fvs.rev)}</div>
+        </div>
+      </div>`;
+    }).join("") || `<div class="empty">Nenhum serviço encontrado.</div>`;
+    lista.querySelectorAll(".list-item").forEach(el=>{
+      const fvs = FVS_CATALOGO[parseInt(el.dataset.idx)];
+      const key = fvs.codigo+"|"+fvs.rev;
+      const cb = el.querySelector("input[type=checkbox]");
+      const alternar = ()=>{
+        if(selecionados.has(key)) selecionados.delete(key); else selecionados.add(key);
+        el.classList.toggle("selecionado", selecionados.has(key));
+        cb.checked = selecionados.has(key);
+      };
+      el.onclick=(e)=>{ if(e.target!==cb) alternar(); };
+      cb.onclick=(e)=>{ e.stopPropagation(); alternar(); };
+    });
+  }
+  renderLista("");
+  document.getElementById("m-busca").oninput=(e)=>renderLista(e.target.value);
+  document.getElementById("m-criar").onclick=()=>{
+    const fvsSelecionadas = [...selecionados].map(key=>FVS_CATALOGO.find(f=>f.codigo+"|"+f.rev===key)).filter(Boolean);
+    nomes.forEach(nome=>{
+      pav.ambientes.push({
+        id: uid(), nome,
+        fvsList: fvsSelecionadas.map(fvs=>criarInstanciaFvs(fvs))
+      });
+    });
+    saveDB(db); closeModal(); render();
   };
 }
 
