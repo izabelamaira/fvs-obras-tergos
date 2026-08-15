@@ -254,10 +254,24 @@ function getUnid(pav,id){ return pav.unidades.find(u=>u.id===id); }
 function getAmb(container,id,campo){ return (container[campo||'ambientes']).find(a=>a.id===id); }
 function getFvsInst(amb,id){ return amb.fvsList.find(f=>f.instId===id); }
 
+// Estrutura tem 2 níveis: pav.estrutura = categorias (Pilares, Vigas...), cada categoria com
+// sua lista de elementos individuais (P1, P2...), cada elemento com seu fvsList — igual ao
+// padrão Unidade->Ambiente, mas pro lado estrutural. Migra em tempo de leitura o formato antigo
+// (categoria com fvsList direto, de antes dessa mudança) pra não perder verificações já feitas.
+function garantirEstrutura(pav){
+  if(!pav.estrutura) pav.estrutura = [];
+  pav.estrutura.forEach(cat=>{
+    if(!cat.elementos){
+      cat.elementos = (cat.fvsList && cat.fvsList.length) ? [{ id:uid(), nome:cat.nome, fvsList:cat.fvsList }] : [];
+      delete cat.fvsList;
+    }
+  });
+}
+
 function todosAmbientesDoPavimento(pav){
   if(!pav.unidades) pav.unidades = [];
-  if(!pav.estrutura) pav.estrutura = [];
-  return pav.ambientes.concat(pav.estrutura).concat(pav.unidades.flatMap(u=>u.ambientes));
+  garantirEstrutura(pav);
+  return pav.ambientes.concat(pav.estrutura.flatMap(c=>c.elementos)).concat(pav.unidades.flatMap(u=>u.ambientes));
 }
 function todosAmbientesDaObra(obra){
   return obra.pavimentos.flatMap(pav=>todosAmbientesDoPavimento(pav));
@@ -268,9 +282,9 @@ function todasFvsComContexto(obra){
   const out = [];
   obra.pavimentos.forEach(pav=>{
     if(!pav.unidades) pav.unidades = [];
-    if(!pav.estrutura) pav.estrutura = [];
+    garantirEstrutura(pav);
     pav.ambientes.forEach(amb=>amb.fvsList.forEach(fvsInst=>out.push({pav, unid:null, amb, fvsInst})));
-    pav.estrutura.forEach(amb=>amb.fvsList.forEach(fvsInst=>out.push({pav, unid:null, amb, fvsInst})));
+    pav.estrutura.forEach(cat=>cat.elementos.forEach(amb=>amb.fvsList.forEach(fvsInst=>out.push({pav, unid:null, amb, fvsInst}))));
     pav.unidades.forEach(unid=>unid.ambientes.forEach(amb=>amb.fvsList.forEach(fvsInst=>out.push({pav, unid, amb, fvsInst}))));
   });
   return out;
@@ -978,6 +992,7 @@ function render(){
   if(route.view==="obras") return renderObras(app);
   if(route.view==="obra") return renderObra(app);
   if(route.view==="pavimento") return renderPavimento(app);
+  if(route.view==="pavimentoEstrutura") return renderPavimentoEstrutura(app);
   if(route.view==="unidade") return renderUnidade(app);
   if(route.view==="ambiente") return renderAmbiente(app);
   if(route.view==="fornecedores") return renderFornecedores(app);
@@ -1450,7 +1465,7 @@ function renderPavimento(app){
   const obra = getObra(route.obraId);
   const pav = getPav(obra, route.pavId);
   if(!pav.unidades) pav.unidades = [];
-  if(!pav.estrutura) pav.estrutura = [];
+  garantirEstrutura(pav);
 
   const btnRenomear = document.createElement("button");
   btnRenomear.className="back"; btnRenomear.innerHTML=icon('pencil'); btnRenomear.title="Renomear pavimento";
@@ -1469,7 +1484,23 @@ function renderPavimento(app){
 
   if(pav.estrutura.length){
     main.appendChild(subtituloSecao("Estrutura", 4));
-    renderListaAmbientes(main, pav, amb=>({view:"ambiente", obraId:obra.id, pavId:pav.id, secao:"estrutura", ambId:amb.id}), null, "estrutura", "pilar");
+    pav.estrutura.forEach(cat=>{
+      const todosItens = cat.elementos.flatMap(e=>e.fvsList);
+      const p = calcProgressoFvsList(todosItens);
+      const ncC = contarNC(todosItens);
+      const div = document.createElement("div");
+      div.className="list-item";
+      div.onclick=()=>go({view:"pavimentoEstrutura", obraId:obra.id, pavId:pav.id, catId:cat.id});
+      div.innerHTML = `
+        <div class="icon">${icon('pilar')}</div>
+        <div class="info">
+          <div class="title">${escapeHtml(cat.nome)}</div>
+          <div class="sub">${cat.elementos.length} elemento(s) · ${p}%${ncC?` · ${ncC} NC`:""}</div>
+          <div class="progress-bar"><div style="width:${p}%"></div></div>
+        </div>
+        <div class="chevron">${icon('chevron')}</div>`;
+      main.appendChild(div);
+    });
   }
 
   if(pav.unidades.length){
@@ -1509,13 +1540,11 @@ function abrirMenuAdicionarPavimento(obra, pav){
   openModal(`
     <h2>Adicionar ao pavimento</h2>
     <button class="btn primary" id="m-estrutura">${icon('pilar')} Adicionar à Estrutura</button>
-    <button class="btn primary" id="m-numerados">${icon('clipboard')} Criar elementos numerados (Estrutura)</button>
     <button class="btn primary" id="m-amb">${icon('door')} Novo Ambiente (comum)</button>
     <button class="btn primary" id="m-unid">${icon('key')} Nova Unidade</button>
     <button class="btn primary" id="m-importar">${icon('ruler')} Importar planta (PDF/DXF)</button>
   `);
-  document.getElementById("m-estrutura").onclick=()=>{ closeModal(); promptNovoAmbiente(pav, SUGESTOES_ESTRUTURA, "estrutura"); };
-  document.getElementById("m-numerados").onclick=()=>{ closeModal(); promptElementosNumerados(pav); };
+  document.getElementById("m-estrutura").onclick=()=>{ closeModal(); promptNovaCategoriaEstrutura(obra, pav); };
   document.getElementById("m-amb").onclick=()=>{ closeModal(); promptNovoAmbiente(pav, SUGESTOES_AMBIENTE_COMUM); };
   document.getElementById("m-unid").onclick=()=>{ closeModal(); promptNovaUnidade(pav); };
   document.getElementById("m-importar").onclick=()=>{ closeModal(); abrirImportarPlanta(obra, pav, null); };
@@ -1596,73 +1625,156 @@ function promptNovoAmbiente(container, sugestoes, campo){
   };
 }
 
-// ---------- CRIAR ELEMENTOS NUMERADOS (ex.: Tubulão T1..T18) ----------
+// ---------- ESTRUTURA: CATEGORIAS (Pilares, Vigas...) E SEUS ELEMENTOS (P1, P2...) ----------
+function promptNovaCategoriaEstrutura(obra, pav){
+  const selecionados = new Set();
+  const jaExistentes = new Set(pav.estrutura.map(c=>c.nome.toLowerCase()));
+  const chipsHtml = `<label>Sugestões (toque para selecionar, pode escolher várias)</label>
+    <div class="import-chips" id="m-chips" style="margin-top:6px;">
+      ${SUGESTOES_ESTRUTURA.map(nome=>{
+        const jaTem = jaExistentes.has(nome.toLowerCase());
+        return `<button type="button" class="import-chip" data-nome="${escapeHtml(nome)}" ${jaTem?'disabled style="opacity:.4;"':''}>${escapeHtml(nome)}${jaTem?' ✓':''}</button>`;
+      }).join("")}
+    </div>`;
+  openModal(`
+    <h2>Adicionar à Estrutura</h2>
+    <p style="font-size:13px;color:var(--muted);">Cada categoria abriga os elementos individuais dela (ex.: "Pilares" abriga P1, P2, P3...).</p>
+    ${chipsHtml}
+    <label style="margin-top:16px;">Nome (opcional, além das sugestões)</label>
+    <input id="m-nome" placeholder="Ex: Vergas, Muro de Arrimo, Estacas Hélice Contínua">
+    <button class="btn primary" id="m-salvar">Adicionar</button>
+  `);
+  document.querySelectorAll("#m-chips .import-chip").forEach(chip=>{
+    if(chip.disabled) return;
+    chip.onclick=()=>{
+      const nome = chip.dataset.nome;
+      if(selecionados.has(nome)) selecionados.delete(nome); else selecionados.add(nome);
+      chip.classList.toggle("on", selecionados.has(nome));
+    };
+  });
+  document.getElementById("m-salvar").onclick=()=>{
+    const nomeLivre = document.getElementById("m-nome").value.trim();
+    const nomes = [...selecionados];
+    if(nomeLivre) nomes.push(nomeLivre);
+    if(!nomes.length) return alert("Selecione uma sugestão ou digite um nome.");
+    const criadas = nomes.map(nome=>({ id:uid(), nome, elementos:[] }));
+    pav.estrutura.push(...criadas);
+    saveDB(db); closeModal();
+    if(criadas.length===1) go({view:"pavimentoEstrutura", obraId:obra.id, pavId:pav.id, catId:criadas[0].id});
+    else render();
+  };
+}
+
+function promptRenomearCategoriaEstrutura(cat){
+  openModal(`
+    <h2>Renomear</h2>
+    <label>Nome</label>
+    <input id="m-nome" value="${escapeHtml(cat.nome)}">
+    <button class="btn primary" id="m-salvar">Salvar</button>
+  `);
+  const input = document.getElementById("m-nome");
+  input.focus(); input.select();
+  document.getElementById("m-salvar").onclick=()=>{
+    const nome = input.value.trim();
+    if(!nome) return alert("Digite o nome.");
+    cat.nome = nome;
+    saveDB(db); closeModal(); render();
+  };
+}
+
+// ---------- TELA: CATEGORIA DE ESTRUTURA (lista de elementos individuais) ----------
+function renderPavimentoEstrutura(app){
+  const obra = getObra(route.obraId);
+  const pav = getPav(obra, route.pavId);
+  garantirEstrutura(pav);
+  const cat = pav.estrutura.find(c=>c.id===route.catId);
+
+  const btnRenomear = document.createElement("button");
+  btnRenomear.className="back"; btnRenomear.innerHTML=icon('pencil'); btnRenomear.title="Renomear";
+  btnRenomear.onclick=(e)=>{ e.stopPropagation(); promptRenomearCategoriaEstrutura(cat); };
+
+  const acoesWrap = document.createElement("div");
+  acoesWrap.style.display="flex";
+  acoesWrap.appendChild(btnRenomear);
+  acoesWrap.appendChild(botaoExcluir(()=>{
+    pav.estrutura = pav.estrutura.filter(c=>c.id!==cat.id);
+    saveDB(db); go({view:"pavimento", obraId:obra.id, pavId:pav.id});
+  }, `Excluir "${cat.nome}" e todos os seus elementos e verificações? Essa ação não pode ser desfeita.`));
+
+  app.appendChild(header(`${pav.nome} · ${cat.nome}`, ()=>go({view:"pavimento", obraId:obra.id, pavId:pav.id}), acoesWrap));
+  const main = document.createElement("main");
+
+  renderListaAmbientes(main, cat, amb=>({view:"ambiente", obraId:obra.id, pavId:pav.id, catId:cat.id, ambId:amb.id}),
+    `Nenhum elemento cadastrado ainda.<br>Toque em "+" para adicionar um elemento (ex: P1) ou vários numerados de uma vez.`, "elementos", "pilar");
+
+  app.appendChild(main);
+
+  const fab = document.createElement("button");
+  fab.className="fab"; fab.textContent="+";
+  fab.onclick=()=>abrirMenuAdicionarElementoEstrutura(cat);
+  app.appendChild(fab);
+}
+
+function abrirMenuAdicionarElementoEstrutura(cat){
+  openModal(`
+    <h2>Adicionar elemento — ${escapeHtml(cat.nome)}</h2>
+    <button class="btn primary" id="m-um">${icon('pilar')} Novo Elemento</button>
+    <button class="btn primary" id="m-numerados">${icon('clipboard')} Criar elementos numerados</button>
+  `);
+  document.getElementById("m-um").onclick=()=>{ closeModal(); promptNovoElementoEstrutura(cat); };
+  document.getElementById("m-numerados").onclick=()=>{ closeModal(); promptElementosNumerados(cat); };
+}
+
+function promptNovoElementoEstrutura(cat){
+  openModal(`
+    <h2>Novo Elemento</h2>
+    <label>Identificação</label>
+    <input id="m-nome" placeholder="Ex: P1, V12, L3">
+    <button class="btn primary" id="m-salvar">Adicionar</button>
+  `);
+  document.getElementById("m-salvar").onclick=()=>{
+    const nome = document.getElementById("m-nome").value.trim();
+    if(!nome) return alert("Digite a identificação do elemento.");
+    cat.elementos.push({ id:uid(), nome, fvsList:[] });
+    saveDB(db); closeModal(); render();
+  };
+}
+
+// ---------- CRIAR ELEMENTOS NUMERADOS DENTRO DE UMA CATEGORIA (ex.: P1..P18) ----------
 function parseSufixosElementos(texto){
   return (texto||"").split(/[,\n]/).map(s=>s.trim()).filter(Boolean);
 }
 
-// Nome base sugerido -> FVS do catálogo já pré-marcada no passo seguinte (quando existir uma FVS
-// com o mesmo assunto). O nome base continua 100% livre — isso é só um atalho, não uma trava.
-const SUGESTOES_BASE_ELEMENTOS_NUMERADOS = [
-  { nome:"Estacas Hélice Contínua", fvs:["FVS-03|00"] },
-  { nome:"Blocos de Fundação e Cintas", fvs:["FVS-04|00"] },
-  { nome:"Bloco de Coroamento", fvs:[] },
-  { nome:"Tubulão", fvs:[] },
-  { nome:"Pilar", fvs:[] },
-  { nome:"Viga", fvs:[] }
-];
+// Nome de categoria -> FVS do catálogo já pré-marcada no passo seguinte (quando existir uma FVS
+// com o mesmo assunto). Não trava nada — só evita procurar no catálogo quando o nome já casa.
+const NOME_CATEGORIA_PARA_FVS = {
+  "Estacas Hélice Contínua": ["FVS-03|00"],
+  "Blocos de Fundação e Cintas": ["FVS-04|00"]
+};
 
-function promptElementosNumerados(pav){
-  let fvsPreSelecionadas = [];
+function promptElementosNumerados(cat){
   openModal(`
     <h2>Criar elementos numerados</h2>
-    <p style="font-size:13px;color:var(--muted);">Para elementos individuais — de qualquer tipo — onde cada um precisa do seu próprio checklist (ex: "Estacas Hélice Contínua E1", "E2"... ou "Tubulão T1", "T2"...).</p>
-    <label>Sugestões de nome base (opcional, pode digitar qualquer outro)</label>
-    <div class="import-chips" id="m-chips-base" style="margin-top:6px;">
-      ${SUGESTOES_BASE_ELEMENTOS_NUMERADOS.map(s=>`<button type="button" class="import-chip" data-nome="${escapeHtml(s.nome)}">${escapeHtml(s.nome)}</button>`).join("")}
-    </div>
-    <label style="margin-top:16px;">Nome base</label>
-    <input id="m-base" placeholder="Ex: Tubulão, Bloco de Coroamento, Estacas Hélice Contínua...">
-    <label>Sufixos (separados por vírgula ou uma linha por sufixo)</label>
-    <textarea id="m-sufixos" placeholder="Ex: T1, T2, T3, T7A, T7B, T18" style="min-height:80px;"></textarea>
+    <p style="font-size:13px;color:var(--muted);">Cada identificação vira um elemento com seu próprio checklist dentro de "${escapeHtml(cat.nome)}".</p>
+    <label>Identificações (separadas por vírgula ou uma por linha)</label>
+    <textarea id="m-sufixos" placeholder="Ex: P1, P2, P3, P7A, P7B, P18" style="min-height:90px;"></textarea>
     <div id="m-preview" style="font-size:12px;color:var(--muted);margin-top:8px;"></div>
     <button class="btn primary" id="m-avancar">Avançar</button>
   `);
-  const baseInput = document.getElementById("m-base");
   const sufixosInput = document.getElementById("m-sufixos");
   const preview = document.getElementById("m-preview");
-  document.querySelectorAll("#m-chips-base .import-chip").forEach(chip=>{
-    chip.onclick=()=>{
-      baseInput.value = chip.dataset.nome;
-      const sugestao = SUGESTOES_BASE_ELEMENTOS_NUMERADOS.find(s=>s.nome===chip.dataset.nome);
-      fvsPreSelecionadas = sugestao ? sugestao.fvs : [];
-      document.querySelectorAll("#m-chips-base .import-chip").forEach(c=>c.classList.toggle("on", c===chip));
-      atualizarPreview();
-    };
-  });
-  function atualizarPreview(){
-    const base = baseInput.value.trim();
-    const sufixos = parseSufixosElementos(sufixosInput.value);
-    if(!base || !sufixos.length){ preview.textContent=""; return; }
-    const nomes = sufixos.map(s=>`${base} ${s}`);
-    preview.textContent = `${nomes.length} elemento(s): ` + nomes.slice(0,6).join(", ") + (nomes.length>6?"...":"");
-  }
-  baseInput.oninput = ()=>{
-    document.querySelectorAll("#m-chips-base .import-chip").forEach(c=>c.classList.toggle("on", c.dataset.nome===baseInput.value.trim()));
-    if(!SUGESTOES_BASE_ELEMENTOS_NUMERADOS.some(s=>s.nome===baseInput.value.trim())) fvsPreSelecionadas = [];
-    atualizarPreview();
+  sufixosInput.oninput = ()=>{
+    const nomes = parseSufixosElementos(sufixosInput.value);
+    preview.textContent = nomes.length ? `${nomes.length} elemento(s): ` + nomes.slice(0,8).join(", ") + (nomes.length>8?"...":"") : "";
   };
-  sufixosInput.oninput = atualizarPreview;
   document.getElementById("m-avancar").onclick=()=>{
-    const base = baseInput.value.trim();
-    const sufixos = parseSufixosElementos(sufixosInput.value);
-    if(!base) return alert("Digite o nome base.");
-    if(!sufixos.length) return alert("Digite ao menos um sufixo.");
-    abrirEscolhaFvsElementosNumerados(pav, sufixos.map(s=>`${base} ${s}`), fvsPreSelecionadas);
+    const nomes = parseSufixosElementos(sufixosInput.value);
+    if(!nomes.length) return alert("Digite ao menos uma identificação.");
+    abrirEscolhaFvsElementosNumerados(cat, nomes, NOME_CATEGORIA_PARA_FVS[cat.nome]||[]);
   };
 }
 
-function abrirEscolhaFvsElementosNumerados(pav, nomes, preSelecionadas){
+function abrirEscolhaFvsElementosNumerados(cat, nomes, preSelecionadas){
   const selecionados = new Set(preSelecionadas||[]);
   let html = `<h2>Aplicar FVS aos ${nomes.length} elementos</h2>
     <p style="font-size:13px;color:var(--muted);">Escolha o(s) serviço(s) que já vão ser aplicados a cada um dos elementos criados. Pode pular e adicionar depois, um por um.</p>
@@ -1708,9 +1820,8 @@ function abrirEscolhaFvsElementosNumerados(pav, nomes, preSelecionadas){
   document.getElementById("m-busca").oninput=(e)=>renderLista(e.target.value);
   document.getElementById("m-criar").onclick=()=>{
     const fvsSelecionadas = [...selecionados].map(key=>FVS_CATALOGO.find(f=>f.codigo+"|"+f.rev===key)).filter(Boolean);
-    if(!pav.estrutura) pav.estrutura = [];
     nomes.forEach(nome=>{
-      pav.estrutura.push({
+      cat.elementos.push({
         id: uid(), nome,
         fvsList: fvsSelecionadas.map(fvs=>criarInstanciaFvs(fvs))
       });
@@ -1756,13 +1867,16 @@ function renderAmbiente(app){
   const obra = getObra(route.obraId);
   const pav = getPav(obra, route.pavId);
   if(!pav.unidades) pav.unidades = [];
-  if(!pav.estrutura) pav.estrutura = [];
+  garantirEstrutura(pav);
   const unid = route.unidId ? getUnid(pav, route.unidId) : null;
-  const campo = (!unid && route.secao==="estrutura") ? "estrutura" : "ambientes";
-  const container = unid || pav;
+  const cat = route.catId ? pav.estrutura.find(c=>c.id===route.catId) : null;
+  const campo = cat ? "elementos" : "ambientes";
+  const container = unid || cat || pav;
   const amb = getAmb(container, route.ambId, campo);
-  const voltarRota = unid ? {view:"unidade", obraId:obra.id, pavId:pav.id, unidId:unid.id} : {view:"pavimento", obraId:obra.id, pavId:pav.id};
-  const tituloPai = unid ? `${pav.nome} · ${unid.nome}` : (campo==="estrutura" ? `${pav.nome} · Estrutura` : pav.nome);
+  const voltarRota = unid ? {view:"unidade", obraId:obra.id, pavId:pav.id, unidId:unid.id}
+                     : cat ? {view:"pavimentoEstrutura", obraId:obra.id, pavId:pav.id, catId:cat.id}
+                     : {view:"pavimento", obraId:obra.id, pavId:pav.id};
+  const tituloPai = unid ? `${pav.nome} · ${unid.nome}` : cat ? `${pav.nome} · ${cat.nome}` : pav.nome;
   app.appendChild(header(`${tituloPai} · ${amb.nome}`, ()=>go(voltarRota), botaoExcluir(()=>{
     container[campo] = container[campo].filter(a=>a.id!==amb.id);
     saveDB(db); go(voltarRota);
@@ -1772,7 +1886,7 @@ function renderAmbiente(app){
   if(amb.fvsList.length){
     const btnPdf = document.createElement("button");
     btnPdf.className="btn primary"; btnPdf.style.marginTop="0"; btnPdf.innerHTML=icon('document')+" Exportar ficha de vistoria (PDF)";
-    btnPdf.onclick=()=>exportarRelatorioAmbiente(obra,pav,amb,unid);
+    btnPdf.onclick=()=>exportarRelatorioAmbiente(obra,pav,amb,unid,cat);
     main.appendChild(btnPdf);
   }
 
@@ -2727,11 +2841,11 @@ function imprimirRelatorio(html){
   window.print();
 }
 
-function exportarRelatorioAmbiente(obra, pav, amb, unid){
+function exportarRelatorioAmbiente(obra, pav, amb, unid, cat){
   let html = `
     <div class="rel-header">
       <h1>Ficha de Vistoria — ${escapeHtml(obra.nome)}</h1>
-      <div class="meta">Pavimento: ${escapeHtml(pav.nome)}${unid?` · Unidade: ${escapeHtml(unid.nome)}`:""} · Ambiente: ${escapeHtml(amb.nome)}<br>Gerado em: ${dataHoraAtual()}</div>
+      <div class="meta">Pavimento: ${escapeHtml(pav.nome)}${unid?` · Unidade: ${escapeHtml(unid.nome)}`:""}${cat?` · Estrutura: ${escapeHtml(cat.nome)}`:""} · Ambiente: ${escapeHtml(amb.nome)}<br>Gerado em: ${dataHoraAtual()}</div>
     </div>`;
 
   amb.fvsList.forEach(fvsInst=>{
@@ -2777,9 +2891,9 @@ function exportarRelatorioObra(obra){
 
   obra.pavimentos.forEach(pav=>{
     if(!pav.unidades) pav.unidades = [];
-    if(!pav.estrutura) pav.estrutura = [];
+    garantirEstrutura(pav);
     const linhas = pav.ambientes.map(amb=>({unidade:"—", amb}))
-      .concat(pav.estrutura.map(amb=>({unidade:"Estrutura", amb})))
+      .concat(pav.estrutura.flatMap(cat=>cat.elementos.map(amb=>({unidade:`Estrutura: ${cat.nome}`, amb}))))
       .concat(pav.unidades.flatMap(unid=>unid.ambientes.map(amb=>({unidade:unid.nome, amb}))));
     if(!linhas.length){
       html += `<tr><td>${escapeHtml(pav.nome)}</td><td colspan="5">Nenhum ambiente cadastrado</td></tr>`;
