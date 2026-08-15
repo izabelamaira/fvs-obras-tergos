@@ -30,7 +30,7 @@ const FVS_CATALOGO = [
     ]
   },
   { codigo:"FVS-03", nome:"Estacas Hélice Contínua", rev:"00",
-    normas:["NBR 6122:2022 - Projeto e execução de fundações","NBR 6122 (Emenda 1:2022, Anexo O) - Concreto para estacas hélice contínua monitorada","NBR 16903:2020 - Prova de carga estática em fundação profunda","NBR 13208:2007 - Estacas - Ensaios de carregamento dinâmico","ASTM D5882/16 - Standard Test Method for Low Strain Impact Integrity Testing of Deep Foundations","Caderno de Encargos SUDECAP - Capítulo 4: Fundações, item 4.5 (Tabela 8 - Hélice Contínua Monitorada)"],
+    normas:["NBR 6122:2022 - Projeto e execução de fundações","NBR 6122 (Emenda 1:2022, Anexo O) - Concreto para estacas hélice contínua monitorada","NBR 16903:2020 - Prova de carga estática em fundação profunda","NBR 13208:2007 - Estacas - Ensaios de carregamento dinâmico","ASTM D5882/16 - Standard Test Method for Low Strain Impact Integrity Testing of Deep Foundations","Caderno de Encargos SUDECAP - Capítulo 4: Fundações, item 4.5 (Tabela 8 - Hélice Contínua Monitorada)","PES 4.2 - Fundações Profundas - Estacas Hélice Contínua (procedimento interno TERGOS) — itens marcados \"prática interna TERGOS\" abaixo não constam nas normas ABNT, são cultura/exigência própria da empresa"],
     itens:[
       "Locação e verticalidade/prumo do equipamento conferidos antes do início da perfuração — desvio entre eixo executado e eixo de projeto dentro de 10% do diâmetro da estaca (estacas isoladas não travadas)",
       "Perfuração monitorada eletronicamente (torque, velocidade de avanço/rotação e profundidade) até a cota de projeto, com torque e força de arranque compatíveis com o diâmetro da estaca e a resistência do solo",
@@ -39,7 +39,17 @@ const FVS_CATALOGO = [
       "Classe de concreto (fck) e armadura mínima conforme classe de agressividade ambiental do projeto — C30 (CAA I/II) ou C40 (CAA III/IV), armadura mín. 0,4%, comprimento útil mín. 4,0 m incluindo trecho de ligação com o bloco",
       "Consumo mínimo de cimento e abatimento (slump) do concreto conforme Anexo O da NBR 6122 — concreto bombeável específico para hélice contínua // conferir valor vigente, norma alterada pela Emenda 1/2022",
       "Armadura introduzida somente após o lançamento do concreto, até a profundidade especificada, sem danificar o fuste ainda fresco",
-      "Ensaio de integridade (PIT) e/ou prova de carga estática realizados, com resultado aprovado pela fiscalização antes da concretagem do bloco de coroamento"
+      "Ensaio de integridade (PIT) e/ou prova de carga estática realizados, com resultado aprovado pela fiscalização antes da concretagem do bloco de coroamento",
+      "Fornecimento de concreto integralmente planejado antes do início da perfuração — traço aprovado, volume total da estaca, programação de entrega dos caminhões-betoneira e disponibilidade de bomba compatíveis com o ritmo de execução (prática interna TERGOS)",
+      "Escavação de cada estaca iniciada somente quando o concreto disponível em obra for suficiente para concretá-la por completo, considerando a perda (prática interna TERGOS)",
+      "Sequência de perfuração planejada previamente, com estacas situadas em raio de até 6 vezes o diâmetro da estaca a ser escavada concretadas há pelo menos 24 horas, evitando soterramento ou contaminação de peças recém-concretadas",
+      "Cilindros de isopor instalados na parte superior interna da estaca antes da concretagem, para impedir que o concreto preencha a região da armadura no interior do bloco de coroamento e evitar demolição posterior (prática interna TERGOS)",
+      "Posicionamento das barras de aterramento (SPDA) na armação conferido, quando especificado em projeto",
+      "Ferragens expostas protegidas após a concretagem, até a execução do bloco de coroamento",
+      "Demolição do topo da estaca até a cota de arrasamento executada sem comprometer a armação — seção final plana e perpendicular ao eixo, com ponteiros/marteletes leves e leve inclinação para cima (prática interna TERGOS)",
+      "4 corpos de prova moldados para cada caminhão de concreto utilizado (prática interna TERGOS)",
+      "Mapeamento colorido, no projeto de fundações impresso, identificando a região concretada por cada caminhão-betoneira, para rastreabilidade do lançamento de concreto (prática interna TERGOS)",
+      "Formulário \"Controle de Execução de Estaca Hélice Contínua\" preenchido para cada estaca executada, a partir de cópia do modelo salva na pasta da obra — nunca editado por cima da planilha modelo (prática interna TERGOS)"
     ]
   },
   { codigo:"FVS-04", nome:"Fundações Rasas - Blocos e Cintas", rev:"00",

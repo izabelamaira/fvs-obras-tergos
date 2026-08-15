@@ -154,6 +154,66 @@ window.FVS_SUBCHECKS = {
       "Ensaio de integridade (PIT) realizado conforme ASTM D5882 nas estacas indicadas",
       "Prova de carga estática, quando exigida, realizada conforme NBR 16903 com curva carga-recalque apresentada",
       "Resultado dos ensaios enviado e aprovado pela fiscalização antes do início da concretagem do bloco de coroamento"
+    ],
+    "Fornecimento de concreto integralmente planejado antes do início da perfuração — traço aprovado, volume total da estaca, programação de entrega dos caminhões-betoneira e disponibilidade de bomba compatíveis com o ritmo de execução (prática interna TERGOS)": [
+      "Traço do concreto aprovado conforme projeto (resistência, slump, diâmetro do agregado, consumo de cimento) antes do início da perfuração",
+      "Volume total de concreto necessário para a estaca calculado e confirmado com a concreteira",
+      "Programação de entrega dos caminhões-betoneira compatível com o ritmo de perfuração/concretagem",
+      "Disponibilidade de bomba de concreto confirmada antes do início da perfuração"
+    ],
+    "Escavação de cada estaca iniciada somente quando o concreto disponível em obra for suficiente para concretá-la por completo, considerando a perda (prática interna TERGOS)": [
+      "Volume de concreto disponível em obra conferido antes do início de cada escavação",
+      "Volume considera a perda estimada de concreto no processo",
+      "Escavação da estaca não iniciada sem confirmação de concreto suficiente para a concretagem completa",
+      "Situação comunicada ao encarregado/engenheiro em caso de indisponibilidade de concreto"
+    ],
+    "Sequência de perfuração planejada previamente, com estacas situadas em raio de até 6 vezes o diâmetro da estaca a ser escavada concretadas há pelo menos 24 horas, evitando soterramento ou contaminação de peças recém-concretadas": [
+      "Sequência de abertura das estacas planejada previamente conforme o layout do projeto",
+      "Estacas em raio de até 6 vezes o diâmetro da estaca a ser escavada identificadas antes do início da perfuração",
+      "Intervalo mínimo de 24 horas respeitado desde a concretagem das estacas vizinhas dentro desse raio",
+      "Ausência de sinais de soterramento ou contaminação em estacas recém-concretadas na sequência de execução"
+    ],
+    "Cilindros de isopor instalados na parte superior interna da estaca antes da concretagem, para impedir que o concreto preencha a região da armadura no interior do bloco de coroamento e evitar demolição posterior (prática interna TERGOS)": [
+      "Cilindros de isopor posicionados na parte superior interna da armadura antes da concretagem",
+      "Isopor dimensionado para cobrir a região da armadura que ficará no interior do bloco de coroamento",
+      "Fixação do isopor conferida para que não se desloque durante a concretagem/introdução da armadura",
+      "Ausência de concreto na região protegida pelo isopor após a concretagem, conferida na limpeza da cabeça da estaca"
+    ],
+    "Posicionamento das barras de aterramento (SPDA) na armação conferido, quando especificado em projeto": [
+      "Projeto de SPDA consultado para verificar exigência de barras de aterramento na estaca",
+      "Posicionamento das barras de aterramento conferido conforme especificado em projeto",
+      "Continuidade elétrica das barras de aterramento com o restante do sistema SPDA verificada",
+      "Barras de aterramento protegidas/identificadas até a execução do bloco de coroamento"
+    ],
+    "Ferragens expostas protegidas após a concretagem, até a execução do bloco de coroamento": [
+      "Ferragens expostas após a concretagem identificadas e isoladas de contato com solo/água",
+      "Proteção aplicada (ex.: sacos, capas ou pintura anticorrosiva) conforme procedimento da obra",
+      "Proteção mantida até a execução do bloco de coroamento",
+      "Ausência de sinais de corrosão nas ferragens expostas no momento da execução do bloco"
+    ],
+    "Demolição do topo da estaca até a cota de arrasamento executada sem comprometer a armação — seção final plana e perpendicular ao eixo, com ponteiros/marteletes leves e leve inclinação para cima (prática interna TERGOS)": [
+      "Cota de arrasamento (ca) conferida antes do início da demolição",
+      "Demolição executada com ponteiros ou marteletes leves, com leve inclinação para cima em relação à horizontal",
+      "Seção final da estaca plana e perpendicular ao eixo, sem fissuras que comprometam a armação",
+      "Armação da estaca sem danos após a demolição do excesso de concreto"
+    ],
+    "4 corpos de prova moldados para cada caminhão de concreto utilizado (prática interna TERGOS)": [
+      "4 corpos de prova moldados para cada caminhão-betoneira utilizado na concretagem das estacas",
+      "Corpos de prova identificados com a(s) estaca(s)/caminhão correspondente e data de moldagem",
+      "Corpos de prova curados e armazenados conforme NBR 5738 até o ensaio",
+      "Registro/rastreabilidade dos corpos de prova arquivado junto ao controle de concretagem"
+    ],
+    "Mapeamento colorido, no projeto de fundações impresso, identificando a região concretada por cada caminhão-betoneira, para rastreabilidade do lançamento de concreto (prática interna TERGOS)": [
+      "Cópia impressa do projeto de fundações disponível em obra para mapeamento",
+      "Cada caminhão-betoneira identificado por uma cor específica no mapeamento",
+      "Estacas concretadas por cada caminhão destacadas com a cor correspondente no mapeamento",
+      "Mapeamento atualizado a cada concretagem e arquivado para rastreabilidade"
+    ],
+    "Formulário \"Controle de Execução de Estaca Hélice Contínua\" preenchido para cada estaca executada, a partir de cópia do modelo salva na pasta da obra — nunca editado por cima da planilha modelo (prática interna TERGOS)": [
+      "Formulário \"Controle de Execução de Estaca Hélice Contínua\" preenchido para cada estaca executada, com dados de perfuração e concretagem",
+      "Modelo do formulário copiado (nunca editado por cima do original) para a pasta da obra no OneDrive, em Controles e Rastreabilidade do Concreto",
+      "Arquivo salvo com nome específico identificando a obra e a data/lote de estacas",
+      "Formulário preenchido disponível para conferência da fiscalização"
     ]
   },
 
