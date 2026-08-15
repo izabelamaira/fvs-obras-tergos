@@ -224,6 +224,7 @@ const ICON_PATHS = {
   thumbdown: `<path d="M17 3v10h-2l-4 7-1.5-1v-6H6a2 2 0 0 1-1.9-2.6l1.7-6A2 2 0 0 1 7.7 3H15"/><path d="M17 13h2a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1h-2"/>`,
   bubble: `<path d="M4 5h16v11H9l-4 4v-4H4z"/><path d="M8 9h8M8 12.5h5"/>`,
   ban: `<circle cx="12" cy="12" r="9"/><path d="M6 6l12 12"/>`,
+  pilar: `<path d="M5 4h14M5 20h14M8 4v16M16 4v16"/>`,
   hourglass: `<path d="M6 3h12M6 21h12M7 3c0 5 5 6 5 9s-5 4-5 9M17 3c0 5-5 6-5 9s5 4 5 9"/>`,
   back: `<path d="M19 12H5M11 6l-6 6 6 6"/>`,
   chevron: `<path d="M9 6l6 6-6 6"/>`
@@ -250,12 +251,13 @@ function go(newRoute){ route = newRoute; render(); }
 function getObra(id){ return db.obras.find(o=>o.id===id); }
 function getPav(obra,id){ return obra.pavimentos.find(p=>p.id===id); }
 function getUnid(pav,id){ return pav.unidades.find(u=>u.id===id); }
-function getAmb(pav,id){ return pav.ambientes.find(a=>a.id===id); }
+function getAmb(container,id,campo){ return (container[campo||'ambientes']).find(a=>a.id===id); }
 function getFvsInst(amb,id){ return amb.fvsList.find(f=>f.instId===id); }
 
 function todosAmbientesDoPavimento(pav){
   if(!pav.unidades) pav.unidades = [];
-  return pav.ambientes.concat(pav.unidades.flatMap(u=>u.ambientes));
+  if(!pav.estrutura) pav.estrutura = [];
+  return pav.ambientes.concat(pav.estrutura).concat(pav.unidades.flatMap(u=>u.ambientes));
 }
 function todosAmbientesDaObra(obra){
   return obra.pavimentos.flatMap(pav=>todosAmbientesDoPavimento(pav));
@@ -266,7 +268,9 @@ function todasFvsComContexto(obra){
   const out = [];
   obra.pavimentos.forEach(pav=>{
     if(!pav.unidades) pav.unidades = [];
+    if(!pav.estrutura) pav.estrutura = [];
     pav.ambientes.forEach(amb=>amb.fvsList.forEach(fvsInst=>out.push({pav, unid:null, amb, fvsInst})));
+    pav.estrutura.forEach(amb=>amb.fvsList.forEach(fvsInst=>out.push({pav, unid:null, amb, fvsInst})));
     pav.unidades.forEach(unid=>unid.ambientes.forEach(amb=>amb.fvsList.forEach(fvsInst=>out.push({pav, unid, amb, fvsInst}))));
   });
   return out;
@@ -1406,22 +1410,24 @@ function renderFornecedorDetalhe(app){
 }
 
 // ---------- LISTAGEM DE AMBIENTES (compartilhada entre Pavimento e Unidade) ----------
-function renderListaAmbientes(main, container, montarRota, mensagemVazia){
-  if(!container.ambientes.length){
+function renderListaAmbientes(main, container, montarRota, mensagemVazia, campo, iconeNome){
+  campo = campo || "ambientes";
+  const lista = container[campo] || [];
+  if(!lista.length){
     const div = document.createElement("div");
     div.className="empty";
     div.innerHTML = mensagemVazia || `Nenhum ambiente cadastrado.<br>Toque em "+" para adicionar (ex: Sala, Banheiro, Cozinha).`;
     main.appendChild(div);
     return;
   }
-  container.ambientes.forEach(amb=>{
+  lista.forEach(amb=>{
     const p = calcProgressoFvsList(amb.fvsList);
     const ncA = contarNC(amb.fvsList);
     const div = document.createElement("div");
     div.className="list-item";
     div.onclick=()=>go(montarRota(amb));
     div.innerHTML = `
-      <div class="icon">${icon('door')}</div>
+      <div class="icon">${icon(iconeNome||'door')}</div>
       <div class="info">
         <div class="title">${escapeHtml(amb.nome)}</div>
         <div class="sub">${amb.fvsList.length} serviço(s) · ${p}%${ncA?` · ${ncA} NC`:""}</div>
@@ -1444,6 +1450,7 @@ function renderPavimento(app){
   const obra = getObra(route.obraId);
   const pav = getPav(obra, route.pavId);
   if(!pav.unidades) pav.unidades = [];
+  if(!pav.estrutura) pav.estrutura = [];
 
   const btnRenomear = document.createElement("button");
   btnRenomear.className="back"; btnRenomear.innerHTML=icon('pencil'); btnRenomear.title="Renomear pavimento";
@@ -1460,8 +1467,13 @@ function renderPavimento(app){
   app.appendChild(header(`${obra.nome} · ${pav.nome}`, ()=>go({view:"obra", obraId:obra.id}), acoesWrap));
   const main = document.createElement("main");
 
+  if(pav.estrutura.length){
+    main.appendChild(subtituloSecao("Estrutura", 4));
+    renderListaAmbientes(main, pav, amb=>({view:"ambiente", obraId:obra.id, pavId:pav.id, secao:"estrutura", ambId:amb.id}), null, "estrutura", "pilar");
+  }
+
   if(pav.unidades.length){
-    main.appendChild(subtituloSecao("Unidades", 4));
+    main.appendChild(subtituloSecao("Unidades", pav.estrutura.length?20:4));
     pav.unidades.forEach(unid=>{
       const p = calcProgressoFvsList(unid.ambientes.flatMap(a=>a.fvsList));
       const ncU = contarNC(unid.ambientes.flatMap(a=>a.fvsList));
@@ -1478,12 +1490,12 @@ function renderPavimento(app){
         <div class="chevron">${icon('chevron')}</div>`;
       main.appendChild(div);
     });
-    main.appendChild(subtituloSecao("Ambientes comuns", 20));
   }
 
-  const mensagemVaziaPav = pav.unidades.length ? null :
-    `Nenhuma unidade ou ambiente cadastrado.<br>Toque em "+" para adicionar uma <b>Unidade Autônoma</b> (ex: Apto 101) ou uma <b>Área/Ambiente Comum</b> (ex: Hall, Escada, Sala).`;
-  renderListaAmbientes(main, pav, amb=>({view:"ambiente", obraId:obra.id, pavId:pav.id, ambId:amb.id}), mensagemVaziaPav);
+  main.appendChild(subtituloSecao("Ambientes comuns", (pav.estrutura.length||pav.unidades.length)?20:4));
+  const mensagemVaziaPav = (pav.unidades.length||pav.estrutura.length) ? `Nenhum ambiente comum cadastrado.<br>Toque em "+" para adicionar (ex: Hall, Fachada, Garagem).` :
+    `Nenhum ambiente cadastrado ainda.<br>Toque em "+" para adicionar <b>Estrutura</b> (ex: Pilares, Vigas), uma <b>Unidade Autônoma</b> (ex: Apto 101) ou uma <b>Área/Ambiente Comum</b> (ex: Hall, Escada).`;
+  renderListaAmbientes(main, pav, amb=>({view:"ambiente", obraId:obra.id, pavId:pav.id, ambId:amb.id}), mensagemVaziaPav, "ambientes");
 
   app.appendChild(main);
 
@@ -1496,13 +1508,15 @@ function renderPavimento(app){
 function abrirMenuAdicionarPavimento(obra, pav){
   openModal(`
     <h2>Adicionar ao pavimento</h2>
+    <button class="btn primary" id="m-estrutura">${icon('pilar')} Adicionar à Estrutura</button>
+    <button class="btn primary" id="m-numerados">${icon('clipboard')} Criar elementos numerados (Estrutura)</button>
     <button class="btn primary" id="m-amb">${icon('door')} Novo Ambiente (comum)</button>
-    <button class="btn primary" id="m-numerados">${icon('clipboard')} Criar elementos numerados</button>
     <button class="btn primary" id="m-unid">${icon('key')} Nova Unidade</button>
     <button class="btn primary" id="m-importar">${icon('ruler')} Importar planta (PDF/DXF)</button>
   `);
-  document.getElementById("m-amb").onclick=()=>{ closeModal(); promptNovoAmbiente(pav, SUGESTOES_AMBIENTE_COMUM); };
+  document.getElementById("m-estrutura").onclick=()=>{ closeModal(); promptNovoAmbiente(pav, SUGESTOES_ESTRUTURA, "estrutura"); };
   document.getElementById("m-numerados").onclick=()=>{ closeModal(); promptElementosNumerados(pav); };
+  document.getElementById("m-amb").onclick=()=>{ closeModal(); promptNovoAmbiente(pav, SUGESTOES_AMBIENTE_COMUM); };
   document.getElementById("m-unid").onclick=()=>{ closeModal(); promptNovaUnidade(pav); };
   document.getElementById("m-importar").onclick=()=>{ closeModal(); abrirImportarPlanta(obra, pav, null); };
 }
@@ -1531,13 +1545,18 @@ const SUGESTOES_AMBIENTE_UNIDADE = [
 ];
 
 const SUGESTOES_AMBIENTE_COMUM = [
-  "Estrutura", "Lajes e Vigas", "Pilares", "Escada", "Hall", "Fachada",
-  "Garagem", "Depósito", "Casa de Máquinas", "Reservatório", "Poço do Elevador"
+  "Hall", "Fachada", "Garagem", "Depósito", "Casa de Máquinas",
+  "Reservatório", "Poço do Elevador"
 ];
 
-function promptNovoAmbiente(container, sugestoes){
+const SUGESTOES_ESTRUTURA = [
+  "Pilares", "Vigas", "Lajes", "Forma", "Armação", "Escada", "Fundação", "Contenção"
+];
+
+function promptNovoAmbiente(container, sugestoes, campo){
+  campo = campo || "ambientes";
   const selecionados = new Set();
-  const jaExistentes = new Set(container.ambientes.map(a=>a.nome.toLowerCase()));
+  const jaExistentes = new Set(container[campo].map(a=>a.nome.toLowerCase()));
   let chipsHtml = "";
   if(sugestoes && sugestoes.length){
     chipsHtml = `<label>Sugestões (toque para selecionar, pode escolher várias)</label>
@@ -1548,11 +1567,12 @@ function promptNovoAmbiente(container, sugestoes){
         }).join("")}
       </div>`;
   }
+  const titulo = campo==="estrutura" ? "Novo Item de Estrutura" : "Novo Ambiente";
   openModal(`
-    <h2>Novo Ambiente</h2>
+    <h2>${titulo}</h2>
     ${chipsHtml}
-    <label style="margin-top:${sugestoes&&sugestoes.length?'16px':'0'};">Nome do ambiente (opcional, além das sugestões)</label>
-    <input id="m-nome" placeholder="Ex: Banheiro 1, Fachada Norte">
+    <label style="margin-top:${sugestoes&&sugestoes.length?'16px':'0'};">Nome (opcional, além das sugestões)</label>
+    <input id="m-nome" placeholder="${campo==='estrutura'?'Ex: Pilares Pav. 3, Laje 4':'Ex: Banheiro 1, Fachada Norte'}">
     <button class="btn primary" id="m-salvar">Adicionar</button>
   `);
   if(sugestoes && sugestoes.length){
@@ -1570,7 +1590,7 @@ function promptNovoAmbiente(container, sugestoes){
     const nomes = [...selecionados];
     if(nomeLivre) nomes.push(nomeLivre);
     if(!nomes.length) return alert("Selecione uma sugestão ou digite um nome.");
-    nomes.forEach(nome=>container.ambientes.push({ id:uid(), nome, fvsList:[] }));
+    nomes.forEach(nome=>container[campo].push({ id:uid(), nome, fvsList:[] }));
     saveDB(db); closeModal();
     render();
   };
@@ -1688,8 +1708,9 @@ function abrirEscolhaFvsElementosNumerados(pav, nomes, preSelecionadas){
   document.getElementById("m-busca").oninput=(e)=>renderLista(e.target.value);
   document.getElementById("m-criar").onclick=()=>{
     const fvsSelecionadas = [...selecionados].map(key=>FVS_CATALOGO.find(f=>f.codigo+"|"+f.rev===key)).filter(Boolean);
+    if(!pav.estrutura) pav.estrutura = [];
     nomes.forEach(nome=>{
-      pav.ambientes.push({
+      pav.estrutura.push({
         id: uid(), nome,
         fvsList: fvsSelecionadas.map(fvs=>criarInstanciaFvs(fvs))
       });
@@ -1735,13 +1756,15 @@ function renderAmbiente(app){
   const obra = getObra(route.obraId);
   const pav = getPav(obra, route.pavId);
   if(!pav.unidades) pav.unidades = [];
+  if(!pav.estrutura) pav.estrutura = [];
   const unid = route.unidId ? getUnid(pav, route.unidId) : null;
+  const campo = (!unid && route.secao==="estrutura") ? "estrutura" : "ambientes";
   const container = unid || pav;
-  const amb = getAmb(container, route.ambId);
+  const amb = getAmb(container, route.ambId, campo);
   const voltarRota = unid ? {view:"unidade", obraId:obra.id, pavId:pav.id, unidId:unid.id} : {view:"pavimento", obraId:obra.id, pavId:pav.id};
-  const tituloPai = unid ? `${pav.nome} · ${unid.nome}` : pav.nome;
+  const tituloPai = unid ? `${pav.nome} · ${unid.nome}` : (campo==="estrutura" ? `${pav.nome} · Estrutura` : pav.nome);
   app.appendChild(header(`${tituloPai} · ${amb.nome}`, ()=>go(voltarRota), botaoExcluir(()=>{
-    container.ambientes = container.ambientes.filter(a=>a.id!==amb.id);
+    container[campo] = container[campo].filter(a=>a.id!==amb.id);
     saveDB(db); go(voltarRota);
   }, `Excluir o ambiente "${amb.nome}" e todas as suas verificações? Essa ação não pode ser desfeita.`)));
   const main = document.createElement("main");
@@ -2754,7 +2777,9 @@ function exportarRelatorioObra(obra){
 
   obra.pavimentos.forEach(pav=>{
     if(!pav.unidades) pav.unidades = [];
+    if(!pav.estrutura) pav.estrutura = [];
     const linhas = pav.ambientes.map(amb=>({unidade:"—", amb}))
+      .concat(pav.estrutura.map(amb=>({unidade:"Estrutura", amb})))
       .concat(pav.unidades.flatMap(unid=>unid.ambientes.map(amb=>({unidade:unid.nome, amb}))));
     if(!linhas.length){
       html += `<tr><td>${escapeHtml(pav.nome)}</td><td colspan="5">Nenhum ambiente cadastrado</td></tr>`;
