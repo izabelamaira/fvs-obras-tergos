@@ -4,6 +4,57 @@
 // IMPORTANTE: validar com engenheiro/responsável técnico antes de uso formal em campo.
 window.FVS_SUBCHECKS = {
 
+  "FVS-12|00": {
+    "Perfuração do fuste executada mecanicamente (perfuratriz) até a profundidade especificada em projeto, com verticalidade e diâmetro conferidos": [
+      "Equipamento perfuratriz posicionado e centralizado conforme locação de projeto",
+      "Verticalidade do fuste conferida durante a perfuração",
+      "Profundidade final do fuste conferida com a cota especificada em projeto",
+      "Diâmetro do fuste conferido com o especificado em projeto"
+    ],
+    "Diâmetro do fuste conferido — mínimo de 0,9 m no trecho onde houver entrada do trabalhador para o alargamento da base (NR-18.7.2.17)": [
+      "Diâmetro do fuste medido antes de qualquer entrada de trabalhador",
+      "Diâmetro mínimo de 0,9 m (90 cm) respeitado no trecho onde houver descida de pessoa",
+      "Medição registrada e conferida antes da liberação da etapa de base",
+      "Ausência de estreitamentos ou irregularidades no fuste que dificultem a entrada/saída do trabalhador"
+    ],
+    "Encamisamento do fuste instalado antes da descida do trabalhador para a etapa de alargamento da base, garantindo proteção contra desmoronamento": [
+      "Encamisamento (revestimento) instalado antes de qualquer descida de trabalhador",
+      "Revestimento em bom estado, sem amassados ou falhas",
+      "Ausência de infiltração de solo entre o fuste e o revestimento",
+      "Revestimento mantido durante toda a permanência do trabalhador no fuste"
+    ],
+    "Liberação de serviço específica emitida pelo responsável técnico para a etapa de alargamento da base, antes de qualquer descida (NR-18.7.2.22.1)": [
+      "Liberação formal emitida pelo responsável técnico especificamente para a etapa de base",
+      "Inspeção das condições do fuste realizada antes da liberação",
+      "Registro da liberação arquivado",
+      "Nenhuma descida realizada sem a liberação correspondente"
+    ],
+    "Equipamento de descida/içamento (sarilho) projetado por profissional habilitado, fixado no terreno, com dupla trava de segurança e corda com no mínimo 6 voltas sobre o tambor": [
+      "Sarilho com projeto de profissional legalmente habilitado disponível na obra",
+      "Sarilho fixado firmemente ao terreno, sem folga ou instabilidade",
+      "Dupla trava de segurança instalada, uma de cada lado do sarilho",
+      "Corda com no mínimo 6 voltas sobre o tambor e gancho com trava de segurança na extremidade"
+    ],
+    "Ventilação por insuflação de ar em funcionamento e teste de atmosfera (gases e oxigênio) realizado antes da descida do trabalhador, conforme NR-33": [
+      "Duto de insuflação de ar captando de local isento de fontes de poluição",
+      "Ventilação em funcionamento contínuo durante a permanência do trabalhador no fuste",
+      "Teste de atmosfera (gases tóxicos, inflamáveis e nível de oxigênio) realizado antes de cada entrada",
+      "Equipe e equipamento de resgate disponíveis durante o trabalho no fuste"
+    ],
+    "Base alargada executada nas dimensões de projeto, com fundo limpo, e concretagem iniciada em até 24 horas após a conclusão do alargamento": [
+      "Diâmetro e altura da base alargada conferidos com o especificado em projeto",
+      "Fundo da escavação limpo, isento de material solto ou água, antes da concretagem",
+      "Solo de apoio da base inspecionado visualmente quanto à capacidade de suporte",
+      "Intervalo entre a conclusão do alargamento e a concretagem não superior a 24 horas"
+    ],
+    "Ensaio de integridade e/ou prova de carga realizados conforme especificado pelo projetista, com resultado aprovado antes da concretagem do bloco de coroamento": [
+      "Quantidade e localização dos ensaios definidas pelo responsável técnico do projeto e previstas na planilha",
+      "Ensaio de integridade (PIT) realizado conforme ASTM D5882 nos tubulões indicados",
+      "Prova de carga estática, quando exigida, realizada conforme NBR 16903 com curva carga-recalque apresentada",
+      "Resultado dos ensaios enviado e aprovado pela fiscalização antes do início da concretagem do bloco de coroamento"
+    ]
+  },
+
   "FVS-04|00": {
     "Locação e cotas de assentamento (nível de arrasamento) dos blocos/sapatas/cintas conferidas com o projeto de fundações antes da escavação": [
       "Eixos e cotas de arrasamento locados por topografia conforme projeto de fundações",

@@ -139,6 +139,19 @@ const FVS_CATALOGO = [
       "Base/suporte das unidades condensadoras dimensionado e nivelado"
     ]
   },
+  { codigo:"FVS-12", nome:"Tubulão (fuste mecanizado, base manual)", rev:"00",
+    normas:["NBR 6122:2022 - Projeto e execução de fundações","NBR 16903:2020 - Prova de carga estática em fundação profunda","NR-18 (item 18.7.2) - Segurança e Saúde no Trabalho na Indústria da Construção — Escavações, Fundações e Desmonte de Rochas","NR-33 - Segurança e Saúde nos Trabalhos em Espaços Confinados","Caderno de Encargos SUDECAP - Capítulo 4: Fundações, item 4.5 (Tabela 10 - Tubulão)"],
+    itens:[
+      "Perfuração do fuste executada mecanicamente (perfuratriz) até a profundidade especificada em projeto, com verticalidade e diâmetro conferidos",
+      "Diâmetro do fuste conferido — mínimo de 0,9 m no trecho onde houver entrada do trabalhador para o alargamento da base (NR-18.7.2.17)",
+      "Encamisamento do fuste instalado antes da descida do trabalhador para a etapa de alargamento da base, garantindo proteção contra desmoronamento",
+      "Liberação de serviço específica emitida pelo responsável técnico para a etapa de alargamento da base, antes de qualquer descida (NR-18.7.2.22.1)",
+      "Equipamento de descida/içamento (sarilho) projetado por profissional habilitado, fixado no terreno, com dupla trava de segurança e corda com no mínimo 6 voltas sobre o tambor",
+      "Ventilação por insuflação de ar em funcionamento e teste de atmosfera (gases e oxigênio) realizado antes da descida do trabalhador, conforme NR-33",
+      "Base alargada executada nas dimensões de projeto, com fundo limpo, e concretagem iniciada em até 24 horas após a conclusão do alargamento",
+      "Ensaio de integridade e/ou prova de carga realizados conforme especificado pelo projetista, com resultado aprovado antes da concretagem do bloco de coroamento"
+    ]
+  },
   { codigo:"FVS-13", nome:"Impermeabilização com Manta Asfáltica", rev:"00",
     normas:["NBR 9575:2010 - Impermeabilização - Seleção e projeto","NBR 9574:2008 - Execução de impermeabilização","NBR 13707:2018 - Manta asfáltica para impermeabilização - Requisitos (verificar edição vigente)"],
     itens:[
