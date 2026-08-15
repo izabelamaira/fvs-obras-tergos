@@ -37,6 +37,11 @@
   header.top.logo-header{background:var(--card);border-bottom:1px solid var(--border);}
   header.top.logo-header button.back{color:var(--text);}
   header.top.logo-header .logo-img{height:46px;flex-shrink:0;object-fit:contain;}
+  .obra-logo-wrap{flex:1;display:flex;justify-content:center;align-items:center;min-width:0;cursor:pointer;}
+  .obra-logo-wrap .obra-logo-img{height:44px;max-width:75%;object-fit:contain;border-radius:6px;}
+  .obra-logo-wrap .obra-logo-placeholder{display:flex;align-items:center;gap:8px;max-width:100%;color:var(--text);font-weight:600;font-size:16px;}
+  .obra-logo-wrap .obra-logo-placeholder .nome{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .obra-logo-wrap .obra-logo-placeholder .edit-badge{width:22px;height:22px;border-radius:50%;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;color:var(--muted);}
   main{padding:14px;}
   .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:10px;}
   .list-item{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:8px;cursor:pointer;transition:background .1s;}
@@ -1013,6 +1018,43 @@ function header(title, onBack, actionBtn){
   return h;
 }
 
+function headerObra(obra){
+  const h = document.createElement("header");
+  h.className = "top logo-header";
+
+  const back = document.createElement("button");
+  back.className="back"; back.innerHTML=icon('back');
+  back.onclick=()=>{ pavimentosReordenando = false; go({view:"obras"}); };
+  h.appendChild(back);
+
+  const wrap = document.createElement("div");
+  wrap.className = "obra-logo-wrap";
+  wrap.title = "Toque para alterar a logo da obra";
+  wrap.onclick=()=>{
+    const input = document.createElement("input");
+    input.type="file"; input.accept="image/*";
+    input.onchange=()=>{
+      const file = input.files[0];
+      if(!file) return;
+      const reader = new FileReader();
+      reader.onload=(ev)=>{ obra.foto = ev.target.result; saveDB(db); render(); };
+      reader.readAsDataURL(file);
+    };
+    input.click();
+  };
+  wrap.innerHTML = obra.foto
+    ? `<img class="obra-logo-img" src="${obra.foto}" alt="${escapeHtml(obra.nome)}">`
+    : `<span class="obra-logo-placeholder"><span class="nome">${escapeHtml(obra.nome)}</span><span class="edit-badge">${icon('camera')}</span></span>`;
+  h.appendChild(wrap);
+
+  h.appendChild(botaoExcluir(()=>{
+    db.obras = db.obras.filter(o=>o.id!==obra.id);
+    saveDB(db); go({view:"obras"});
+  }, `Excluir a obra "${obra.nome}" e todos os seus pavimentos, ambientes e verificações? Essa ação não pode ser desfeita.`));
+
+  return h;
+}
+
 function botaoExcluir(onConfirmar, mensagem){
   const b = document.createElement("button");
   b.className="back"; b.innerHTML=icon('trash'); b.title="Excluir";
@@ -1118,10 +1160,7 @@ function promptNovaObra(){
 // ---------- TELA: OBRA (lista de pavimentos) ----------
 function renderObra(app){
   const obra = getObra(route.obraId);
-  app.appendChild(header(obra.nome, ()=>{ pavimentosReordenando = false; go({view:"obras"}); }, botaoExcluir(()=>{
-    db.obras = db.obras.filter(o=>o.id!==obra.id);
-    saveDB(db); go({view:"obras"});
-  }, `Excluir a obra "${obra.nome}" e todos os seus pavimentos, ambientes e verificações? Essa ação não pode ser desfeita.`)));
+  app.appendChild(headerObra(obra));
   const main = document.createElement("main");
 
   const todasFvsInst = todosAmbientesDaObra(obra).flatMap(a=>a.fvsList);
