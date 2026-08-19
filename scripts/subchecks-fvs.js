@@ -152,7 +152,7 @@ window.FVS_SUBCHECKS = {
       "Superfície rugosa (ranhuras transversais) executada em taludes de corte mecanizado",
       "Patamares/banquetas com largura mínima de 3 m executados em taludes de altura elevada, com valetas revestidas e proteção vegetal"
     ],
-    "Material de aterro selecionado (sem turfas, argilas orgânicas ou solos expansivos), lançado em camadas de até 30 cm, com umidade ajustada por irrigação — nunca compactado com terra seca (o ensaio de compactação em si é verificado na FVS-06)": [
+    "Material de aterro selecionado (sem turfas, argilas orgânicas ou solos expansivos), lançado em camadas de até 30 cm, com umidade ajustada por irrigação — nunca compactado com terra seca (o ensaio de compactação em si é verificado na FVS-02)": [
       "Material de aterro conferido — ausência de turfas, argilas orgânicas ou solos expansivos",
       "Camadas lançadas com espessura de aproximadamente 20 cm, não superior a 30 cm",
       "Umidade do material ajustada por irrigação antes da compactação",
@@ -166,7 +166,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-04|00": {
+  "FVS-05|00": {
     "Perfuração do fuste executada mecanicamente (perfuratriz) até a profundidade especificada em projeto, com verticalidade e diâmetro conferidos": [
       "Equipamento perfuratriz posicionado e centralizado conforme locação de projeto",
       "Verticalidade do fuste conferida durante a perfuração",
@@ -283,7 +283,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-05|00": {
+  "FVS-06|00": {
     "Medidas do projeto topográfico conferidas antes da locação, para evitar erros de levantamento e marcações indevidas": [
       "Projeto topográfico disponível e conferido antes do início da locação",
       "Medidas do levantamento topográfico conferidas em campo",
@@ -370,7 +370,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-03|00": {
+  "FVS-04|00": {
     "Centro da estaca conferido com arame e prumo de centro antes do início da perfuração — desvio máximo de 5 mm em relação ao eixo de projeto, com embocamento executado": [
       "Centro da estaca marcado e conferido com arame e prumo de centro antes do início da perfuração",
       "Desvio entre o centro executado e o eixo de projeto medido, dentro da tolerância de 5 mm",
@@ -499,7 +499,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-06|00": {
+  "FVS-02|00": {
     "Ensaio de compactação (Proctor) realizado para o material de aterro utilizado": [
       "Ensaio de compactação conforme NBR 7182 realizado para cada tipo de material/jazida usado no aterro",
       "Novo ensaio realizado a cada 300 m³ de material ou quando houver mudança de material",
@@ -544,7 +544,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-02|00": {
+  "FVS-03|00": {
     "Terreno limpo e escavado até as cotas corretas para execução das fundações, antes do início da locação": [
       "Terreno limpo e desobstruído conferido antes do início da locação",
       "Escavação até as cotas corretas para execução das fundações conferida",

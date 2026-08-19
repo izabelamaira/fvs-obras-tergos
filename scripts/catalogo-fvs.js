@@ -20,11 +20,23 @@ const FVS_CATALOGO = [
       "Referência de nível (RN) definida para a locação altimétrica dos platôs de corte e aterro",
       "Cortes executados conforme cotas e perfis de projeto, permitindo escoamento de águas pluviais",
       "Taludes executados com declive máximo de 45°, marcados com esquadro e nível de bolha — superfície rugosa quando resultante de corte mecanizado, e patamares/banquetas de largura mínima de 3 m em taludes de altura elevada",
-      "Material de aterro selecionado (sem turfas, argilas orgânicas ou solos expansivos), lançado em camadas de até 30 cm, com umidade ajustada por irrigação — nunca compactado com terra seca (o ensaio de compactação em si é verificado na FVS-06)",
+      "Material de aterro selecionado (sem turfas, argilas orgânicas ou solos expansivos), lançado em camadas de até 30 cm, com umidade ajustada por irrigação — nunca compactado com terra seca (o ensaio de compactação em si é verificado na FVS-02)",
       "Tubulações que permanecerão na área aterrada travadas antes da compactação, para evitar deslocamento"
     ]
   },
-  { codigo:"FVS-02", nome:"Locação de Obra", rev:"00",
+  { codigo:"FVS-02", nome:"Compactação de Aterro", rev:"00",
+    normas:["NBR 5681:2015 - Controle tecnológico da execução de aterros em obras de edificação","NBR 7182:2020 - Solo - Ensaio de compactação","NBR 7185:2016 - Solo - Determinação da massa específica aparente, in situ, com emprego de frasco de areia","NBR 9813:2016 - Solo - Determinação da massa específica aparente, in situ, com emprego de cilindro de cravação"],
+    itens:[
+      "Ensaio de compactação (Proctor) realizado para o material de aterro utilizado",
+      "Umidade do material de aterro na faixa admissível em relação à umidade ótima",
+      "Espessura das camadas de aterro conforme especificação de projeto",
+      "Grau de compactação atingido conforme exigência de projeto",
+      "Equipamento de compactação adequado ao tipo de solo",
+      "Ausência de matéria orgânica, entulho ou material inadequado no aterro",
+      "Drenagem e proteção do aterro contra erosão/saturação"
+    ]
+  },
+  { codigo:"FVS-03", nome:"Locação de Obra", rev:"00",
     normas:["NBR 13133:2021 - Execução de levantamento topográfico","PES 3 - Locação de Obra (procedimento interno TERGOS)","FVS 3 - Locação de Obra (planilha real da TERGOS, 2023) — fonte das tolerâncias e métodos revisados a partir dela"],
     itens:[
       "Terreno limpo e escavado até as cotas corretas para execução das fundações, antes do início da locação",
@@ -38,7 +50,7 @@ const FVS_CATALOGO = [
       "Memorial de locação assinado por responsável técnico"
     ]
   },
-  { codigo:"FVS-03", nome:"Estacas Hélice Contínua", rev:"00",
+  { codigo:"FVS-04", nome:"Estacas Hélice Contínua", rev:"00",
     normas:["NBR 6122:2022 - Projeto e execução de fundações","NBR 6122 (Emenda 1:2022, Anexo O) - Concreto para estacas hélice contínua monitorada","NBR 16903:2020 - Prova de carga estática em fundação profunda","NBR 13208:2007 - Estacas - Ensaios de carregamento dinâmico","ASTM D5882/16 - Standard Test Method for Low Strain Impact Integrity Testing of Deep Foundations","Caderno de Encargos SUDECAP - Capítulo 4: Fundações, item 4.5 (Tabela 8 - Hélice Contínua Monitorada)","PES 4.2 - Fundações Profundas - Estacas Hélice Contínua (procedimento interno TERGOS) — itens marcados \"prática interna TERGOS\" abaixo não constam nas normas ABNT, são cultura/exigência própria da empresa","FVS 4.2 - Fundações Profundas - Estacas Hélice Contínua (planilha real da TERGOS, usada em campo) — fonte das tolerâncias e itens revisados/adicionados a partir dela"],
     itens:[
       "Centro da estaca conferido com arame e prumo de centro antes do início da perfuração — desvio máximo de 5 mm em relação ao eixo de projeto, com embocamento executado",
@@ -64,7 +76,7 @@ const FVS_CATALOGO = [
       "Formulário \"Controle de Execução de Estaca Hélice Contínua\" preenchido para cada estaca executada, a partir de cópia do modelo salva na pasta da obra — nunca editado por cima da planilha modelo (prática interna TERGOS)"
     ]
   },
-  { codigo:"FVS-04", nome:"Tubulão (fuste mecanizado, base manual)", rev:"00",
+  { codigo:"FVS-05", nome:"Tubulão (fuste mecanizado, base manual)", rev:"00",
     normas:["NBR 6122:2022 - Projeto e execução de fundações","NBR 16903:2020 - Prova de carga estática em fundação profunda","NR-18 (item 18.7.2) - Segurança e Saúde no Trabalho na Indústria da Construção — Escavações, Fundações e Desmonte de Rochas","NR-33 - Segurança e Saúde nos Trabalhos em Espaços Confinados","Caderno de Encargos SUDECAP - Capítulo 4: Fundações, item 4.5 (Tabela 10 - Tubulão)","FVS 4.1 - Fundações Profundas - Tubulões (planilha real da TERGOS, 2023) — fonte dos itens dimensionais/de proteção adicionados a partir dela","PES 4.1 - Fundações Profundas - Tubulões (procedimento interno TERGOS) — itens marcados \"prática interna TERGOS\" não constam nas normas ABNT"],
     itens:[
       "Perfuração do fuste executada mecanicamente (perfuratriz) até a profundidade especificada em projeto, com verticalidade e diâmetro conferidos",
@@ -88,7 +100,7 @@ const FVS_CATALOGO = [
       "Ensaio de integridade e/ou prova de carga realizados conforme especificado pelo projetista, com resultado aprovado antes da concretagem do bloco de coroamento"
     ]
   },
-  { codigo:"FVS-05", nome:"Fundações Rasas - Blocos e Cintas", rev:"00",
+  { codigo:"FVS-06", nome:"Fundações Rasas - Blocos e Cintas", rev:"00",
     normas:["NBR 6122:2022 - Projeto e execução de fundações","NBR 6118:2023 - Projeto de estruturas de concreto - Procedimento","NBR 6489:2019 - Solo - Prova de carga estática em fundação direta","NBR 16889:2020 - Concreto - Determinação da consistência pelo abatimento do tronco de cone","NBR 14931:2023 - Execução de estruturas de concreto - Procedimento","Caderno de Encargos SUDECAP - Capítulo 4: Fundações, itens 4.4 (Fundações em Superfície) e 4.4.2 (Condições Específicas)","PES 5 - Fundações Rasas - Blocos e Cintas (procedimento interno TERGOS)","FVS 5 - Fundações Rasas - Blocos e Cintas (planilha real da TERGOS, 2023) — fonte dos itens revisados/adicionados a partir dela, marcados \"prática interna TERGOS\""],
     itens:[
       "Medidas do projeto topográfico conferidas antes da locação, para evitar erros de levantamento e marcações indevidas",
@@ -105,18 +117,6 @@ const FVS_CATALOGO = [
       "Dimensões executadas (largura, comprimento, altura/espessura) dos blocos/sapatas/cintas conferidas com o projeto — sem lançamento de volumes/quantitativos indevidos",
       "Formulário de Controle de Execução preenchido para cada bloco/cinta — cota do terreno, cota de arrasamento, medidas, volume de concreto (projeto x executado), traço, sobreconsumo e existência de barra de aterramento (prática interna TERGOS)",
       "Prova de carga estática em fundação direta realizada conforme NBR 6489 (quando exigida pelo projetista), com resultado aprovado pela fiscalização antes da execução"
-    ]
-  },
-  { codigo:"FVS-06", nome:"Compactação de Aterro", rev:"00",
-    normas:["NBR 5681:2015 - Controle tecnológico da execução de aterros em obras de edificação","NBR 7182:2020 - Solo - Ensaio de compactação","NBR 7185:2016 - Solo - Determinação da massa específica aparente, in situ, com emprego de frasco de areia","NBR 9813:2016 - Solo - Determinação da massa específica aparente, in situ, com emprego de cilindro de cravação"],
-    itens:[
-      "Ensaio de compactação (Proctor) realizado para o material de aterro utilizado",
-      "Umidade do material de aterro na faixa admissível em relação à umidade ótima",
-      "Espessura das camadas de aterro conforme especificação de projeto",
-      "Grau de compactação atingido conforme exigência de projeto",
-      "Equipamento de compactação adequado ao tipo de solo",
-      "Ausência de matéria orgânica, entulho ou material inadequado no aterro",
-      "Drenagem e proteção do aterro contra erosão/saturação"
     ]
   },
   { codigo:"FVS-07", nome:"Tubulação a céu aberto", rev:"00",
