@@ -47,6 +47,30 @@ window.FVS_SUBCHECKS = {
       "Solo de apoio da base inspecionado visualmente quanto à capacidade de suporte",
       "Intervalo entre a conclusão do alargamento e a concretagem não superior a 24 horas"
     ],
+    "Medidas da base alargada conferidas com trena (altura, diâmetro e rodapé, quando houver) — tolerância de ±5 mm": [
+      "Altura da base alargada medida com trena e conferida com o projeto",
+      "Diâmetro da base medido com trena e conferido com o projeto",
+      "Rodapé da base medido, quando previsto em projeto",
+      "Medidas dentro da tolerância de ±5 mm em relação ao projeto"
+    ],
+    "Posicionamento da armação conferido — espaçadores corretamente instalados, dimensões/seções conforme projeto, respeitando a distância mínima da armação até a parede do fuste": [
+      "Espaçadores instalados corretamente ao longo de toda a armação",
+      "Dimensões e seções da armação conferidas com o projeto",
+      "Distância mínima entre a armação e a parede do fuste respeitada",
+      "Armação posicionada e centralizada antes da concretagem"
+    ],
+    "Cota de arrasamento conferida conforme projeto, incluindo vigas alavancas e poço de elevador quando aplicável — tolerância de ±5 mm a cada 10 m": [
+      "Cota de arrasamento do tubulão conferida com o projeto",
+      "Cota de vigas alavancas conferida, quando aplicável",
+      "Cota do poço de elevador conferida, quando aplicável",
+      "Tolerância de ±5 mm a cada 10 m respeitada"
+    ],
+    "Pontas dos vergalhões expostos e buracos de tubulões protegidos contra acidentes": [
+      "Pontas de vergalhões expostas identificadas após a concretagem",
+      "Proteção (capacete plástico ou similar) instalada em todas as pontas expostas",
+      "Buracos de tubulões ainda não concretados sinalizados e/ou tapados",
+      "Proteções conferidas periodicamente enquanto o risco persistir"
+    ],
     "Ensaio de integridade e/ou prova de carga realizados conforme especificado pelo projetista, com resultado aprovado antes da concretagem do bloco de coroamento": [
       "Quantidade e localização dos ensaios definidas pelo responsável técnico do projeto e previstas na planilha",
       "Ensaio de integridade (PIT) realizado conforme ASTM D5882 nos tubulões indicados",
@@ -107,17 +131,29 @@ window.FVS_SUBCHECKS = {
   },
 
   "FVS-03|00": {
-    "Locação e verticalidade/prumo do equipamento conferidos antes do início da perfuração — desvio entre eixo executado e eixo de projeto dentro de 10% do diâmetro da estaca (estacas isoladas não travadas)": [
-      "Eixo da estaca locado por topografia (estação total/GPS) conforme projeto de fundações",
-      "Prumo do mastro do equipamento aferido com nível antes do início da perfuração",
-      "Desvio entre eixo executado e eixo de projeto medido após a execução, dentro de 10% do diâmetro da estaca",
+    "Centro da estaca conferido com arame e prumo de centro antes do início da perfuração — desvio máximo de 5 mm em relação ao eixo de projeto, com embocamento executado": [
+      "Centro da estaca marcado e conferido com arame e prumo de centro antes do início da perfuração",
+      "Desvio entre o centro executado e o eixo de projeto medido, dentro da tolerância de 5 mm",
+      "Embocamento (início da perfuração) executado e conferido",
       "Registro fotográfico da locação antes da perfuração"
+    ],
+    "Identificação de cada estaca conferida de acordo com o projeto": [
+      "Numeração/identificação de cada estaca conferida com a planta de locação do projeto",
+      "Identificação marcada em campo (piquete, plaqueta ou similar) de forma visível e durável",
+      "Identificação mantida legível até o fim da execução da estaca",
+      "Identificação registrada na ficha de controle correspondente"
     ],
     "Perfuração monitorada eletronicamente (torque, velocidade de avanço/rotação e profundidade) até a cota de projeto, com torque e força de arranque compatíveis com o diâmetro da estaca e a resistência do solo": [
       "Equipamento dotado de sensores eletrônicos de torque, avanço e profundidade ligados a computador de bordo",
       "Relatório/ficha de monitoramento eletrônico gerado e arquivado para cada estaca",
       "Cota final de perfuração conferida com a profundidade especificada em projeto",
       "Torque e força de arranque compatíveis com o diâmetro da estaca e a resistência do solo perfurado, sem indícios de instabilidade"
+    ],
+    "Posicionamento do trado reconferido no centro da estaca imediatamente antes do início de cada perfuração": [
+      "Posicionamento do trado sobre o centro marcado da estaca conferido antes de ligar o equipamento",
+      "Conferência repetida a cada nova estaca, mesmo em sequência de perfurações no mesmo dia",
+      "Ajuste realizado quando houver qualquer desvio identificado, antes de iniciar a perfuração",
+      "Conferência registrada (verbal ao encarregado ou anotada) antes do início"
     ],
     "Concretagem executada por injeção pelo tubo central do trado, simultânea e contínua à retirada, com pressão controlada — sem interrupções que gerem vazios ou estrangulamento no fuste": [
       "Concretagem iniciada imediatamente após atingida a cota de projeto, sem intervalo prolongado de espera",
@@ -155,6 +191,12 @@ window.FVS_SUBCHECKS = {
       "Prova de carga estática, quando exigida, realizada conforme NBR 16903 com curva carga-recalque apresentada",
       "Resultado dos ensaios enviado e aprovado pela fiscalização antes do início da concretagem do bloco de coroamento"
     ],
+    "Relatório de profundidades emitido pela empresa de fundação conferido com o projeto e inserido na ficha de controle da estaca": [
+      "Relatório de execução emitido pela empresa de fundação recebido para cada estaca",
+      "Profundidade atingida no relatório conferida com a profundidade especificada em projeto",
+      "Divergências entre relatório e projeto comunicadas ao responsável técnico",
+      "Dados do relatório inseridos na ficha de controle de execução da estaca"
+    ],
     "Fornecimento de concreto integralmente planejado antes do início da perfuração — traço aprovado, volume total da estaca, programação de entrega dos caminhões-betoneira e disponibilidade de bomba compatíveis com o ritmo de execução (prática interna TERGOS)": [
       "Traço do concreto aprovado conforme projeto (resistência, slump, diâmetro do agregado, consumo de cimento) antes do início da perfuração",
       "Volume total de concreto necessário para a estaca calculado e confirmado com a concreteira",
@@ -179,11 +221,11 @@ window.FVS_SUBCHECKS = {
       "Fixação do isopor conferida para que não se desloque durante a concretagem/introdução da armadura",
       "Ausência de concreto na região protegida pelo isopor após a concretagem, conferida na limpeza da cabeça da estaca"
     ],
-    "Posicionamento das barras de aterramento (SPDA) na armação conferido, quando especificado em projeto": [
-      "Projeto de SPDA consultado para verificar exigência de barras de aterramento na estaca",
-      "Posicionamento das barras de aterramento conferido conforme especificado em projeto",
-      "Continuidade elétrica das barras de aterramento com o restante do sistema SPDA verificada",
-      "Barras de aterramento protegidas/identificadas até a execução do bloco de coroamento"
+    "Posicionamento das barras de aterramento (SPDA) conferido no projeto — quando previsto, a haste desce junto com a armação": [
+      "Projeto de SPDA consultado para verificar exigência de haste de aterramento na estaca",
+      "Quando previsto, a haste de aterramento desce junto com a armação, na mesma operação",
+      "Posicionamento da haste conferido conforme especificado em projeto",
+      "Continuidade elétrica da haste de aterramento com o restante do sistema SPDA verificada"
     ],
     "Ferragens expostas protegidas após a concretagem, até a execução do bloco de coroamento": [
       "Ferragens expostas após a concretagem identificadas e isoladas de contato com solo/água",
@@ -191,9 +233,9 @@ window.FVS_SUBCHECKS = {
       "Proteção mantida até a execução do bloco de coroamento",
       "Ausência de sinais de corrosão nas ferragens expostas no momento da execução do bloco"
     ],
-    "Demolição do topo da estaca até a cota de arrasamento executada sem comprometer a armação — seção final plana e perpendicular ao eixo, com ponteiros/marteletes leves e leve inclinação para cima (prática interna TERGOS)": [
+    "Demolição do topo da estaca até a cota de arrasamento executada de baixo para cima ou na horizontal, sem comprometer a armação — seção final plana e perpendicular ao eixo, com ponteiros/marteletes leves (prática interna TERGOS)": [
       "Cota de arrasamento (ca) conferida antes do início da demolição",
-      "Demolição executada com ponteiros ou marteletes leves, com leve inclinação para cima em relação à horizontal",
+      "Demolição executada com ponteiros ou marteletes leves, de baixo para cima ou na horizontal",
       "Seção final da estaca plana e perpendicular ao eixo, sem fissuras que comprometam a armação",
       "Armação da estaca sem danos após a demolição do excesso de concreto"
     ],

@@ -247,6 +247,25 @@ function loadDB(){
 function saveDB(db){ localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); }
 function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
 
+// Quando o texto de um item existente é corrigido/reescrito no catálogo (não é item novo,
+// é o mesmo item com texto melhor — ex: tolerância errada corrigida), um simples "adicionar
+// o que falta" criaria um item duplicado ao lado do antigo. Este mapa diz, por FVS, qual
+// texto antigo deve virar qual texto novo — sincronizarItensCatalogoFvs() troca o texto in-place
+// (preserva status/obs/foto do item, já que a conclusão de campo costuma continuar válida) e
+// regenera os subitens a partir do texto novo (zera o progresso dos subitens, já que o
+// critério de verificação mudou). Precisa vir ANTES da chamada a sincronizarItensCatalogoFvs()
+// logo abaixo — sendo const, não é hoisted como as functions, e a chamada é feita cedo.
+const RENOMEACOES_ITENS_FVS = {
+  "FVS-03|00": {
+    "Locação e verticalidade/prumo do equipamento conferidos antes do início da perfuração — desvio entre eixo executado e eixo de projeto dentro de 10% do diâmetro da estaca (estacas isoladas não travadas)":
+      "Centro da estaca conferido com arame e prumo de centro antes do início da perfuração — desvio máximo de 5 mm em relação ao eixo de projeto, com embocamento executado",
+    "Posicionamento das barras de aterramento (SPDA) na armação conferido, quando especificado em projeto":
+      "Posicionamento das barras de aterramento (SPDA) conferido no projeto — quando previsto, a haste desce junto com a armação",
+    "Demolição do topo da estaca até a cota de arrasamento executada sem comprometer a armação — seção final plana e perpendicular ao eixo, com ponteiros/marteletes leves e leve inclinação para cima (prática interna TERGOS)":
+      "Demolição do topo da estaca até a cota de arrasamento executada de baixo para cima ou na horizontal, sem comprometer a armação — seção final plana e perpendicular ao eixo, com ponteiros/marteletes leves (prática interna TERGOS)"
+  }
+};
+
 var db = loadDB();
 sincronizarItensCatalogoFvs();
 var route = { view: "obras" };
@@ -2027,7 +2046,8 @@ function abrirCatalogo(amb){
 // instâncias já aplicadas em ambientes/elementos não mudam sozinhas — cada fvsInst guarda
 // sua própria cópia dos itens (ver criarInstanciaFvs). Roda uma vez ao carregar o app e
 // adiciona, sem tocar no que já foi respondido, qualquer item do catálogo que ainda não
-// exista na instância aplicada (comparando pelo texto do item).
+// exista na instância aplicada (comparando pelo texto do item). Também aplica as
+// renomeações de RENOMEACOES_ITENS_FVS antes de checar o que falta, pra não duplicar.
 function sincronizarItensCatalogoFvs(){
   if(!window.FVS_CATALOGO) return;
   let mudou = false;
@@ -2035,6 +2055,17 @@ function sincronizarItensCatalogoFvs(){
     todasFvsComContexto(obra).forEach(({fvsInst})=>{
       const fvs = FVS_CATALOGO.find(f=>f.codigo===fvsInst.codigo && f.rev===fvsInst.rev);
       if(!fvs) return;
+      const renomeacoes = RENOMEACOES_ITENS_FVS[fvsInst.codigo+"|"+fvsInst.rev];
+      if(renomeacoes){
+        fvsInst.itens.forEach(item=>{
+          const novoTexto = renomeacoes[item.texto];
+          if(novoTexto && novoTexto!==item.texto){
+            item.texto = novoTexto;
+            item.subitens = subChecksDoItem(fvs.codigo, fvs.rev, novoTexto).map(s=>({ texto:s, status:"pend" }));
+            mudou = true;
+          }
+        });
+      }
       const textosExistentes = new Set(fvsInst.itens.map(i=>i.texto));
       fvs.itens.forEach(txt=>{
         if(!textosExistentes.has(txt)){
