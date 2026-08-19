@@ -102,6 +102,12 @@
   .item-extra textarea{min-height:36px;font-size:13px;}
   .photo-thumb{width:52px;height:52px;border-radius:6px;object-fit:cover;border:1px solid var(--border);}
   .photo-btn{width:52px;height:52px;border-radius:6px;border:1px dashed var(--border);background:none;color:var(--muted);font-size:20px;cursor:pointer;flex-shrink:0;}
+  .doc-btn{padding:8px 10px;border-radius:8px;border:1px dashed var(--border);background:none;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;flex-shrink:0;}
+  .doc-list{display:flex;gap:6px;flex-wrap:wrap;width:100%;}
+  .doc-chip{display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:5px 6px 5px 10px;border-radius:16px;border:1px solid var(--border);background:var(--card);color:var(--text);max-width:100%;}
+  .doc-chip-nome{cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px;}
+  .doc-chip-nome:hover{text-decoration:underline;}
+  .doc-del-btn{background:none;border:none;color:var(--muted);cursor:pointer;padding:2px;line-height:0;flex-shrink:0;}
   .save-bar{position:sticky;bottom:-20px;background:var(--card);margin:16px -20px -20px;padding:12px 20px;border-top:1px solid var(--border);}
   .btn.save-pending{background:var(--nc);}
   .btn.save-ok{background:var(--ok);}
@@ -662,6 +668,49 @@ async function limparIfcBytes(obraId){
   return new Promise((resolve)=>{
     const tx = dbIfc.transaction(IFC_DB_STORE, "readwrite");
     tx.objectStore(IFC_DB_STORE).delete(obraId);
+    tx.oncomplete = ()=>resolve();
+  });
+}
+
+// Documentos (PDF/XML) anexados a itens de FVS, como comprovação — mesmo padrão do IFC acima.
+// Guardados no IndexedDB (não no localStorage/db principal) porque PDFs/XMLs de laudo podem
+// passar de alguns MB cada, e com dezenas de estacas/tubulões isso estouraria rápido o limite
+// de localStorage (~5-10MB). O item guarda só a referência (id, nome, tipo, tamanho) em
+// item.documentos; o conteúdo em si fica no IndexedDB, indexado pelo id do documento.
+const DOCS_DB_NAME = "qualitab_obra_docs";
+const DOCS_DB_STORE = "arquivos";
+const FVS_COM_ANEXO_DOCUMENTO = ["FVS-04","FVS-05","FVS-11"]; // Estacas Hélice Contínua, Tubulão, Concretagem de Peças Estruturais
+function abrirDocsDB(){
+  return new Promise((resolve, reject)=>{
+    const req = indexedDB.open(DOCS_DB_NAME, 1);
+    req.onupgradeneeded = ()=>{ req.result.createObjectStore(DOCS_DB_STORE); };
+    req.onsuccess = ()=>resolve(req.result);
+    req.onerror = ()=>reject(req.error);
+  });
+}
+async function salvarDocumento(id, blob){
+  const dbDocs = await abrirDocsDB();
+  return new Promise((resolve, reject)=>{
+    const tx = dbDocs.transaction(DOCS_DB_STORE, "readwrite");
+    tx.objectStore(DOCS_DB_STORE).put(blob, id);
+    tx.oncomplete = ()=>resolve();
+    tx.onerror = ()=>reject(tx.error);
+  });
+}
+async function carregarDocumento(id){
+  const dbDocs = await abrirDocsDB();
+  return new Promise((resolve, reject)=>{
+    const tx = dbDocs.transaction(DOCS_DB_STORE, "readonly");
+    const req = tx.objectStore(DOCS_DB_STORE).get(id);
+    req.onsuccess = ()=>resolve(req.result || null);
+    req.onerror = ()=>reject(req.error);
+  });
+}
+async function excluirDocumento(id){
+  const dbDocs = await abrirDocsDB();
+  return new Promise((resolve)=>{
+    const tx = dbDocs.transaction(DOCS_DB_STORE, "readwrite");
+    tx.objectStore(DOCS_DB_STORE).delete(id);
     tx.oncomplete = ()=>resolve();
   });
 }
@@ -1641,6 +1690,11 @@ function renderPavimento(app){
   app.appendChild(header(`${obra.nome} · ${pav.nome}`, ()=>go({view:"obra", obraId:obra.id}), acoesWrap));
   const main = document.createElement("main");
 
+  const btnPdfPav = document.createElement("button");
+  btnPdfPav.className="btn primary"; btnPdfPav.style.marginTop="0"; btnPdfPav.innerHTML=icon('document')+" Exportar relatório do pavimento (PDF)";
+  btnPdfPav.onclick=()=>exportarRelatorioPavimento(obra, pav);
+  main.appendChild(btnPdfPav);
+
   if(pav.estrutura.length){
     main.appendChild(subtituloSecao("Estrutura", 4));
     pav.estrutura.forEach(cat=>{
@@ -1862,6 +1916,11 @@ function renderPavimentoEstrutura(app){
 
   app.appendChild(header(`${pav.nome} · ${cat.nome}`, ()=>go({view:"pavimento", obraId:obra.id, pavId:pav.id}), acoesWrap));
   const main = document.createElement("main");
+
+  const btnPdfPav = document.createElement("button");
+  btnPdfPav.className="btn primary"; btnPdfPav.style.marginTop="0"; btnPdfPav.innerHTML=icon('document')+" Exportar relatório do pavimento (PDF)";
+  btnPdfPav.onclick=()=>exportarRelatorioPavimento(obra, pav);
+  main.appendChild(btnPdfPav);
 
   renderListaAmbientes(main, cat, amb=>({view:"ambiente", obraId:obra.id, pavId:pav.id, catId:cat.id, ambId:amb.id}),
     `Nenhum elemento cadastrado ainda.<br>Toque em "+" para adicionar um elemento (ex: P1) ou vários numerados de uma vez.`, "elementos", "pilar");
@@ -2170,7 +2229,7 @@ function sincronizarItensCatalogoFvs(){
       fvs.itens.forEach(txt=>{
         if(!textosExistentes.has(txt)){
           fvsInst.itens.push({
-            texto: txt, status:"pend", obs:"", foto:null,
+            texto: txt, status:"pend", obs:"", foto:null, documentos:[],
             subitens: subChecksDoItem(fvs.codigo, fvs.rev, txt).map(s=>({ texto:s, status:"pend" }))
           });
           mudou = true;
@@ -2187,7 +2246,7 @@ function criarInstanciaFvs(fvs){
     instId: uid(),
     codigo: fvs.codigo, nome: fvs.nome, rev: fvs.rev, normas: fvs.normas,
     itens: fvs.itens.map(txt=>({
-      texto:txt, status:"pend", obs:"", foto:null,
+      texto:txt, status:"pend", obs:"", foto:null, documentos:[],
       subitens: subChecksDoItem(fvs.codigo, fvs.rev, txt).map(s=>({ texto:s, status:"pend" }))
     })),
     aprovacao: { status:"pendente", aprovadoEm:null },
@@ -2250,6 +2309,9 @@ function abrirChecklist(obra,pav,amb,fvsInst){
     };
     document.getElementById("m-remover").onclick=()=>{
       if(confirm("Remover "+fvsInst.codigo+" deste ambiente? Isso apaga os registros de verificação feitos.")){
+        fvsInst.itens.forEach(item=>{
+          (item.documentos||[]).forEach(d=>{ excluirDocumento(d.id).catch(()=>{}); });
+        });
         amb.fvsList = amb.fvsList.filter(f=>f.instId!==fvsInst.instId);
         saveDB(db); closeModal(); render();
       }
@@ -2304,8 +2366,10 @@ function abrirChecklist(obra,pav,amb,fvsInst){
       draw();
     };
     const cont = document.getElementById("m-itens");
+    const mostrarAnexoDocumento = FVS_COM_ANEXO_DOCUMENTO.includes(fvsInst.codigo);
     fvsInst.itens.forEach((item, idx)=>{
       if(!item.subitens) item.subitens = [];
+      if(!item.documentos) item.documentos = [];
       item.subitens.forEach(s=>{ if(s.status===undefined) s.status = s.feito ? "ok" : "pend"; });
       const box = document.createElement("div");
       box.className="checklist-item";
@@ -2338,7 +2402,13 @@ function abrirChecklist(obra,pav,amb,fvsInst){
           ${temSub? `<button class="na-btn ${item.status==='na'?'active':''}" data-act="na">${item.status==='na'?'✓ N/A':'Marcar como N/A'}</button>` : ""}
           <button class="photo-btn" data-act="foto">${icon('camera')}</button>
           ${item.foto? `<img class="photo-thumb" src="${item.foto}">` : ""}
+          ${mostrarAnexoDocumento? `<button class="doc-btn" data-act="doc">${icon('document')} Anexar PDF/XML</button>` : ""}
           <textarea placeholder="Observação (opcional)">${escapeHtml(item.obs||"")}</textarea>
+          ${mostrarAnexoDocumento? `<div class="doc-list">${item.documentos.map((d,di)=>`
+            <span class="doc-chip">
+              <span class="doc-chip-nome" data-doc-idx="${di}" title="${escapeHtml(d.nome)}">${icon('document')} ${escapeHtml(d.nome)}</span>
+              <button class="doc-del-btn" data-doc-idx="${di}" title="Remover">${icon('trash')}</button>
+            </span>`).join("")}</div>` : ""}
         </div>
       `;
 
@@ -2418,6 +2488,73 @@ function abrirChecklist(obra,pav,amb,fvsInst){
         };
         input.click();
       };
+
+      if(mostrarAnexoDocumento){
+        const docBtn = box.querySelector('[data-act="doc"]');
+        const docListEl = box.querySelector(".doc-list");
+        function renderizarListaDocumentos(){
+          docListEl.innerHTML = item.documentos.map((d,di)=>`
+            <span class="doc-chip">
+              <span class="doc-chip-nome" data-doc-idx="${di}" title="${escapeHtml(d.nome)}">${icon('document')} ${escapeHtml(d.nome)}</span>
+              <button class="doc-del-btn" data-doc-idx="${di}" title="Remover">${icon('trash')}</button>
+            </span>`).join("");
+          docListEl.querySelectorAll(".doc-chip-nome").forEach(el=>{
+            el.onclick=async ()=>{
+              const doc = item.documentos[parseInt(el.dataset.docIdx)];
+              const janela = window.open("", "_blank");
+              try{
+                const blob = await carregarDocumento(doc.id);
+                if(!blob){ if(janela) janela.close(); alert("Não encontrei o arquivo salvo."); return; }
+                const url = URL.createObjectURL(blob);
+                if(janela) janela.location.href = url;
+              }catch(e){
+                if(janela) janela.close();
+                alert("Não consegui abrir o arquivo.");
+              }
+            };
+          });
+          docListEl.querySelectorAll(".doc-del-btn").forEach(el=>{
+            el.onclick=async ()=>{
+              const di = parseInt(el.dataset.docIdx);
+              const doc = item.documentos[di];
+              if(!confirm(`Remover o documento "${doc.nome}"?`)) return;
+              try{ await excluirDocumento(doc.id); }catch(e){}
+              item.documentos.splice(di,1);
+              dirty = true;
+              atualizarBotaoSalvar();
+              renderizarListaDocumentos();
+            };
+          });
+        }
+        renderizarListaDocumentos();
+        docBtn.onclick=()=>{
+          const input = document.createElement("input");
+          input.type="file"; input.accept=".pdf,.xml,application/pdf,text/xml,application/xml";
+          input.onchange=async ()=>{
+            const file = input.files[0];
+            if(!file) return;
+            let blob = file;
+            if(!file.type){
+              const ext = file.name.toLowerCase().split(".").pop();
+              const tipoInferido = ext==="pdf" ? "application/pdf" : (ext==="xml" ? "application/xml" : "");
+              if(tipoInferido) blob = new Blob([file], {type: tipoInferido});
+            }
+            const id = uid();
+            try{
+              await salvarDocumento(id, blob);
+            }catch(e){
+              alert("Não consegui salvar o arquivo (verifique o espaço disponível no dispositivo).");
+              return;
+            }
+            item.documentos.push({ id, nome:file.name, tipo: blob.type || file.type, tamanho:file.size });
+            dirty = true;
+            atualizarBotaoSalvar();
+            renderizarListaDocumentos();
+          };
+          input.click();
+        };
+      }
+
       const textarea = box.querySelector("textarea");
       textarea.oninput=()=>{ item.obs = textarea.value; dirty = true; atualizarBotaoSalvar(); };
       cont.appendChild(box);
@@ -3097,6 +3234,70 @@ function exportarRelatorioAmbiente(obra, pav, amb, unid, cat){
   });
 
   html += `<div class="meta" style="margin-top:30px;">Responsável técnico: _______________________________ &nbsp;&nbsp; Data: ___/___/______</div>`;
+  imprimirRelatorio(html);
+}
+
+function exportarRelatorioPavimento(obra, pav){
+  if(!pav.unidades) pav.unidades = [];
+  garantirEstrutura(pav);
+  const totalItens = todosAmbientesDoPavimento(pav).flatMap(a=>a.fvsList).flatMap(f=>f.itens);
+  const prog = calcProgresso(totalItens);
+  const nc = totalItens.filter(i=>i.status==="nc").length;
+  const okC = totalItens.filter(i=>i.status==="ok").length;
+  const pendC = totalItens.filter(i=>!i.status || i.status==="pend").length;
+
+  let html = `
+    <div class="rel-header">
+      <h1>Relatório de Progresso — ${escapeHtml(obra.nome)} · ${escapeHtml(pav.nome)}</h1>
+      <div class="meta">${obra.endereco? escapeHtml(obra.endereco)+"<br>":""}Gerado em: ${dataHoraAtual()}</div>
+    </div>
+    <div class="rel-resumo-cards">
+      <div><span class="n">${okC}</span>Conformes</div>
+      <div><span class="n">${nc}</span>Não conf.</div>
+      <div><span class="n">${pendC}</span>Pendentes</div>
+      <div><span class="n">${prog}%</span>Progresso geral</div>
+    </div>
+    <table class="rel-table">
+      <tr><th>Unidade</th><th>Ambiente</th><th>Serviços (FVS)</th><th>Progresso</th><th>Não conf.</th></tr>`;
+
+  const linhas = pav.ambientes.map(amb=>({unidade:"—", amb}))
+    .concat(pav.estrutura.flatMap(cat=>cat.elementos.map(amb=>({unidade:`Estrutura: ${cat.nome}`, amb}))))
+    .concat(pav.unidades.flatMap(unid=>unid.ambientes.map(amb=>({unidade:unid.nome, amb}))));
+  if(!linhas.length){
+    html += `<tr><td colspan="5">Nenhum ambiente cadastrado</td></tr>`;
+  } else {
+    linhas.forEach(({unidade, amb})=>{
+      const p = calcProgressoFvsList(amb.fvsList);
+      const ncA = contarNC(amb.fvsList);
+      html += `<tr>
+        <td>${escapeHtml(unidade)}</td>
+        <td>${escapeHtml(amb.nome)}</td>
+        <td>${amb.fvsList.map(f=>escapeHtml(f.codigo)).join(", ") || "—"}</td>
+        <td>${p}%</td>
+        <td>${ncA || "—"}</td>
+      </tr>`;
+    });
+  }
+  html += `</table>`;
+
+  const itensNC = [];
+  todosAmbientesDoPavimento(pav).forEach(amb=>amb.fvsList.forEach(fvsInst=>{
+    fvsInst.itens.forEach((item,idx)=>{
+      if(itemPrecisaReinspecao(item)) itensNC.push({amb:amb.nome, fvs:fvsInst.codigo, texto:item.texto, obs:item.obs, status:item.status, idx});
+    });
+  }));
+  if(itensNC.length){
+    html += `<h2 style="font-size:15px;margin-top:20px;">Não conformidades e reinspeções pendentes</h2>`;
+    itensNC.forEach(it=>{
+      html += `<div class="rel-item">
+        <b>${escapeHtml(it.amb)} · ${escapeHtml(it.fvs)}</b>
+        <span class="rel-status ${it.status}">${STATUS_LABEL[it.status]}</span><br>
+        ${it.idx+1}. ${escapeHtml(it.texto)}
+        ${it.obs? `<div class="rel-obs"><b>Obs.:</b> ${escapeHtml(it.obs)}</div>` : ""}
+      </div>`;
+    });
+  }
+
   imprimirRelatorio(html);
 }
 
