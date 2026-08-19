@@ -4,7 +4,7 @@
 // IMPORTANTE: validar com engenheiro/responsável técnico antes de uso formal em campo.
 window.FVS_SUBCHECKS = {
 
-  "FVS-29|00": {
+  "FVS-08|00": {
     "Terreno limpo e escavado, com fundações rasas e arranques dos pilares do próximo nível já executados, antes do início": [
       "Terreno limpo e escavado conferido antes do início",
       "Fundações rasas concretadas nas cotas devidas",
@@ -152,7 +152,7 @@ window.FVS_SUBCHECKS = {
       "Superfície rugosa (ranhuras transversais) executada em taludes de corte mecanizado",
       "Patamares/banquetas com largura mínima de 3 m executados em taludes de altura elevada, com valetas revestidas e proteção vegetal"
     ],
-    "Material de aterro selecionado (sem turfas, argilas orgânicas ou solos expansivos), lançado em camadas de até 30 cm, com umidade ajustada por irrigação — nunca compactado com terra seca (o ensaio de compactação em si é verificado na FVS-01)": [
+    "Material de aterro selecionado (sem turfas, argilas orgânicas ou solos expansivos), lançado em camadas de até 30 cm, com umidade ajustada por irrigação — nunca compactado com terra seca (o ensaio de compactação em si é verificado na FVS-06)": [
       "Material de aterro conferido — ausência de turfas, argilas orgânicas ou solos expansivos",
       "Camadas lançadas com espessura de aproximadamente 20 cm, não superior a 30 cm",
       "Umidade do material ajustada por irrigação antes da compactação",
@@ -283,7 +283,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-12|00": {
+  "FVS-05|00": {
     "Medidas do projeto topográfico conferidas antes da locação, para evitar erros de levantamento e marcações indevidas": [
       "Projeto topográfico disponível e conferido antes do início da locação",
       "Medidas do levantamento topográfico conferidas em campo",
@@ -499,7 +499,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-20|00": {
+  "FVS-06|00": {
     "Ensaio de compactação (Proctor) realizado para o material de aterro utilizado": [
       "Ensaio de compactação conforme NBR 7182 realizado para cada tipo de material/jazida usado no aterro",
       "Novo ensaio realizado a cada 300 m³ de material ou quando houver mudança de material",
@@ -601,7 +601,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-05|00": {
+  "FVS-07|00": {
     "Declividade mínima conforme diâmetro e tipo de tubulação": [
       "Declividade medida com nível/mangueira de nível confere com mínimo de projeto por trecho",
       "Sentido do caimento confere com o sentido de escoamento previsto em projeto",
@@ -646,7 +646,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-07|00": {
+  "FVS-10|00": {
     "Projetos necessários disponíveis e funcionários, equipamentos e centrais de trabalho liberados pela segurança do trabalho, antes do início da montagem": [
       "Projetos estrutural e de fôrmas disponíveis em obra antes do início da montagem",
       "Equipe treinada e com EPIs adequados para a atividade",
@@ -739,7 +739,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-06|00": {
+  "FVS-09|00": {
     "Bitola, quantidade e posicionamento das barras conforme projeto estrutural": [
       "Diâmetro das barras conferido com paquímetro/gabarito e comparado à especificação de projeto",
       "Quantidade de barras por elemento (pilar, viga, laje) conferida com o detalhamento",
@@ -784,7 +784,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-08|00": {
+  "FVS-11|00": {
     "Nota fiscal/ficha de concreto conferida com especificação de projeto (fck, slump, brita)": [
       "Resistência característica (fck) da nota fiscal confere com a especificada em projeto para a peça",
       "Classe de agressividade ambiental e relação água/cimento conferidas quando especificadas",
@@ -835,7 +835,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-09|00": {
+  "FVS-12|00": {
     "Dimensionamento de condutores conforme carga e queda de tensão de projeto": [
       "Seção do condutor confere com a especificada em projeto para o circuito",
       "Queda de tensão calculada dentro do limite normativo (ex.: máx. 4% para circuitos terminais)",
@@ -880,7 +880,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-10|00": {
+  "FVS-13|00": {
     "Diâmetros e materiais das tubulações conforme projeto hidrossanitário": [
       "Diâmetro nominal de cada trecho conferido com o projeto hidráulico",
       "Material da tubulação (PVC, CPVC, PPR, cobre) confere com especificação",
@@ -925,7 +925,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-11|00": {
+  "FVS-14|00": {
     "Dimensionamento de dutos conforme carga térmica e projeto": [
       "Seção dos dutos conferida com dimensionamento de projeto (vazão de ar por ambiente)",
       "Traçado dos dutos conforme projeto, sem reduções não previstas de seção",
@@ -964,7 +964,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-13|00": {
+  "FVS-18|00": {
     "Substrato regularizado, seco e sem fissuras antes da aplicação": [
       "Superfície regularizada com caimento mínimo para pontos de escoamento conforme projeto (ex.: mín. 1%)",
       "Ausência de fissuras, ninhos ou partes soltas na regularização",
@@ -1009,7 +1009,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-14|00": {
+  "FVS-19|00": {
     "Substrato preparado, regularizado e curado antes da aplicação": [
       "Superfície regularizada com caimento conforme projeto, sem fissuras ou partes soltas",
       "Idade mínima da argamassa de regularização respeitada antes da impermeabilização (ex.: mín. 7 dias, quando exigido substrato seco)",
@@ -1054,7 +1054,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-15|00": {
+  "FVS-16|00": {
     "Bloco estrutural conforme especificação de resistência e classe de projeto": [
       "Resistência característica do bloco (fbk) confere com o especificado em projeto por pavimento/família",
       "Dimensões do bloco conferidas com projeto de modulação (amarração)",
@@ -1099,7 +1099,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-16|00": {
+  "FVS-17|00": {
     "Bloco/tijolo cerâmico conforme especificação dimensional e resistência": [
       "Dimensões do bloco/tijolo conferidas com projeto de modulação",
       "Resistência à compressão do lote conforme especificação/laudo do fabricante",
@@ -1222,7 +1222,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-17|00": {
+  "FVS-21|00": {
     "Chapisco aplicado como base de aderência antes do emboço": [
       "Chapisco aplicado em toda a superfície antes do emboço, sem falhas",
       "Traço do chapisco conforme especificação (ex.: 1:3 cimento e areia, ou chapisco industrializado)",
@@ -1261,7 +1261,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-18|00": {
+  "FVS-22|00": {
     "Todas as alvenarias concluídas e encunhadas (interna e externa), com contramarcos das janelas chumbados, antes do início": [
       "Alvenarias externas e internas conferidas como concluídas e encunhadas",
       "Contramarcos das janelas chumbados e conferidos",
@@ -1384,7 +1384,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-19|00": {
+  "FVS-33|00": {
     "Peças limpas com escova de nylon e água para retirar a película de proteção do tardoz, com descrição, tamanho, cor e lote conferidos com o projeto": [
       "Película de proteção do tardoz removida com escova de nylon e água",
       "Descrição, tamanho, cor e lote das peças conferidos com o projeto",
@@ -1495,7 +1495,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-21|00": {
+  "FVS-32|00": {
     "Projetos e instruções de revestimento disponíveis e alinhados, equipe treinada, antes do início": [
       "Projetos e instruções de revestimento disponíveis em obra",
       "Especificações de cor/acabamento conferidas antes do início",
@@ -1564,7 +1564,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-22|00": {
+  "FVS-26|00": {
     "Instalações elétricas e hidráulicas de piso executadas e testadas, com ralos fechados (tubo dobrado ou preenchido com papel amassado) antes do início do contrapiso": [
       "Instalações elétricas e hidráulicas de piso conferidas como executadas e testadas",
       "Ralos identificados e fechados (tubo dobrado ou papel amassado) antes do contrapiso",
@@ -1657,7 +1657,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-23|00": {
+  "FVS-34|00": {
     "Tempo de espera após assentamento respeitado antes do rejunte": [
       "Prazo mínimo entre assentamento e rejuntamento respeitado conforme especificação (ex.: mín. 14 dias em piso, 3 dias em parede, conforme fabricante)",
       "Argamassa colante com cura suficiente antes do início do rejuntamento",
@@ -1696,7 +1696,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-24|00": {
+  "FVS-37|00": {
     "Dimensões e esquadro da esquadria conforme projeto": [
       "Largura e altura do vão conferidas com projeto e com a peça fornecida",
       "Esquadro da esquadria conferido (diagonais iguais dentro da tolerância)",
@@ -1729,7 +1729,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-25|00": {
+  "FVS-31|00": {
     "Espessura e tipo de vidro conforme especificação e aplicação": [
       "Espessura do vidro conferida com especificação de projeto por painel",
       "Tipo de vidro (temperado, laminado) conforme exigência da norma para a aplicação (ex.: portas exigem vidro de segurança)",
@@ -1762,7 +1762,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-26|01": {
+  "FVS-38|01": {
     "Dimensões e esquadro do vão e da esquadria conferidos": [
       "Largura e altura do vão conferidas com projeto antes da instalação",
       "Esquadro da esquadria conferido (diagonais iguais dentro da tolerância especificada)",
@@ -1801,7 +1801,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-27|00": {
+  "FVS-20|00": {
     "Prumo, nível e esquadro do contramarco conferidos antes da fixação": [
       "Prumo do contramarco conferido em toda a altura com prumo/nível a laser",
       "Nível da soleira/travessa inferior conferido com projeto",
@@ -1828,7 +1828,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-28|00": {
+  "FVS-23|00": {
     "Estrutura de fixação (perfis/mísulas) nivelada e ancorada // verificar": [
       "Perfis de fixação nivelados e alinhados conforme projeto do fabricante [Prática de mercado/fabricante — não é norma ABNT confirmada]",
       "Ancoragem dimensionada para a carga de vento e peso próprio do painel [Prática de mercado/fabricante — não é norma ABNT confirmada]",
@@ -1855,7 +1855,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-30|00": {
+  "FVS-27|00": {
     "Superfície base preparada antes da aplicação do gesso": [
       "Base limpa, isenta de pó, óleo ou partículas soltas",
       "Umedecimento leve da base quando indicado (alvenaria muito absorvente)",
@@ -1888,7 +1888,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-31|00": {
+  "FVS-28|00": {
     "Nível da estrutura metálica (perfis) conferido antes da fixação das chapas": [
       "Nível dos perfis conferido com mangueira/nível a laser em todo o ambiente",
       "Espaçamento entre tirantes/pendurais conforme especificação (ex.: máx. 1,20 m)",
@@ -1921,7 +1921,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-32|00": {
+  "FVS-29|00": {
     "Estrutura de sustentação (arames/tirantes) nivelada e firme": [
       "Espaçamento entre pontos de suspensão conforme especificação (ex.: máx. 1,0 a 1,2 m)",
       "Nível da estrutura conferido com mangueira/laser em todo o ambiente",
@@ -1954,7 +1954,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-33|00": {
+  "FVS-30|00": {
     "Estrutura metálica (guias e montantes) fixada e nivelada": [
       "Guias fixadas em piso e teto alinhadas com o projeto",
       "Espaçamento entre montantes conforme especificação (ex.: 40 a 60 cm)",
@@ -1987,7 +1987,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-34|01": {
+  "FVS-25|01": {
     "Ferramentas em condições de uso; pedras disponíveis nas medidas corretas; contramarcos de janela já assentados (para peitoris); base arrematada com no mínimo 7 dias de cura; validade dos produtos de assentamento conferida": [
       "Ferramentas conferidas em condições de uso",
       "Pedras disponíveis nas medidas corretas antes do início",
@@ -2068,7 +2068,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-35|00": {
+  "FVS-15|00": {
     "Traçado e diâmetro da tubulação conforme projeto e memorial de cálculo": [
       "Diâmetro de cada trecho conferido com o memorial de dimensionamento",
       "Material da tubulação (aço, cobre, PE) conforme especificação e uso (interno/enterrado)",
@@ -2107,7 +2107,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-36|00": {
+  "FVS-39|00": {
     "Altura do guarda-corpo conforme mínimo normativo": [
       "Altura medida do piso acabado até o topo do guarda-corpo (mín. 1,10 m em áreas residenciais/comerciais, conforme uso)",
       "Altura conferida em toda a extensão, sem trechos abaixo do mínimo",
@@ -2140,7 +2140,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-37|00": {
+  "FVS-40|00": {
     "Nivelamento e prumo da bancada conferidos // verificar": [
       "Nível da bancada conferido com nível de bolha/laser em todo o comprimento [Prática de mercado/fabricante — não é norma ABNT confirmada]",
       "Ausência de desnível perceptível entre módulos/emendas [Prática de mercado/fabricante — não é norma ABNT confirmada]",
@@ -2173,7 +2173,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-39|00": {
+  "FVS-41|00": {
     "Dimensões e posição do nicho conforme projeto // verificar": [
       "Largura, altura e profundidade conferidas com projeto/marcação no ambiente [Prática de mercado/fabricante — não é norma ABNT confirmada]",
       "Posição (altura do piso, alinhamento com outros elementos) conferida antes da execução [Prática de mercado/fabricante — não é norma ABNT confirmada]",
@@ -2200,7 +2200,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-40|00": {
+  "FVS-35|00": {
     "Nivelamento e planeza do substrato antes da instalação": [
       "Régua de 2 m não acusa vão maior que o admissível (ex.: 2 a 3 mm, conforme especificação do fabricante)",
       "Substrato seco (umidade dentro do limite do fabricante, medida com higrômetro)",
@@ -2239,7 +2239,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-41|00": {
+  "FVS-42|00": {
     "Fixação da bacia sanitária/lavatório firme e nivelada": [
       "Fixação ao piso/parede sem movimento ao aplicar força manual",
       "Nível da peça conferido com nível de bolha",
@@ -2278,7 +2278,7 @@ window.FVS_SUBCHECKS = {
     ],
   },
 
-  "FVS-38|00": {
+  "FVS-36|00": {
     "Nivelamento e alinhamento do rodapé com o piso": [
       "Rodapé assentado nivelado com o piso acabado, sem ondulações",
       "Alinhamento horizontal conferido com linha esticada/nível a laser ao longo do ambiente",
@@ -2305,7 +2305,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-42|00": {
+  "FVS-43|00": {
     "Vedação da conexão com a tubulação sem vazamentos // verificar": [
       "Vedação (fita veda-rosca/anel) aplicada corretamente na conexão [Prática de mercado/fabricante — não é norma ABNT confirmada]",
       "Ausência de vazamento no teste de abertura do registro de água [Prática de mercado/fabricante — não é norma ABNT confirmada]",
@@ -2332,7 +2332,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-43|00": {
+  "FVS-44|00": {
     "Dimensionamento do duto e exaustor conforme ambiente // verificar": [
       "Vazão do exaustor compatível com o volume/uso do ambiente (ex.: banheiro, cozinha) [Prática de mercado/fabricante — não é norma ABNT confirmada]",
       "Diâmetro do duto conforme especificação do fabricante do exaustor [Prática de mercado/fabricante — não é norma ABNT confirmada]",
@@ -2359,7 +2359,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-47|00": {
+  "FVS-24|00": {
     "Ferramentas e equipamentos em condições adequadas de uso; rufos disponíveis nas medidas e dobras corretas; acabamentos/tratamentos do muro finalizados; atividade realizada em dia sem chuva": [
       "Ferramentas e equipamentos conferidos em condições de uso",
       "Rufos conferidos nas medidas e dobras corretas antes da instalação",

@@ -256,7 +256,7 @@ function uid(){ return Date.now().toString(36) + Math.random().toString(36).slic
 // critério de verificação mudou). Precisa vir ANTES da chamada a sincronizarItensCatalogoFvs()
 // logo abaixo — sendo const, não é hoisted como as functions, e a chamada é feita cedo.
 const RENOMEACOES_ITENS_FVS = {
-  "FVS-19|00": {
+  "FVS-33|00": {
     "Planeza e nivelamento do contrapiso antes do assentamento":
       "Base nivelada, limpa e curada (mínimo de 14 dias para contrapiso e emboço) antes do assentamento",
     "Tempo em aberto da argamassa colante respeitado":
@@ -264,7 +264,7 @@ const RENOMEACOES_ITENS_FVS = {
     "Dupla colagem aplicada em porcelanatos de grande formato":
       "Dupla colagem aplicada em porcelanatos de grande formato, com argamassa espalhada também no verso da peça"
   },
-  "FVS-07|00": {
+  "FVS-10|00": {
     "Escoramento dimensionado e travado conforme carga prevista":
       "Escoramento dimensionado e travado conforme o projeto específico do pavimento/peça — nunca em quantidade menor que a indicada em projeto"
   },
@@ -272,7 +272,7 @@ const RENOMEACOES_ITENS_FVS = {
     "Pontas dos vergalhões expostos e buracos de tubulões protegidos contra acidentes":
       "Pontas dos vergalhões expostos e buracos de tubulões protegidos com fita zebrada e sinalizados contra acidentes"
   },
-  "FVS-12|00": {
+  "FVS-05|00": {
     "Locação e cotas de assentamento (nível de arrasamento) dos blocos/sapatas/cintas conferidas com o projeto de fundações antes da escavação":
       "Centro dos blocos/sapatas/cintas conferido com arame e prumo de centro, antes da escavação — verificada a necessidade de apicoar a cabeça das estacas/tubulões",
     "Cava limpa e isenta de materiais nocivos (madeira, solo carreado por chuva, água acumulada) imediatamente antes do lançamento do concreto":
@@ -298,18 +298,58 @@ const RENOMEACOES_ITENS_FVS = {
   }
 };
 
-// Trocas de código pedidas por Bela em 2026-08-19, pra ordenar as FVS pela cronologia real da
-// obra (demolição/terraplenagem primeiro; tubulão antes de fundação rasa; armadura antes de
-// forma). Migra pelo NOME da FVS (não pelo código antigo) — assim é seguro rodar em toda
-// carga do app, mesmo repetidas vezes: depois da primeira migração o código já bate com o
-// novo, então a condição simplesmente não encontra mais nada pra trocar.
+// Trocas de código pedidas por Bela em 2026-08-19, pra ordenar todas as FVS pela cronologia
+// real da obra (demolição/terraplenagem primeiro, depois locação, fundações profundas,
+// fundações rasas, estrutura, instalações embutidas, alvenaria, impermeabilização,
+// revestimentos, acabamentos e por último as peças/metais). Lista completa (mesmo as que não
+// mudaram de código) — migra pelo NOME da FVS, não pelo código antigo, então é seguro rodar em
+// toda carga do app, mesmo repetidas vezes: depois da primeira migração o código já bate com o
+// novo valor, e a condição simplesmente não encontra mais nada pra trocar.
 const TROCAS_CODIGO_FVS = [
   { nome:"Demolições e Movimentações de Terra", novoCodigo:"FVS-01" },
-  { nome:"Compactação de Aterro", novoCodigo:"FVS-20" },
+  { nome:"Locação de Obra", novoCodigo:"FVS-02" },
+  { nome:"Estacas Hélice Contínua", novoCodigo:"FVS-03" },
   { nome:"Tubulão (fuste mecanizado, base manual)", novoCodigo:"FVS-04" },
-  { nome:"Fundações Rasas - Blocos e Cintas", novoCodigo:"FVS-12" },
-  { nome:"Montagem de Armadura", novoCodigo:"FVS-06" },
-  { nome:"Montagem de forma e desforma", novoCodigo:"FVS-07" }
+  { nome:"Fundações Rasas - Blocos e Cintas", novoCodigo:"FVS-05" },
+  { nome:"Compactação de Aterro", novoCodigo:"FVS-06" },
+  { nome:"Tubulação a céu aberto", novoCodigo:"FVS-07" },
+  { nome:"Laje de Piso (piso de concreto sobre solo)", novoCodigo:"FVS-08" },
+  { nome:"Montagem de Armadura", novoCodigo:"FVS-09" },
+  { nome:"Montagem de forma e desforma", novoCodigo:"FVS-10" },
+  { nome:"Concretagem de Peças Estruturais", novoCodigo:"FVS-11" },
+  { nome:"Instalações Elétricas", novoCodigo:"FVS-12" },
+  { nome:"Instalação Hidráulica", novoCodigo:"FVS-13" },
+  { nome:"Infra. Para Ar Condicionado", novoCodigo:"FVS-14" },
+  { nome:"Instalação de Gás", novoCodigo:"FVS-15" },
+  { nome:"Alvenaria Estrutural", novoCodigo:"FVS-16" },
+  { nome:"Alvenaria de Vedação", novoCodigo:"FVS-17" },
+  { nome:"Impermeabilização com Manta Asfáltica", novoCodigo:"FVS-18" },
+  { nome:"Impermeabilização com Argamassa Polimérica", novoCodigo:"FVS-19" },
+  { nome:"Colocação de Contramarco", novoCodigo:"FVS-20" },
+  { nome:"Reboco Interno", novoCodigo:"FVS-21" },
+  { nome:"Reboco Externo", novoCodigo:"FVS-22" },
+  { nome:"Fachada Aerada", novoCodigo:"FVS-23" },
+  { nome:"Rufos", novoCodigo:"FVS-24" },
+  { nome:"Assentamento de Peitoris e Soleiras", novoCodigo:"FVS-25" },
+  { nome:"Contrapiso", novoCodigo:"FVS-26" },
+  { nome:"Revestimento Interno em Gesso", novoCodigo:"FVS-27" },
+  { nome:"Forro de Gesso Acartonado", novoCodigo:"FVS-28" },
+  { nome:"Forro de Gesso em Placas", novoCodigo:"FVS-29" },
+  { nome:"Shaft Drywall", novoCodigo:"FVS-30" },
+  { nome:"Divisórias e Portas de Vidro", novoCodigo:"FVS-31" },
+  { nome:"Pintura e Textura", novoCodigo:"FVS-32" },
+  { nome:"Execução de Revestimento de Piso Interno: Cerâmica e Porcelanato", novoCodigo:"FVS-33" },
+  { nome:"Rejuntamento", novoCodigo:"FVS-34" },
+  { nome:"Piso vinílico", novoCodigo:"FVS-35" },
+  { nome:"Instalação de Rodapés", novoCodigo:"FVS-36" },
+  { nome:"Esquadria de Madeira", novoCodigo:"FVS-37" },
+  { nome:"Execução de Instalação de Esquadria de Alumínio", novoCodigo:"FVS-38" },
+  { nome:"Colocação de Guarda Corpo e Corrimão", novoCodigo:"FVS-39" },
+  { nome:"Colocação de Bancadas", novoCodigo:"FVS-40" },
+  { nome:"Nicho", novoCodigo:"FVS-41" },
+  { nome:"Instalação de Louças e Metais", novoCodigo:"FVS-42" },
+  { nome:"Instalação de Torneiras", novoCodigo:"FVS-43" },
+  { nome:"Exaustões Mecânicas", novoCodigo:"FVS-44" }
 ];
 function migrarCodigosFvsTrocados(){
   let mudou = false;

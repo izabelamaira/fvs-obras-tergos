@@ -5,16 +5,23 @@
 // IMPORTANTE: este conteúdo ainda precisa ser validado por um engenheiro/responsável
 // técnico antes de uso formal em campo (itens, normas e tolerâncias sujeitos a revisão).
 const FVS_CATALOGO = [
-  { codigo:"FVS-20", nome:"Compactação de Aterro", rev:"00",
-    normas:["NBR 5681:2015 - Controle tecnológico da execução de aterros em obras de edificação","NBR 7182:2020 - Solo - Ensaio de compactação","NBR 7185:2016 - Solo - Determinação da massa específica aparente, in situ, com emprego de frasco de areia","NBR 9813:2016 - Solo - Determinação da massa específica aparente, in situ, com emprego de cilindro de cravação"],
+  { codigo:"FVS-01", nome:"Demolições e Movimentações de Terra", rev:"00",
+    normas:["NR-18 - Segurança e Saúde no Trabalho na Indústria da Construção","NBR 5681:2015 - Controle tecnológico da execução de aterros em obras de edificação","PES 2 - Demolições e Movimentações de Terra (procedimento interno TERGOS)","FVS 2 - Demolições e Movimentações de Terra (planilha real da TERGOS, 2023)"],
     itens:[
-      "Ensaio de compactação (Proctor) realizado para o material de aterro utilizado",
-      "Umidade do material de aterro na faixa admissível em relação à umidade ótima",
-      "Espessura das camadas de aterro conforme especificação de projeto",
-      "Grau de compactação atingido conforme exigência de projeto",
-      "Equipamento de compactação adequado ao tipo de solo",
-      "Ausência de matéria orgânica, entulho ou material inadequado no aterro",
-      "Drenagem e proteção do aterro contra erosão/saturação"
+      "Plano de demolição disponível, contemplando os riscos ocupacionais em todas as etapas e as medidas de prevenção — considerando linhas de energia/água, construções vizinhas, remoção de entulho, aberturas no piso, áreas de circulação de emergência e trânsito de veículos/pessoas",
+      "Linhas de abastecimento de energia elétrica, água, gás e canalizações de esgoto/águas pluviais protegidas ou removidas antes do início da demolição",
+      "Instalações, muros ou construções vizinhas que possam ser atingidas escoradas e protegidas antes do início da demolição",
+      "Demolição iniciada pelas partes superiores da edificação, após avaliada a necessidade de escoramentos",
+      "Elementos a demolir umedecidos previamente para reduzir a suspensão de particulados, quando aplicável",
+      "Resíduos de demolição destinados a unidades ambientalmente licenciadas, com reaproveitamento priorizado quando possível",
+      "Terreno limpo e desimpedido, sem chuva, antes do início dos serviços de movimentação de terra — geotécnico presente",
+      "Instalações, muros ou construções vizinhas escoradas e protegidas antes do início da movimentação de terra",
+      "Equipe alinhada quanto à cota de nível do terreno desejada, com acompanhamento a cada evolução do aterro/desaterro",
+      "Referência de nível (RN) definida para a locação altimétrica dos platôs de corte e aterro",
+      "Cortes executados conforme cotas e perfis de projeto, permitindo escoamento de águas pluviais",
+      "Taludes executados com declive máximo de 45°, marcados com esquadro e nível de bolha — superfície rugosa quando resultante de corte mecanizado, e patamares/banquetas de largura mínima de 3 m em taludes de altura elevada",
+      "Material de aterro selecionado (sem turfas, argilas orgânicas ou solos expansivos), lançado em camadas de até 30 cm, com umidade ajustada por irrigação — nunca compactado com terra seca (o ensaio de compactação em si é verificado na FVS-06)",
+      "Tubulações que permanecerão na área aterrada travadas antes da compactação, para evitar deslocamento"
     ]
   },
   { codigo:"FVS-02", nome:"Locação de Obra", rev:"00",
@@ -57,117 +64,6 @@ const FVS_CATALOGO = [
       "Formulário \"Controle de Execução de Estaca Hélice Contínua\" preenchido para cada estaca executada, a partir de cópia do modelo salva na pasta da obra — nunca editado por cima da planilha modelo (prática interna TERGOS)"
     ]
   },
-  { codigo:"FVS-12", nome:"Fundações Rasas - Blocos e Cintas", rev:"00",
-    normas:["NBR 6122:2022 - Projeto e execução de fundações","NBR 6118:2023 - Projeto de estruturas de concreto - Procedimento","NBR 6489:2019 - Solo - Prova de carga estática em fundação direta","NBR 16889:2020 - Concreto - Determinação da consistência pelo abatimento do tronco de cone","NBR 14931:2023 - Execução de estruturas de concreto - Procedimento","Caderno de Encargos SUDECAP - Capítulo 4: Fundações, itens 4.4 (Fundações em Superfície) e 4.4.2 (Condições Específicas)","PES 5 - Fundações Rasas - Blocos e Cintas (procedimento interno TERGOS)","FVS 5 - Fundações Rasas - Blocos e Cintas (planilha real da TERGOS, 2023) — fonte dos itens revisados/adicionados a partir dela, marcados \"prática interna TERGOS\""],
-    itens:[
-      "Medidas do projeto topográfico conferidas antes da locação, para evitar erros de levantamento e marcações indevidas",
-      "Centro dos blocos/sapatas/cintas conferido com arame e prumo de centro, antes da escavação — verificada a necessidade de apicoar a cabeça das estacas/tubulões",
-      "Identificação de cada bloco/sapata/cinta conferida de acordo com o projeto",
-      "Cotas de arrasamento das estacas/tubulões e cotas dos blocos/cintas conferidas conforme projeto",
-      "Fundo da vala/cava compactado e recoberto com lastro de concreto magro (não estrutural) de 5 cm de espessura, antes da armação",
-      "Formas de madeira instaladas nas laterais das cavas — não é permitido concretar contra o barranco (solo)",
-      "Cava limpa e isenta de materiais nocivos (madeira, solo carreado por chuva, água acumulada), com blocos/cintas umedecidos imediatamente antes do lançamento do concreto, para não absorver água do concreto fresco",
-      "Bitola, quantidade, posicionamento e cobrimento da armadura da sapata/viga (cinta) conferidos com o projeto estrutural no momento da descida, com espaçadores garantindo o cobrimento mínimo",
-      "Posicionamento das barras de aterramento (SPDA) conferido no projeto — quando previsto, a haste é posicionada junto com a armação dos blocos/cintas",
-      "Eventuais alterações em relação ao projeto original (tipo de aço, espaçamentos, posicionamento, seções) conferidas e registradas",
-      "Classe de resistência do concreto (fck) e consistência (slump) conferidos conforme especificação de projeto, com corpos de prova moldados para ensaio",
-      "Dimensões executadas (largura, comprimento, altura/espessura) dos blocos/sapatas/cintas conferidas com o projeto — sem lançamento de volumes/quantitativos indevidos",
-      "Formulário de Controle de Execução preenchido para cada bloco/cinta — cota do terreno, cota de arrasamento, medidas, volume de concreto (projeto x executado), traço, sobreconsumo e existência de barra de aterramento (prática interna TERGOS)",
-      "Prova de carga estática em fundação direta realizada conforme NBR 6489 (quando exigida pelo projetista), com resultado aprovado pela fiscalização antes da execução"
-    ]
-  },
-  { codigo:"FVS-05", nome:"Tubulação a céu aberto", rev:"00",
-    normas:["NBR 5626:2020 - Água fria e água quente","NBR 8160 - Esgoto sanitário","NBR 10844 - Águas pluviais"],
-    itens:[
-      "Declividade mínima conforme diâmetro e tipo de tubulação",
-      "Assentamento sobre berço de areia compactada",
-      "Profundidade mínima de cobertura sobre tubulação enterrada",
-      "Estanqueidade das juntas testada antes do reaterro",
-      "Proteção mecânica antes do reaterro",
-      "Caixas de passagem e inspeção niveladas e acessíveis",
-      "Diâmetros e materiais conforme projeto hidrossanitário"
-    ]
-  },
-  { codigo:"FVS-07", nome:"Montagem de forma e desforma", rev:"00",
-    normas:["NBR 15696:2009 - Fôrmas e escoramentos para estruturas de concreto - Projeto, dimensionamento e procedimentos executivos","NBR 6118:2023 - Projeto de estruturas de concreto - Procedimento","PES 6 - Estrutura em Concreto Armado (procedimento interno TERGOS)","FVS 6 - Estrutura em Concreto Armado - Fôrmas (planilha real da TERGOS, 2023) — fonte dos itens revisados/adicionados a partir dela"],
-    itens:[
-      "Projetos necessários disponíveis e funcionários, equipamentos e centrais de trabalho liberados pela segurança do trabalho, antes do início da montagem",
-      "Eixos principais do edifício e nível de referência transferidos e conferidos em campo antes da montagem das fôrmas — tolerância de 5 mm",
-      "Medidas entre pilares conferidas para garantir dimensões críticas (vagas de garagem, poço de elevador, caixa de escada, limites da torre, dimensões internas dos ambientes, alinhamento de pilares com alvenarias) — tolerância de 5 mm",
-      "Prumo dos pilares conferido, incluindo o encontro das faces no topo do pilar com esquadro metálico — tolerância de 5 mm",
-      "Estanqueidade e alinhamento das fôrmas conferidos antes da concretagem",
-      "Dimensões internas das fôrmas conferidas com projeto estrutural",
-      "Limpeza e desmoldante aplicados antes da concretagem",
-      "Escoramento dimensionado e travado conforme o projeto específico do pavimento/peça — nunca em quantidade menor que a indicada em projeto",
-      "Fôrmas de vigas invertidas e semi-invertidas executadas separadamente nas partes inferior e superior à laje",
-      "Aberturas e furos em vigas para passagem de tubulações conferidos com o projeto executivo, com reforço nas bordas quando necessário",
-      "Necessidade e posicionamento de contra-flechas conferidos conforme o projeto de fôrmas",
-      "Eventuais alterações em relação ao projeto original (tipo de aço, espaçamentos, posicionamento, seções) conferidas e registradas",
-      "Prazo mínimo de desforma respeitado conforme resistência do concreto",
-      "Retirada das fôrmas sem danos à peça concretada",
-      "Superfície do concreto após desforma sem falhas de concretagem (bicheiras/ninhos)"
-    ]
-  },
-  { codigo:"FVS-06", nome:"Montagem de Armadura", rev:"00",
-    normas:["NBR 7480:2022 - Aço destinado a armaduras para estruturas de concreto armado - Requisitos","NBR 6118:2023 - Projeto de estruturas de concreto - Procedimento"],
-    itens:[
-      "Bitola, quantidade e posicionamento das barras conforme projeto estrutural",
-      "Cobrimento mínimo da armadura garantido com espaçadores",
-      "Emendas e traspasses conforme comprimento especificado",
-      "Amarração da armadura firme, sem deslocamentos durante a concretagem",
-      "Ausência de corrosão, óleo ou contaminantes nas barras",
-      "Espaçamento entre barras respeitando o mínimo normativo",
-      "Embutidos e passagens (elétrica/hidráulica) sem interferência na armadura"
-    ]
-  },
-  { codigo:"FVS-08", nome:"Concretagem de Peças Estruturais", rev:"00",
-    normas:["NBR 6118:2023 - Projeto de estruturas de concreto - Procedimento","NBR 12655:2022 - Concreto de cimento Portland - Preparo, controle, recebimento e aceitação - Procedimento","NBR 5738:2015 - Concreto - Procedimento para moldagem e cura de corpos de prova","NBR 5739:2018 - Concreto - Ensaio de compressão de corpos de prova cilíndricos"],
-    itens:[
-      "Nota fiscal/ficha de concreto conferida com especificação de projeto (fck, slump, brita)",
-      "Ensaio de abatimento (slump test) realizado no recebimento",
-      "Moldagem de corpos de prova para controle de resistência",
-      "Lançamento do concreto sem segregação e com altura de queda controlada",
-      "Adensamento com vibrador realizado corretamente",
-      "Cura do concreto realizada pelo período mínimo especificado",
-      "Juntas de concretagem posicionadas e tratadas conforme projeto",
-      "Temperatura e condições climáticas de concretagem controladas"
-    ]
-  },
-  { codigo:"FVS-09", nome:"Instalações Elétricas", rev:"00",
-    normas:["NBR 5410:2004 - Instalações elétricas de baixa tensão"],
-    itens:[
-      "Dimensionamento de condutores conforme carga e queda de tensão de projeto",
-      "Proteção e seccionamento (disjuntores/DR) conforme projeto",
-      "Aterramento executado e continuidade elétrica testada",
-      "Eletrodutos e caixas de passagem instalados conforme projeto",
-      "Pontos de tomadas e iluminação nas quantidades e posições de projeto",
-      "Teste de funcionamento e isolamento dos circuitos antes do fechamento",
-      "Quadro de distribuição identificado e com diagrama unifilar disponível"
-    ]
-  },
-  { codigo:"FVS-10", nome:"Instalação Hidráulica", rev:"00",
-    normas:["NBR 5626:2020 - Sistemas prediais de água fria e água quente - Projeto, execução, ensaios e manutenção","NBR 8160:1999 - Sistemas prediais de esgoto sanitário - Projeto e execução"],
-    itens:[
-      "Diâmetros e materiais das tubulações conforme projeto hidrossanitário",
-      "Fixação e distância dos pontos conforme projeto",
-      "Teste de estanqueidade da água fria/quente antes do fechamento",
-      "Declividade e ventilação do sistema de esgoto conforme projeto",
-      "Teste de estanqueidade do esgoto e ausência de obstruções",
-      "Registros e válvulas instalados e acessíveis",
-      "Isolamento térmico da tubulação de água quente conforme especificação"
-    ]
-  },
-  { codigo:"FVS-11", nome:"Infra. Para Ar Condicionado", rev:"00",
-    normas:["NBR 16401-1:2024 - Instalações de ar-condicionado - Sistemas centrais e unitários - Parte 1: Projetos das instalações","NBR 16401-3:2008 - Parte 3: Qualidade do ar interior","NBR 7541:2015 - Tubos de cobre sem costura para ar-condicionado e refrigeração"],
-    itens:[
-      "Dimensionamento de dutos conforme carga térmica e projeto",
-      "Infraestrutura de dreno de condensado com caimento adequado",
-      "Tubulação frigorígena (linha de cobre) instalada e testada",
-      "Infraestrutura elétrica dedicada aos equipamentos conforme projeto",
-      "Aberturas e passagens para tomada de ar externo/exaustão conforme projeto",
-      "Base/suporte das unidades condensadoras dimensionado e nivelado"
-    ]
-  },
   { codigo:"FVS-04", nome:"Tubulão (fuste mecanizado, base manual)", rev:"00",
     normas:["NBR 6122:2022 - Projeto e execução de fundações","NBR 16903:2020 - Prova de carga estática em fundação profunda","NR-18 (item 18.7.2) - Segurança e Saúde no Trabalho na Indústria da Construção — Escavações, Fundações e Desmonte de Rochas","NR-33 - Segurança e Saúde nos Trabalhos em Espaços Confinados","Caderno de Encargos SUDECAP - Capítulo 4: Fundações, item 4.5 (Tabela 10 - Tubulão)","FVS 4.1 - Fundações Profundas - Tubulões (planilha real da TERGOS, 2023) — fonte dos itens dimensionais/de proteção adicionados a partir dela","PES 4.1 - Fundações Profundas - Tubulões (procedimento interno TERGOS) — itens marcados \"prática interna TERGOS\" não constam nas normas ABNT"],
     itens:[
@@ -192,50 +88,158 @@ const FVS_CATALOGO = [
       "Ensaio de integridade e/ou prova de carga realizados conforme especificado pelo projetista, com resultado aprovado antes da concretagem do bloco de coroamento"
     ]
   },
-  { codigo:"FVS-01", nome:"Demolições e Movimentações de Terra", rev:"00",
-    normas:["NR-18 - Segurança e Saúde no Trabalho na Indústria da Construção","NBR 5681:2015 - Controle tecnológico da execução de aterros em obras de edificação","PES 2 - Demolições e Movimentações de Terra (procedimento interno TERGOS)","FVS 2 - Demolições e Movimentações de Terra (planilha real da TERGOS, 2023)"],
+  { codigo:"FVS-05", nome:"Fundações Rasas - Blocos e Cintas", rev:"00",
+    normas:["NBR 6122:2022 - Projeto e execução de fundações","NBR 6118:2023 - Projeto de estruturas de concreto - Procedimento","NBR 6489:2019 - Solo - Prova de carga estática em fundação direta","NBR 16889:2020 - Concreto - Determinação da consistência pelo abatimento do tronco de cone","NBR 14931:2023 - Execução de estruturas de concreto - Procedimento","Caderno de Encargos SUDECAP - Capítulo 4: Fundações, itens 4.4 (Fundações em Superfície) e 4.4.2 (Condições Específicas)","PES 5 - Fundações Rasas - Blocos e Cintas (procedimento interno TERGOS)","FVS 5 - Fundações Rasas - Blocos e Cintas (planilha real da TERGOS, 2023) — fonte dos itens revisados/adicionados a partir dela, marcados \"prática interna TERGOS\""],
     itens:[
-      "Plano de demolição disponível, contemplando os riscos ocupacionais em todas as etapas e as medidas de prevenção — considerando linhas de energia/água, construções vizinhas, remoção de entulho, aberturas no piso, áreas de circulação de emergência e trânsito de veículos/pessoas",
-      "Linhas de abastecimento de energia elétrica, água, gás e canalizações de esgoto/águas pluviais protegidas ou removidas antes do início da demolição",
-      "Instalações, muros ou construções vizinhas que possam ser atingidas escoradas e protegidas antes do início da demolição",
-      "Demolição iniciada pelas partes superiores da edificação, após avaliada a necessidade de escoramentos",
-      "Elementos a demolir umedecidos previamente para reduzir a suspensão de particulados, quando aplicável",
-      "Resíduos de demolição destinados a unidades ambientalmente licenciadas, com reaproveitamento priorizado quando possível",
-      "Terreno limpo e desimpedido, sem chuva, antes do início dos serviços de movimentação de terra — geotécnico presente",
-      "Instalações, muros ou construções vizinhas escoradas e protegidas antes do início da movimentação de terra",
-      "Equipe alinhada quanto à cota de nível do terreno desejada, com acompanhamento a cada evolução do aterro/desaterro",
-      "Referência de nível (RN) definida para a locação altimétrica dos platôs de corte e aterro",
-      "Cortes executados conforme cotas e perfis de projeto, permitindo escoamento de águas pluviais",
-      "Taludes executados com declive máximo de 45°, marcados com esquadro e nível de bolha — superfície rugosa quando resultante de corte mecanizado, e patamares/banquetas de largura mínima de 3 m em taludes de altura elevada",
-      "Material de aterro selecionado (sem turfas, argilas orgânicas ou solos expansivos), lançado em camadas de até 30 cm, com umidade ajustada por irrigação — nunca compactado com terra seca (o ensaio de compactação em si é verificado na FVS-01)",
-      "Tubulações que permanecerão na área aterrada travadas antes da compactação, para evitar deslocamento"
+      "Medidas do projeto topográfico conferidas antes da locação, para evitar erros de levantamento e marcações indevidas",
+      "Centro dos blocos/sapatas/cintas conferido com arame e prumo de centro, antes da escavação — verificada a necessidade de apicoar a cabeça das estacas/tubulões",
+      "Identificação de cada bloco/sapata/cinta conferida de acordo com o projeto",
+      "Cotas de arrasamento das estacas/tubulões e cotas dos blocos/cintas conferidas conforme projeto",
+      "Fundo da vala/cava compactado e recoberto com lastro de concreto magro (não estrutural) de 5 cm de espessura, antes da armação",
+      "Formas de madeira instaladas nas laterais das cavas — não é permitido concretar contra o barranco (solo)",
+      "Cava limpa e isenta de materiais nocivos (madeira, solo carreado por chuva, água acumulada), com blocos/cintas umedecidos imediatamente antes do lançamento do concreto, para não absorver água do concreto fresco",
+      "Bitola, quantidade, posicionamento e cobrimento da armadura da sapata/viga (cinta) conferidos com o projeto estrutural no momento da descida, com espaçadores garantindo o cobrimento mínimo",
+      "Posicionamento das barras de aterramento (SPDA) conferido no projeto — quando previsto, a haste é posicionada junto com a armação dos blocos/cintas",
+      "Eventuais alterações em relação ao projeto original (tipo de aço, espaçamentos, posicionamento, seções) conferidas e registradas",
+      "Classe de resistência do concreto (fck) e consistência (slump) conferidos conforme especificação de projeto, com corpos de prova moldados para ensaio",
+      "Dimensões executadas (largura, comprimento, altura/espessura) dos blocos/sapatas/cintas conferidas com o projeto — sem lançamento de volumes/quantitativos indevidos",
+      "Formulário de Controle de Execução preenchido para cada bloco/cinta — cota do terreno, cota de arrasamento, medidas, volume de concreto (projeto x executado), traço, sobreconsumo e existência de barra de aterramento (prática interna TERGOS)",
+      "Prova de carga estática em fundação direta realizada conforme NBR 6489 (quando exigida pelo projetista), com resultado aprovado pela fiscalização antes da execução"
     ]
   },
-  { codigo:"FVS-13", nome:"Impermeabilização com Manta Asfáltica", rev:"00",
-    normas:["NBR 9575:2010 - Impermeabilização - Seleção e projeto","NBR 9574:2008 - Execução de impermeabilização","NBR 13707:2018 - Manta asfáltica para impermeabilização - Requisitos (verificar edição vigente)"],
+  { codigo:"FVS-06", nome:"Compactação de Aterro", rev:"00",
+    normas:["NBR 5681:2015 - Controle tecnológico da execução de aterros em obras de edificação","NBR 7182:2020 - Solo - Ensaio de compactação","NBR 7185:2016 - Solo - Determinação da massa específica aparente, in situ, com emprego de frasco de areia","NBR 9813:2016 - Solo - Determinação da massa específica aparente, in situ, com emprego de cilindro de cravação"],
     itens:[
-      "Substrato regularizado, seco e sem fissuras antes da aplicação",
-      "Primer aplicado conforme especificação antes da manta",
-      "Sobreposição de emendas conforme especificação mínima",
-      "Reforços em pontos singulares (ralos, tubulações, encontros) executados",
-      "Teste de estanqueidade (lâmina d'água) realizado antes do contrapiso/proteção",
-      "Camada de proteção mecânica executada sobre a manta",
-      "Ralos e caimentos finais conferidos após a impermeabilização"
+      "Ensaio de compactação (Proctor) realizado para o material de aterro utilizado",
+      "Umidade do material de aterro na faixa admissível em relação à umidade ótima",
+      "Espessura das camadas de aterro conforme especificação de projeto",
+      "Grau de compactação atingido conforme exigência de projeto",
+      "Equipamento de compactação adequado ao tipo de solo",
+      "Ausência de matéria orgânica, entulho ou material inadequado no aterro",
+      "Drenagem e proteção do aterro contra erosão/saturação"
     ]
   },
-  { codigo:"FVS-14", nome:"Impermeabilização com Argamassa Polimérica", rev:"00",
-    normas:["NBR 9575:2010 - Impermeabilização - Seleção e projeto","NBR 9574:2008 - Execução de impermeabilização","NBR 11905:2015 - Argamassa polimérica industrializada para impermeabilização - Requisitos"],
+  { codigo:"FVS-07", nome:"Tubulação a céu aberto", rev:"00",
+    normas:["NBR 5626:2020 - Água fria e água quente","NBR 8160 - Esgoto sanitário","NBR 10844 - Águas pluviais"],
     itens:[
-      "Substrato preparado, regularizado e curado antes da aplicação",
-      "Traço e preparo da argamassa polimérica conforme especificação do fabricante",
-      "Número de demãos e espessura total conforme especificação",
-      "Reforço com tela/manta em pontos críticos (juntas, ralos, encontros)",
-      "Cura da argamassa polimérica conforme recomendação do fabricante",
-      "Teste de estanqueidade realizado antes da proteção mecânica",
-      "Camada de proteção mecânica aplicada sem danificar a impermeabilização"
+      "Declividade mínima conforme diâmetro e tipo de tubulação",
+      "Assentamento sobre berço de areia compactada",
+      "Profundidade mínima de cobertura sobre tubulação enterrada",
+      "Estanqueidade das juntas testada antes do reaterro",
+      "Proteção mecânica antes do reaterro",
+      "Caixas de passagem e inspeção niveladas e acessíveis",
+      "Diâmetros e materiais conforme projeto hidrossanitário"
     ]
   },
-  { codigo:"FVS-15", nome:"Alvenaria Estrutural", rev:"00",
+  { codigo:"FVS-08", nome:"Laje de Piso (piso de concreto sobre solo)", rev:"00",
+    normas:["NBR 6118:2023 - Projeto de estruturas de concreto - Procedimento","NBR 14931:2023 - Execução de estruturas de concreto - Procedimento","PES 6 - Lajes de Piso (procedimento interno TERGOS) — itens não sourceados em norma ABNT específica de piso sobre solo, seguem integralmente o procedimento interno"],
+    itens:[
+      "Terreno limpo e escavado, com fundações rasas e arranques dos pilares do próximo nível já executados, antes do início",
+      "Processos das etapas anteriores conferidos como executados em conformidade com os procedimentos respectivos",
+      "Traço do concreto definido e alinhado com a concreteira; equipe de sarrafeamento/polimento presente com equipamento; necessidade de cura química avaliada",
+      "Cotas de nível das fundações rasas conferidas; caixas de passagem e tubulações sanitárias, elétricas e de telefonia executadas antes da concretagem",
+      "Solo compactado para evitar vazios na base do piso, coberto por lona ou colchão de areia para isolamento entre o solo e o concreto",
+      "Piquetes de madeira posicionados como referência de nível (galga) do concreto por toda a extensão a concretar",
+      "Folha de isopor instalada nos muros de divisa e bases de pilares para formar junta de dilatação, descolando o piso das estruturas existentes",
+      "Brita graduada simples (BGS) distribuída uniformemente conforme a cota dos piquetes, com o solo compactado novamente após sua aplicação",
+      "Tela soldada posicionada com espaçadores tipo caranguejo, evitando que a tela se acomode sobre a camada de BGS",
+      "Barras de reforço de canto instaladas em torno de caixas de passagem e pilares, para evitar fissuras no piso",
+      "Concreto lançado e sarrafeamento/polimento iniciado somente após a conclusão de todas as etapas anteriores",
+      "Juntas serradas do piso executadas conforme projeto específico, após a cura do concreto"
+    ]
+  },
+  { codigo:"FVS-09", nome:"Montagem de Armadura", rev:"00",
+    normas:["NBR 7480:2022 - Aço destinado a armaduras para estruturas de concreto armado - Requisitos","NBR 6118:2023 - Projeto de estruturas de concreto - Procedimento"],
+    itens:[
+      "Bitola, quantidade e posicionamento das barras conforme projeto estrutural",
+      "Cobrimento mínimo da armadura garantido com espaçadores",
+      "Emendas e traspasses conforme comprimento especificado",
+      "Amarração da armadura firme, sem deslocamentos durante a concretagem",
+      "Ausência de corrosão, óleo ou contaminantes nas barras",
+      "Espaçamento entre barras respeitando o mínimo normativo",
+      "Embutidos e passagens (elétrica/hidráulica) sem interferência na armadura"
+    ]
+  },
+  { codigo:"FVS-10", nome:"Montagem de forma e desforma", rev:"00",
+    normas:["NBR 15696:2009 - Fôrmas e escoramentos para estruturas de concreto - Projeto, dimensionamento e procedimentos executivos","NBR 6118:2023 - Projeto de estruturas de concreto - Procedimento","PES 6 - Estrutura em Concreto Armado (procedimento interno TERGOS)","FVS 6 - Estrutura em Concreto Armado - Fôrmas (planilha real da TERGOS, 2023) — fonte dos itens revisados/adicionados a partir dela"],
+    itens:[
+      "Projetos necessários disponíveis e funcionários, equipamentos e centrais de trabalho liberados pela segurança do trabalho, antes do início da montagem",
+      "Eixos principais do edifício e nível de referência transferidos e conferidos em campo antes da montagem das fôrmas — tolerância de 5 mm",
+      "Medidas entre pilares conferidas para garantir dimensões críticas (vagas de garagem, poço de elevador, caixa de escada, limites da torre, dimensões internas dos ambientes, alinhamento de pilares com alvenarias) — tolerância de 5 mm",
+      "Prumo dos pilares conferido, incluindo o encontro das faces no topo do pilar com esquadro metálico — tolerância de 5 mm",
+      "Estanqueidade e alinhamento das fôrmas conferidos antes da concretagem",
+      "Dimensões internas das fôrmas conferidas com projeto estrutural",
+      "Limpeza e desmoldante aplicados antes da concretagem",
+      "Escoramento dimensionado e travado conforme o projeto específico do pavimento/peça — nunca em quantidade menor que a indicada em projeto",
+      "Fôrmas de vigas invertidas e semi-invertidas executadas separadamente nas partes inferior e superior à laje",
+      "Aberturas e furos em vigas para passagem de tubulações conferidos com o projeto executivo, com reforço nas bordas quando necessário",
+      "Necessidade e posicionamento de contra-flechas conferidos conforme o projeto de fôrmas",
+      "Eventuais alterações em relação ao projeto original (tipo de aço, espaçamentos, posicionamento, seções) conferidas e registradas",
+      "Prazo mínimo de desforma respeitado conforme resistência do concreto",
+      "Retirada das fôrmas sem danos à peça concretada",
+      "Superfície do concreto após desforma sem falhas de concretagem (bicheiras/ninhos)"
+    ]
+  },
+  { codigo:"FVS-11", nome:"Concretagem de Peças Estruturais", rev:"00",
+    normas:["NBR 6118:2023 - Projeto de estruturas de concreto - Procedimento","NBR 12655:2022 - Concreto de cimento Portland - Preparo, controle, recebimento e aceitação - Procedimento","NBR 5738:2015 - Concreto - Procedimento para moldagem e cura de corpos de prova","NBR 5739:2018 - Concreto - Ensaio de compressão de corpos de prova cilíndricos"],
+    itens:[
+      "Nota fiscal/ficha de concreto conferida com especificação de projeto (fck, slump, brita)",
+      "Ensaio de abatimento (slump test) realizado no recebimento",
+      "Moldagem de corpos de prova para controle de resistência",
+      "Lançamento do concreto sem segregação e com altura de queda controlada",
+      "Adensamento com vibrador realizado corretamente",
+      "Cura do concreto realizada pelo período mínimo especificado",
+      "Juntas de concretagem posicionadas e tratadas conforme projeto",
+      "Temperatura e condições climáticas de concretagem controladas"
+    ]
+  },
+  { codigo:"FVS-12", nome:"Instalações Elétricas", rev:"00",
+    normas:["NBR 5410:2004 - Instalações elétricas de baixa tensão"],
+    itens:[
+      "Dimensionamento de condutores conforme carga e queda de tensão de projeto",
+      "Proteção e seccionamento (disjuntores/DR) conforme projeto",
+      "Aterramento executado e continuidade elétrica testada",
+      "Eletrodutos e caixas de passagem instalados conforme projeto",
+      "Pontos de tomadas e iluminação nas quantidades e posições de projeto",
+      "Teste de funcionamento e isolamento dos circuitos antes do fechamento",
+      "Quadro de distribuição identificado e com diagrama unifilar disponível"
+    ]
+  },
+  { codigo:"FVS-13", nome:"Instalação Hidráulica", rev:"00",
+    normas:["NBR 5626:2020 - Sistemas prediais de água fria e água quente - Projeto, execução, ensaios e manutenção","NBR 8160:1999 - Sistemas prediais de esgoto sanitário - Projeto e execução"],
+    itens:[
+      "Diâmetros e materiais das tubulações conforme projeto hidrossanitário",
+      "Fixação e distância dos pontos conforme projeto",
+      "Teste de estanqueidade da água fria/quente antes do fechamento",
+      "Declividade e ventilação do sistema de esgoto conforme projeto",
+      "Teste de estanqueidade do esgoto e ausência de obstruções",
+      "Registros e válvulas instalados e acessíveis",
+      "Isolamento térmico da tubulação de água quente conforme especificação"
+    ]
+  },
+  { codigo:"FVS-14", nome:"Infra. Para Ar Condicionado", rev:"00",
+    normas:["NBR 16401-1:2024 - Instalações de ar-condicionado - Sistemas centrais e unitários - Parte 1: Projetos das instalações","NBR 16401-3:2008 - Parte 3: Qualidade do ar interior","NBR 7541:2015 - Tubos de cobre sem costura para ar-condicionado e refrigeração"],
+    itens:[
+      "Dimensionamento de dutos conforme carga térmica e projeto",
+      "Infraestrutura de dreno de condensado com caimento adequado",
+      "Tubulação frigorígena (linha de cobre) instalada e testada",
+      "Infraestrutura elétrica dedicada aos equipamentos conforme projeto",
+      "Aberturas e passagens para tomada de ar externo/exaustão conforme projeto",
+      "Base/suporte das unidades condensadoras dimensionado e nivelado"
+    ]
+  },
+  { codigo:"FVS-15", nome:"Instalação de Gás", rev:"00",
+    normas:["NBR 15526:2016 - Redes de distribuição interna para gases combustíveis em instalações residenciais e comerciais - Projeto e execução","NBR 13103 - Aparelhos a gás para uso residencial - Instalação (verificar edição vigente)"],
+    itens:[
+      "Traçado e diâmetro da tubulação conforme projeto e memorial de cálculo",
+      "Teste de estanqueidade da rede antes da entrada em operação",
+      "Ventilação do ambiente onde há aparelhos a gás conforme especificação",
+      "Registros e conexões instalados conforme especificação",
+      "Central de GLP/medição e proteções instaladas conforme projeto",
+      "Documentação técnica (ART/memorial) disponível para liberação"
+    ]
+  },
+  { codigo:"FVS-16", nome:"Alvenaria Estrutural", rev:"00",
     normas:["NBR 16868-1:2020 - Alvenaria estrutural - Parte 1: Projeto","NBR 16868-2:2020 - Parte 2: Execução e controle de obras","NBR 16868-3:2020 - Parte 3: Métodos de ensaio"],
     itens:[
       "Bloco estrutural conforme especificação de resistência e classe de projeto",
@@ -247,7 +251,7 @@ const FVS_CATALOGO = [
       "Vergas, contravergas e reforços em aberturas conforme projeto"
     ]
   },
-  { codigo:"FVS-16", nome:"Alvenaria de Vedação", rev:"00",
+  { codigo:"FVS-17", nome:"Alvenaria de Vedação", rev:"00",
     normas:["NBR 15270-1:2017 - Componentes cerâmicos - Blocos e tijolos para alvenaria - Parte 1: Requisitos (verificar edição vigente)","NBR 15575-4:2021 - Edificações habitacionais - Desempenho - Parte 4: Sistemas de vedações verticais internas e externas (norma de execução NBR 8545 está cancelada, sem substituta direta confirmada)","5. Alvenarias de Vedação (procedimento interno TERGOS) — itens não sourceados em norma ABNT específica, seguem o procedimento interno"],
     itens:[
       "Bloco/tijolo cerâmico conforme especificação dimensional e resistência",
@@ -272,7 +276,40 @@ const FVS_CATALOGO = [
       "Cortes para fixação de tubulações e caixas de instalações executados somente após o encunhamento finalizado, sem quebrar os cantos dos vãos durante o transporte de materiais"
     ]
   },
-  { codigo:"FVS-17", nome:"Reboco Interno", rev:"00",
+  { codigo:"FVS-18", nome:"Impermeabilização com Manta Asfáltica", rev:"00",
+    normas:["NBR 9575:2010 - Impermeabilização - Seleção e projeto","NBR 9574:2008 - Execução de impermeabilização","NBR 13707:2018 - Manta asfáltica para impermeabilização - Requisitos (verificar edição vigente)"],
+    itens:[
+      "Substrato regularizado, seco e sem fissuras antes da aplicação",
+      "Primer aplicado conforme especificação antes da manta",
+      "Sobreposição de emendas conforme especificação mínima",
+      "Reforços em pontos singulares (ralos, tubulações, encontros) executados",
+      "Teste de estanqueidade (lâmina d'água) realizado antes do contrapiso/proteção",
+      "Camada de proteção mecânica executada sobre a manta",
+      "Ralos e caimentos finais conferidos após a impermeabilização"
+    ]
+  },
+  { codigo:"FVS-19", nome:"Impermeabilização com Argamassa Polimérica", rev:"00",
+    normas:["NBR 9575:2010 - Impermeabilização - Seleção e projeto","NBR 9574:2008 - Execução de impermeabilização","NBR 11905:2015 - Argamassa polimérica industrializada para impermeabilização - Requisitos"],
+    itens:[
+      "Substrato preparado, regularizado e curado antes da aplicação",
+      "Traço e preparo da argamassa polimérica conforme especificação do fabricante",
+      "Número de demãos e espessura total conforme especificação",
+      "Reforço com tela/manta em pontos críticos (juntas, ralos, encontros)",
+      "Cura da argamassa polimérica conforme recomendação do fabricante",
+      "Teste de estanqueidade realizado antes da proteção mecânica",
+      "Camada de proteção mecânica aplicada sem danificar a impermeabilização"
+    ]
+  },
+  { codigo:"FVS-20", nome:"Colocação de Contramarco", rev:"00",
+    normas:["NBR 10821-4:2017 - Esquadrias para edificações - Parte 4: Requisitos de desempenho adicionais e instalação (referência de instalação; não há norma específica exclusiva para contramarco confirmada)"],
+    itens:[
+      "Prumo, nível e esquadro do contramarco conferidos antes da fixação",
+      "Fixação do contramarco à alvenaria/estrutura conforme especificação",
+      "Vedação entre contramarco e alvenaria executada",
+      "Dimensões internas do contramarco compatíveis com a esquadria a instalar"
+    ]
+  },
+  { codigo:"FVS-21", nome:"Reboco Interno", rev:"00",
     normas:["NBR 13749:2013 - Revestimento de paredes e tetos de argamassas inorgânicas - Especificação","NBR 7200:1998 - Execução de revestimento de paredes e tetos de argamassas inorgânicas - Procedimento"],
     itens:[
       "Chapisco aplicado como base de aderência antes do emboço",
@@ -283,7 +320,7 @@ const FVS_CATALOGO = [
       "Juntas de trabalho e encontros com outros materiais tratados"
     ]
   },
-  { codigo:"FVS-18", nome:"Reboco Externo", rev:"00",
+  { codigo:"FVS-22", nome:"Reboco Externo", rev:"00",
     normas:["NBR 13749:2013 - Revestimento de paredes e tetos de argamassas inorgânicas - Especificação","NBR 7200:1998 - Execução de revestimento de paredes e tetos de argamassas inorgânicas - Procedimento","NR-18 (item 18.15) - Trabalho em altura/proteção contra quedas","REVESTIMENTO EXTERNO - REBOCO (procedimento interno TERGOS) — itens não sourceados em norma ABNT específica seguem o procedimento interno"],
     itens:[
       "Todas as alvenarias concluídas e encunhadas (interna e externa), com contramarcos das janelas chumbados, antes do início",
@@ -308,7 +345,132 @@ const FVS_CATALOGO = [
       "Juntas de dilatação posicionadas na altura dos fundos das vigas, no encontro com as alvenarias, em todos os pavimentos — marcadas com mangueira de nível e abertas com frisador ou corte, conforme o estágio de cura"
     ]
   },
-  { codigo:"FVS-19", nome:"Execução de Revestimento de Piso Interno: Cerâmica e Porcelanato", rev:"00",
+  { codigo:"FVS-23", nome:"Fachada Aerada", rev:"00",
+    normas:["Sem norma ABNT específica confirmada para fachada ventilada/aerada em geral — prática de mercado/fabricante do sistema (verificar antes de uso formal)","Correlato: NBR 15575-4:2021 - Desempenho de edificações habitacionais - Sistemas de vedações verticais"],
+    itens:[
+      "Estrutura de fixação (perfis/mísulas) nivelada e ancorada // verificar",
+      "Câmara de ar ventilada com dimensão conforme projeto do sistema // verificar",
+      "Painéis de revestimento fixados sem folga excessiva // verificar",
+      "Estanqueidade e remates (encontros, cantos, platibandas) tratados // verificar"
+    ]
+  },
+  { codigo:"FVS-24", nome:"Rufos", rev:"00",
+    normas:["NBR 16323:2014 - Telhas de aço - Requisitos e métodos de ensaio (correlato, componentes metálicos de cobertura)","RUFOS (procedimento interno TERGOS) — sem norma ABNT específica de execução de rufos identificada, segue o procedimento interno"],
+    itens:[
+      "Ferramentas e equipamentos em condições adequadas de uso; rufos disponíveis nas medidas e dobras corretas; acabamentos/tratamentos do muro finalizados; atividade realizada em dia sem chuva",
+      "Rufos limpos com álcool no trecho que receberá o selante, antes da aplicação",
+      "Rufos posicionados sobre a alvenaria com selante à base de PU (ou similar) na sobreposição — trespasse mínimo de 3 cm (1,5 cm de cada peça)",
+      "Furos para fixação feitos somente após a sobreposição — bucha inserida e parafuso instalado com canhão compatível",
+      "Cordão de selante aplicado no encontro entre rufos e na cabeça de cada parafuso instalado, garantindo vedação completa",
+      "Em rufo entre muros ou sobre telhados, aba superior embutida na alvenaria superior, com corte feito com serra mármore na marcação previamente definida",
+      "Formato, dobras e demais detalhes do rufo conferidos conforme a situação específica de cada trecho, antes da solicitação/fabricação das peças"
+    ]
+  },
+  { codigo:"FVS-25", nome:"Assentamento de Peitoris e Soleiras", rev:"01",
+    normas:["Sem norma ABNT específica confirmada para assentamento de peitoris e soleiras — prática de mercado/fabricante (verificar antes de uso formal)","Correlato: NBR 13755:2017 - Revestimentos cerâmicos de fachadas e paredes externas com utilização de argamassa colante (quando o material da peça for cerâmico/porcelanato)","PEITORIS (procedimento interno TERGOS) — sem norma ABNT específica de execução de peitoris em pedra identificada, segue o procedimento interno"],
+    itens:[
+      "Ferramentas em condições de uso; pedras disponíveis nas medidas corretas; contramarcos de janela já assentados (para peitoris); base arrematada com no mínimo 7 dias de cura; validade dos produtos de assentamento conferida",
+      "Pedras solicitadas à marmoraria com no mínimo 3 cm de sobra para pingadeira em cada lado, com friso na face inferior — em acabamento de muro, medida total igual à espessura da alvenaria mais 6 cm (3 cm de cada lado)",
+      "Medidas dos locais de assentamento e das respectivas pedras conferidas antes do início; material (tipo de rocha) conferido conforme solicitado na marmoraria",
+      "Argamassa ACIII utilizada para o assentamento — branca quando necessário para evitar manchas, traçada nas proporções indicadas pelo fabricante",
+      "Colagem executada em dupla camada (argamassa na base e na peça), com os cordões seguindo o mesmo sentido em ambas para facilitar a expulsão de bolhas de ar",
+      "Peça posicionada e pressionada com martelo de borracha ou vibrador de cerâmica mecânico",
+      "Caimento de aproximadamente 2% instalado — para dentro da obra em acabamento de muro, para fora da fachada em peitoris de janela",
+      "Nivelamento e assentamento firme da soleira // verificar",
+      "Espaço de 0,5 cm entre a peça e o contramarco previsto em peitoris de janela, para aplicação de selante à base de PU",
+      "Espaço entre peça e contramarco selado com PU, delimitado com fita crepe, com as pedras secas e livres de oleosidade antes da selagem",
+      "Vedação e rejunte das bordas da peça // verificar",
+      "Todas as peças de peitoril conferidas quanto a danos/fissuras antes da instalação das esquadrias das janelas",
+      "Cordão de silicone/PU aplicado nas extremidades da pedra que se prolongam além da fachada, antes da instalação das janelas, para evitar manchamento por escorrimento de água"
+    ]
+  },
+  { codigo:"FVS-26", nome:"Contrapiso", rev:"00",
+    normas:["NBR 13753:1996 - Revestimento de piso interno e/ou externo com placas cerâmicas e com utilização de argamassa colante (referência de execução de contrapiso; verificar edição vigente)","NBR 12655:2022 - Concreto - Preparo, controle e recebimento (aplicável quando contrapiso for em concreto)","CONTRAPISO (procedimento interno TERGOS) — fonte dos itens sobre caimento/caída para ralo, marcados abaixo"],
+    itens:[
+      "Instalações elétricas e hidráulicas de piso executadas e testadas, com ralos fechados (tubo dobrado ou preenchido com papel amassado) antes do início do contrapiso",
+      "Marcação da alvenaria concluída e projetos de arquitetura disponíveis, antes do início",
+      "Laje limpa e livre de restos de argamassa, entulho ou qualquer material aderido",
+      "Nível da laje conferido em todo o pavimento, identificando o ponto mais elevado",
+      "Ponto mais alto do pavimento transferido para os banheiros, definindo as caídas de cada ambiente a partir dele",
+      "Contrapiso com ralo executado em duas etapas — caída primária direcionando todo o piso para o ralo principal (lavabos/áreas de serviço) ou para o ralo fora do box (banheiros), formando um único ponto mais baixo",
+      "Ponto de referência de nível marcado com talisca no ralo (ponto mais baixo), a 0,5 cm acima do nível mais alto do pavimento — demais pontos do banheiro com +1 cm de altura em relação ao ponto do ralo",
+      "Taliscas posicionadas na base, de preferência dois dias antes da execução do contrapiso",
+      "Base preparada — superfície limpa, cimento polvilhado sobre superfície molhada com adesivo de alto desempenho conforme especificação do fabricante, formando nata de ligação entre a base de concreto e a argamassa",
+      "Argamassa farofa lançada entre as taliscas para execução das mestras, com os intervalos preenchidos e compactados com soquete ou enxada",
+      "Sarrafeamento executado com régua apoiada nas mestras, em movimentos de vai e vem, até a superfície atingir o nível das mestras",
+      "Acabamento final executado com cimento polvilhado e desempenadeira (madeira ou aço, conforme o revestimento final)",
+      "Junta de dilatação/encontro executada conforme especificação",
+      "Aderência à base ou desolidarização conforme tipo de contrapiso",
+      "Cura do contrapiso realizada pelo período mínimo"
+    ]
+  },
+  { codigo:"FVS-27", nome:"Revestimento Interno em Gesso", rev:"00",
+    normas:["NBR 13867:1997 - Revestimento interno de paredes e tetos com pasta de gesso - Materiais, preparo, aplicação e acabamento (norma cancelada, sem substituta direta claramente identificada nesta pesquisa — verificar edição vigente antes de uso formal)"],
+    itens:[
+      "Superfície base preparada antes da aplicação do gesso",
+      "Espessura da camada de gesso conforme especificação",
+      "Planeza, esquadro e prumo da superfície acabada",
+      "Preparo e tempo de utilização da pasta de gesso respeitados",
+      "Acabamento final liso e pronto para pintura"
+    ]
+  },
+  { codigo:"FVS-28", nome:"Forro de Gesso Acartonado", rev:"00",
+    normas:["NBR 15758-2:2009 - Sistemas construtivos em chapas de gesso para drywall - Parte 2: Requisitos para sistemas usados como forros (norma cancelada em 09/2025, revisão em consulta nacional — verificar edição vigente)","NBR 14715-1:2021 - Chapas de gesso para drywall - Requisitos"],
+    itens:[
+      "Nível da estrutura metálica (perfis) conferido antes da fixação das chapas",
+      "Fixação das chapas de gesso conforme especificação",
+      "Tratamento de juntas (fita e massa) conforme especificação",
+      "Recortes para luminárias, difusores e passagens conferidos",
+      "Nível final do forro conferido em toda a área"
+    ]
+  },
+  { codigo:"FVS-29", nome:"Forro de Gesso em Placas", rev:"00",
+    normas:["NBR 16382:2015 - Placas de gesso para forro - Requisitos","NBR 16591:2017 - Execução de forro autoportante com placas de gesso - Procedimento"],
+    itens:[
+      "Estrutura de sustentação (arames/tirantes) nivelada e firme",
+      "Encaixe e alinhamento das placas de gesso",
+      "Tratamento de juntas com massa e fita",
+      "Recortes para luminárias e pontos de instalação conferidos",
+      "Nível final do forro e platibandas/sancas conferidos"
+    ]
+  },
+  { codigo:"FVS-30", nome:"Shaft Drywall", rev:"00",
+    normas:["NBR 15758-1:2009 - Sistemas construtivos em chapas de gesso para drywall - Parte 1: Requisitos para sistemas usados como paredes (norma cancelada em 09/2025, revisão em consulta nacional — verificar edição vigente)","NBR 14715-1:2021 - Chapas de gesso para drywall - Requisitos"],
+    itens:[
+      "Estrutura metálica (guias e montantes) fixada e nivelada",
+      "Chapas resistentes ao fogo/umidade utilizadas conforme exigência",
+      "Vedação de passagens de tubulações/instalações no shaft",
+      "Acabamento das juntas e fixação final das chapas",
+      "Isolamento acústico e estanqueidade do shaft conforme projeto"
+    ]
+  },
+  { codigo:"FVS-31", nome:"Divisórias e Portas de Vidro", rev:"00",
+    normas:["NBR 7199:2016 - Aplicações de vidros na construção civil - Requisitos (com emenda vigente a partir de 30/06/2025)"],
+    itens:[
+      "Espessura e tipo de vidro conforme especificação e aplicação",
+      "Fixação e vedação dos painéis conforme especificação",
+      "Ferragens (dobradiças, puxadores, molas de piso) instaladas e testadas",
+      "Sinalização de segurança em painéis de grande área",
+      "Ausência de trincas, lascas ou defeitos aparentes após instalação"
+    ]
+  },
+  { codigo:"FVS-32", nome:"Pintura e Textura", rev:"00",
+    normas:["NBR 15079-1:2025 - Tintas para construção civil - Requisitos de desempenho - Parte 1: Tinta fosca nas cores claras","NBR 15079-2:2025 - Parte 2: Tintas semiacetinada, acetinada e semibrilho nas cores claras (edição de 04/2025; verificar vigência antes de uso formal, pois edições anteriores da NBR 15079 foram canceladas)","NBR 13245:1995 - Execução de pinturas em edificações não industriais - Preparação de superfície (verificar edição vigente)","PINTURA INTERNA (procedimento interno TERGOS)"],
+    itens:[
+      "Projetos e instruções de revestimento disponíveis e alinhados, equipe treinada, antes do início",
+      "Superfície de gesso/reboco curada e aprovada para receber o emassamento, com paredes desimpedidas",
+      "Preparo e limpeza da superfície antes da pintura",
+      "Superfícies metálicas (ferro e similares) inspecionadas quanto a oxidação, com remoção de ferrugem e pó solto por lixamento antes da pintura",
+      "Produto conferido como adequado à área e superfície específica (interna x externa não usam o mesmo produto)",
+      "Umidade da base dentro do limite aceitável para pintura",
+      "Fundo preparador/selador aplicado conforme especificação",
+      "Número de demãos e diluição conforme especificação do fabricante",
+      "Uniformidade de cor, textura e acabamento final",
+      "Proteção de esquadrias, pisos e áreas adjacentes durante a pintura",
+      "Lote/validade da tinta conferido e produto conforme especificação"
+    ]
+  },
+  { codigo:"FVS-33", nome:"Execução de Revestimento de Piso Interno: Cerâmica e Porcelanato", rev:"00",
     normas:["NBR 13818/NBR 15463 - Placas cerâmicas","NBR 14081 (partes 1-5) - Argamassa colante","PORCELANATOS (procedimento interno TERGOS)","Manual de Recebimento e Armazenamento Portobello (fabricante) — fonte dos itens revisados/adicionados a partir do procedimento interno"],
     itens:[
       "Peças limpas com escova de nylon e água para retirar a película de proteção do tardoz, com descrição, tamanho, cor e lote conferidos com o projeto",
@@ -331,43 +493,7 @@ const FVS_CATALOGO = [
       "Peças limpas após a retirada das cunhas, com piso protegido (papelão e plástico bolha) até a entrega"
     ]
   },
-  { codigo:"FVS-21", nome:"Pintura e Textura", rev:"00",
-    normas:["NBR 15079-1:2025 - Tintas para construção civil - Requisitos de desempenho - Parte 1: Tinta fosca nas cores claras","NBR 15079-2:2025 - Parte 2: Tintas semiacetinada, acetinada e semibrilho nas cores claras (edição de 04/2025; verificar vigência antes de uso formal, pois edições anteriores da NBR 15079 foram canceladas)","NBR 13245:1995 - Execução de pinturas em edificações não industriais - Preparação de superfície (verificar edição vigente)","PINTURA INTERNA (procedimento interno TERGOS)"],
-    itens:[
-      "Projetos e instruções de revestimento disponíveis e alinhados, equipe treinada, antes do início",
-      "Superfície de gesso/reboco curada e aprovada para receber o emassamento, com paredes desimpedidas",
-      "Preparo e limpeza da superfície antes da pintura",
-      "Superfícies metálicas (ferro e similares) inspecionadas quanto a oxidação, com remoção de ferrugem e pó solto por lixamento antes da pintura",
-      "Produto conferido como adequado à área e superfície específica (interna x externa não usam o mesmo produto)",
-      "Umidade da base dentro do limite aceitável para pintura",
-      "Fundo preparador/selador aplicado conforme especificação",
-      "Número de demãos e diluição conforme especificação do fabricante",
-      "Uniformidade de cor, textura e acabamento final",
-      "Proteção de esquadrias, pisos e áreas adjacentes durante a pintura",
-      "Lote/validade da tinta conferido e produto conforme especificação"
-    ]
-  },
-  { codigo:"FVS-22", nome:"Contrapiso", rev:"00",
-    normas:["NBR 13753:1996 - Revestimento de piso interno e/ou externo com placas cerâmicas e com utilização de argamassa colante (referência de execução de contrapiso; verificar edição vigente)","NBR 12655:2022 - Concreto - Preparo, controle e recebimento (aplicável quando contrapiso for em concreto)","CONTRAPISO (procedimento interno TERGOS) — fonte dos itens sobre caimento/caída para ralo, marcados abaixo"],
-    itens:[
-      "Instalações elétricas e hidráulicas de piso executadas e testadas, com ralos fechados (tubo dobrado ou preenchido com papel amassado) antes do início do contrapiso",
-      "Marcação da alvenaria concluída e projetos de arquitetura disponíveis, antes do início",
-      "Laje limpa e livre de restos de argamassa, entulho ou qualquer material aderido",
-      "Nível da laje conferido em todo o pavimento, identificando o ponto mais elevado",
-      "Ponto mais alto do pavimento transferido para os banheiros, definindo as caídas de cada ambiente a partir dele",
-      "Contrapiso com ralo executado em duas etapas — caída primária direcionando todo o piso para o ralo principal (lavabos/áreas de serviço) ou para o ralo fora do box (banheiros), formando um único ponto mais baixo",
-      "Ponto de referência de nível marcado com talisca no ralo (ponto mais baixo), a 0,5 cm acima do nível mais alto do pavimento — demais pontos do banheiro com +1 cm de altura em relação ao ponto do ralo",
-      "Taliscas posicionadas na base, de preferência dois dias antes da execução do contrapiso",
-      "Base preparada — superfície limpa, cimento polvilhado sobre superfície molhada com adesivo de alto desempenho conforme especificação do fabricante, formando nata de ligação entre a base de concreto e a argamassa",
-      "Argamassa farofa lançada entre as taliscas para execução das mestras, com os intervalos preenchidos e compactados com soquete ou enxada",
-      "Sarrafeamento executado com régua apoiada nas mestras, em movimentos de vai e vem, até a superfície atingir o nível das mestras",
-      "Acabamento final executado com cimento polvilhado e desempenadeira (madeira ou aço, conforme o revestimento final)",
-      "Junta de dilatação/encontro executada conforme especificação",
-      "Aderência à base ou desolidarização conforme tipo de contrapiso",
-      "Cura do contrapiso realizada pelo período mínimo"
-    ]
-  },
-  { codigo:"FVS-23", nome:"Rejuntamento", rev:"00",
+  { codigo:"FVS-34", nome:"Rejuntamento", rev:"00",
     normas:["NBR 14992:2003 - Argamassa à base de cimento Portland para rejuntamento de placas cerâmicas - Requisitos e métodos de ensaio (verificar edição vigente)"],
     itens:[
       "Tempo de espera após assentamento respeitado antes do rejunte",
@@ -378,171 +504,7 @@ const FVS_CATALOGO = [
       "Cura do rejunte protegida de água e tráfego prematuro"
     ]
   },
-  { codigo:"FVS-24", nome:"Esquadria de Madeira", rev:"00",
-    normas:["NBR 15930-1:2011 - Portas de madeira para edificações - Parte 1: Terminologia","NBR 15930-2:2011 - Parte 2: Requisitos","NBR 15930-3:2011 - Parte 3: Requisitos adicionais","NBR 15930-4:2011 - Parte 4: Instalação e manutenção"],
-    itens:[
-      "Dimensões e esquadro da esquadria conforme projeto",
-      "Fixação do marco/batente na alvenaria conforme especificação",
-      "Funcionamento de dobradiças, fechaduras e ferragens",
-      "Acabamento superficial (pintura/verniz) conforme especificação",
-      "Requisitos complementares atendidos (acústico/corta-fogo), quando especificados"
-    ]
-  },
-  { codigo:"FVS-25", nome:"Divisórias e Portas de Vidro", rev:"00",
-    normas:["NBR 7199:2016 - Aplicações de vidros na construção civil - Requisitos (com emenda vigente a partir de 30/06/2025)"],
-    itens:[
-      "Espessura e tipo de vidro conforme especificação e aplicação",
-      "Fixação e vedação dos painéis conforme especificação",
-      "Ferragens (dobradiças, puxadores, molas de piso) instaladas e testadas",
-      "Sinalização de segurança em painéis de grande área",
-      "Ausência de trincas, lascas ou defeitos aparentes após instalação"
-    ]
-  },
-  { codigo:"FVS-26", nome:"Execução de Instalação de Esquadria de Alumínio", rev:"01",
-    normas:["NBR 10821-1:2017 - Esquadrias para edificações - Parte 1: Terminologia","NBR 10821-2:2017 - Parte 2: Requisitos e classificação","NBR 10821-4:2017 - Parte 4: Requisitos de desempenho adicionais e instalação","NBR 10821-5:2017 - Parte 5: Manutenção e desempenho acústico"],
-    itens:[
-      "Dimensões e esquadro do vão e da esquadria conferidos",
-      "Fixação da esquadria ao vão conforme especificação",
-      "Estanqueidade à água e permeabilidade ao ar conforme classificação de projeto",
-      "Funcionamento de folhas móveis e ferragens",
-      "Vidro e acabamento da esquadria conforme especificação",
-      "Requisitos de segurança (guarda-corpo/queda) atendidos quando aplicável"
-    ]
-  },
-  { codigo:"FVS-27", nome:"Colocação de Contramarco", rev:"00",
-    normas:["NBR 10821-4:2017 - Esquadrias para edificações - Parte 4: Requisitos de desempenho adicionais e instalação (referência de instalação; não há norma específica exclusiva para contramarco confirmada)"],
-    itens:[
-      "Prumo, nível e esquadro do contramarco conferidos antes da fixação",
-      "Fixação do contramarco à alvenaria/estrutura conforme especificação",
-      "Vedação entre contramarco e alvenaria executada",
-      "Dimensões internas do contramarco compatíveis com a esquadria a instalar"
-    ]
-  },
-  { codigo:"FVS-28", nome:"Fachada Aerada", rev:"00",
-    normas:["Sem norma ABNT específica confirmada para fachada ventilada/aerada em geral — prática de mercado/fabricante do sistema (verificar antes de uso formal)","Correlato: NBR 15575-4:2021 - Desempenho de edificações habitacionais - Sistemas de vedações verticais"],
-    itens:[
-      "Estrutura de fixação (perfis/mísulas) nivelada e ancorada // verificar",
-      "Câmara de ar ventilada com dimensão conforme projeto do sistema // verificar",
-      "Painéis de revestimento fixados sem folga excessiva // verificar",
-      "Estanqueidade e remates (encontros, cantos, platibandas) tratados // verificar"
-    ]
-  },
-  { codigo:"FVS-29", nome:"Laje de Piso (piso de concreto sobre solo)", rev:"00",
-    normas:["NBR 6118:2023 - Projeto de estruturas de concreto - Procedimento","NBR 14931:2023 - Execução de estruturas de concreto - Procedimento","PES 6 - Lajes de Piso (procedimento interno TERGOS) — itens não sourceados em norma ABNT específica de piso sobre solo, seguem integralmente o procedimento interno"],
-    itens:[
-      "Terreno limpo e escavado, com fundações rasas e arranques dos pilares do próximo nível já executados, antes do início",
-      "Processos das etapas anteriores conferidos como executados em conformidade com os procedimentos respectivos",
-      "Traço do concreto definido e alinhado com a concreteira; equipe de sarrafeamento/polimento presente com equipamento; necessidade de cura química avaliada",
-      "Cotas de nível das fundações rasas conferidas; caixas de passagem e tubulações sanitárias, elétricas e de telefonia executadas antes da concretagem",
-      "Solo compactado para evitar vazios na base do piso, coberto por lona ou colchão de areia para isolamento entre o solo e o concreto",
-      "Piquetes de madeira posicionados como referência de nível (galga) do concreto por toda a extensão a concretar",
-      "Folha de isopor instalada nos muros de divisa e bases de pilares para formar junta de dilatação, descolando o piso das estruturas existentes",
-      "Brita graduada simples (BGS) distribuída uniformemente conforme a cota dos piquetes, com o solo compactado novamente após sua aplicação",
-      "Tela soldada posicionada com espaçadores tipo caranguejo, evitando que a tela se acomode sobre a camada de BGS",
-      "Barras de reforço de canto instaladas em torno de caixas de passagem e pilares, para evitar fissuras no piso",
-      "Concreto lançado e sarrafeamento/polimento iniciado somente após a conclusão de todas as etapas anteriores",
-      "Juntas serradas do piso executadas conforme projeto específico, após a cura do concreto"
-    ]
-  },
-  { codigo:"FVS-30", nome:"Revestimento Interno em Gesso", rev:"00",
-    normas:["NBR 13867:1997 - Revestimento interno de paredes e tetos com pasta de gesso - Materiais, preparo, aplicação e acabamento (norma cancelada, sem substituta direta claramente identificada nesta pesquisa — verificar edição vigente antes de uso formal)"],
-    itens:[
-      "Superfície base preparada antes da aplicação do gesso",
-      "Espessura da camada de gesso conforme especificação",
-      "Planeza, esquadro e prumo da superfície acabada",
-      "Preparo e tempo de utilização da pasta de gesso respeitados",
-      "Acabamento final liso e pronto para pintura"
-    ]
-  },
-  { codigo:"FVS-31", nome:"Forro de Gesso Acartonado", rev:"00",
-    normas:["NBR 15758-2:2009 - Sistemas construtivos em chapas de gesso para drywall - Parte 2: Requisitos para sistemas usados como forros (norma cancelada em 09/2025, revisão em consulta nacional — verificar edição vigente)","NBR 14715-1:2021 - Chapas de gesso para drywall - Requisitos"],
-    itens:[
-      "Nível da estrutura metálica (perfis) conferido antes da fixação das chapas",
-      "Fixação das chapas de gesso conforme especificação",
-      "Tratamento de juntas (fita e massa) conforme especificação",
-      "Recortes para luminárias, difusores e passagens conferidos",
-      "Nível final do forro conferido em toda a área"
-    ]
-  },
-  { codigo:"FVS-32", nome:"Forro de Gesso em Placas", rev:"00",
-    normas:["NBR 16382:2015 - Placas de gesso para forro - Requisitos","NBR 16591:2017 - Execução de forro autoportante com placas de gesso - Procedimento"],
-    itens:[
-      "Estrutura de sustentação (arames/tirantes) nivelada e firme",
-      "Encaixe e alinhamento das placas de gesso",
-      "Tratamento de juntas com massa e fita",
-      "Recortes para luminárias e pontos de instalação conferidos",
-      "Nível final do forro e platibandas/sancas conferidos"
-    ]
-  },
-  { codigo:"FVS-33", nome:"Shaft Drywall", rev:"00",
-    normas:["NBR 15758-1:2009 - Sistemas construtivos em chapas de gesso para drywall - Parte 1: Requisitos para sistemas usados como paredes (norma cancelada em 09/2025, revisão em consulta nacional — verificar edição vigente)","NBR 14715-1:2021 - Chapas de gesso para drywall - Requisitos"],
-    itens:[
-      "Estrutura metálica (guias e montantes) fixada e nivelada",
-      "Chapas resistentes ao fogo/umidade utilizadas conforme exigência",
-      "Vedação de passagens de tubulações/instalações no shaft",
-      "Acabamento das juntas e fixação final das chapas",
-      "Isolamento acústico e estanqueidade do shaft conforme projeto"
-    ]
-  },
-  { codigo:"FVS-34", nome:"Assentamento de Peitoris e Soleiras", rev:"01",
-    normas:["Sem norma ABNT específica confirmada para assentamento de peitoris e soleiras — prática de mercado/fabricante (verificar antes de uso formal)","Correlato: NBR 13755:2017 - Revestimentos cerâmicos de fachadas e paredes externas com utilização de argamassa colante (quando o material da peça for cerâmico/porcelanato)","PEITORIS (procedimento interno TERGOS) — sem norma ABNT específica de execução de peitoris em pedra identificada, segue o procedimento interno"],
-    itens:[
-      "Ferramentas em condições de uso; pedras disponíveis nas medidas corretas; contramarcos de janela já assentados (para peitoris); base arrematada com no mínimo 7 dias de cura; validade dos produtos de assentamento conferida",
-      "Pedras solicitadas à marmoraria com no mínimo 3 cm de sobra para pingadeira em cada lado, com friso na face inferior — em acabamento de muro, medida total igual à espessura da alvenaria mais 6 cm (3 cm de cada lado)",
-      "Medidas dos locais de assentamento e das respectivas pedras conferidas antes do início; material (tipo de rocha) conferido conforme solicitado na marmoraria",
-      "Argamassa ACIII utilizada para o assentamento — branca quando necessário para evitar manchas, traçada nas proporções indicadas pelo fabricante",
-      "Colagem executada em dupla camada (argamassa na base e na peça), com os cordões seguindo o mesmo sentido em ambas para facilitar a expulsão de bolhas de ar",
-      "Peça posicionada e pressionada com martelo de borracha ou vibrador de cerâmica mecânico",
-      "Caimento de aproximadamente 2% instalado — para dentro da obra em acabamento de muro, para fora da fachada em peitoris de janela",
-      "Nivelamento e assentamento firme da soleira // verificar",
-      "Espaço de 0,5 cm entre a peça e o contramarco previsto em peitoris de janela, para aplicação de selante à base de PU",
-      "Espaço entre peça e contramarco selado com PU, delimitado com fita crepe, com as pedras secas e livres de oleosidade antes da selagem",
-      "Vedação e rejunte das bordas da peça // verificar",
-      "Todas as peças de peitoril conferidas quanto a danos/fissuras antes da instalação das esquadrias das janelas",
-      "Cordão de silicone/PU aplicado nas extremidades da pedra que se prolongam além da fachada, antes da instalação das janelas, para evitar manchamento por escorrimento de água"
-    ]
-  },
-  { codigo:"FVS-35", nome:"Instalação de Gás", rev:"00",
-    normas:["NBR 15526:2016 - Redes de distribuição interna para gases combustíveis em instalações residenciais e comerciais - Projeto e execução","NBR 13103 - Aparelhos a gás para uso residencial - Instalação (verificar edição vigente)"],
-    itens:[
-      "Traçado e diâmetro da tubulação conforme projeto e memorial de cálculo",
-      "Teste de estanqueidade da rede antes da entrada em operação",
-      "Ventilação do ambiente onde há aparelhos a gás conforme especificação",
-      "Registros e conexões instalados conforme especificação",
-      "Central de GLP/medição e proteções instaladas conforme projeto",
-      "Documentação técnica (ART/memorial) disponível para liberação"
-    ]
-  },
-  { codigo:"FVS-36", nome:"Colocação de Guarda Corpo e Corrimão", rev:"00",
-    normas:["NBR 14718 - Guarda-corpos para edificação (verificar edição vigente)"],
-    itens:[
-      "Altura do guarda-corpo conforme mínimo normativo",
-      "Vãos entre elementos verticais dentro do limite admissível",
-      "Resistência estrutural do guarda-corpo (fixação e ancoragem)",
-      "Corrimão contínuo e com dimensão de empunhadura adequada",
-      "Material e acabamento sem riscos de corte ou ferimento"
-    ]
-  },
-  { codigo:"FVS-37", nome:"Colocação de Bancadas", rev:"00",
-    normas:["Sem norma ABNT específica confirmada para colocação de bancadas — prática de mercado/fabricante do material (granito, mármore, quartzo) (verificar antes de uso formal)","Correlato: NBR 15575-3:2021 - Desempenho de edificações habitacionais - Sistemas de pisos"],
-    itens:[
-      "Nivelamento e prumo da bancada conferidos // verificar",
-      "Fixação e apoio estrutural adequados ao peso da peça // verificar",
-      "Recortes para cuba, cooktop e torneira conferidos com os equipamentos // verificar",
-      "Emendas entre módulos executadas com alinhamento e vedação // verificar",
-      "Ausência de trincas, manchas ou defeitos aparentes na peça // verificar"
-    ]
-  },
-  { codigo:"FVS-39", nome:"Nicho", rev:"00",
-    normas:["Sem norma ABNT específica confirmada para execução de nichos — prática de mercado/fabricante (verificar antes de uso formal)","Correlato: NBR 9575:2010 - Impermeabilização - Seleção e projeto (quando o nicho estiver em área molhada e exigir impermeabilização)"],
-    itens:[
-      "Dimensões e posição do nicho conforme projeto // verificar",
-      "Impermeabilização do nicho em área molhada // verificar",
-      "Caimento do fundo do nicho evitando acúmulo de água // verificar",
-      "Revestimento interno do nicho alinhado com o revestimento do ambiente // verificar"
-    ]
-  },
-  { codigo:"FVS-40", nome:"Piso vinílico", rev:"00",
+  { codigo:"FVS-35", nome:"Piso vinílico", rev:"00",
     normas:["NBR 14917-1:2017 - Revestimentos resilientes para pisos - Manta e placa vinílica flexível homogênea ou heterogênea em PVC - Parte 1: Requisitos","NBR 14917-2:2022 - Parte 2: Procedimentos (instalação)"],
     itens:[
       "Nivelamento e planeza do substrato antes da instalação",
@@ -553,7 +515,66 @@ const FVS_CATALOGO = [
       "Acabamento em soleiras, ralos e transições de piso"
     ]
   },
-  { codigo:"FVS-41", nome:"Instalação de Louças e Metais", rev:"00",
+  { codigo:"FVS-36", nome:"Instalação de Rodapés", rev:"00",
+    normas:["Sem norma ABNT específica de execução de rodapés identificada nesta pesquisa — prática de mercado/fabricante (verificar antes de uso formal)","Correlato: NBR 15575-3:2021 - Desempenho de edificações habitacionais - Sistemas de pisos"],
+    itens:[
+      "Nivelamento e alinhamento do rodapé com o piso",
+      "Fixação firme sem folgas ou som cavo",
+      "Encontros e cantos (internos/externos) bem acabados",
+      "Rejunte/silicone aplicado entre rodapé e piso/parede"
+    ]
+  },
+  { codigo:"FVS-37", nome:"Esquadria de Madeira", rev:"00",
+    normas:["NBR 15930-1:2011 - Portas de madeira para edificações - Parte 1: Terminologia","NBR 15930-2:2011 - Parte 2: Requisitos","NBR 15930-3:2011 - Parte 3: Requisitos adicionais","NBR 15930-4:2011 - Parte 4: Instalação e manutenção"],
+    itens:[
+      "Dimensões e esquadro da esquadria conforme projeto",
+      "Fixação do marco/batente na alvenaria conforme especificação",
+      "Funcionamento de dobradiças, fechaduras e ferragens",
+      "Acabamento superficial (pintura/verniz) conforme especificação",
+      "Requisitos complementares atendidos (acústico/corta-fogo), quando especificados"
+    ]
+  },
+  { codigo:"FVS-38", nome:"Execução de Instalação de Esquadria de Alumínio", rev:"01",
+    normas:["NBR 10821-1:2017 - Esquadrias para edificações - Parte 1: Terminologia","NBR 10821-2:2017 - Parte 2: Requisitos e classificação","NBR 10821-4:2017 - Parte 4: Requisitos de desempenho adicionais e instalação","NBR 10821-5:2017 - Parte 5: Manutenção e desempenho acústico"],
+    itens:[
+      "Dimensões e esquadro do vão e da esquadria conferidos",
+      "Fixação da esquadria ao vão conforme especificação",
+      "Estanqueidade à água e permeabilidade ao ar conforme classificação de projeto",
+      "Funcionamento de folhas móveis e ferragens",
+      "Vidro e acabamento da esquadria conforme especificação",
+      "Requisitos de segurança (guarda-corpo/queda) atendidos quando aplicável"
+    ]
+  },
+  { codigo:"FVS-39", nome:"Colocação de Guarda Corpo e Corrimão", rev:"00",
+    normas:["NBR 14718 - Guarda-corpos para edificação (verificar edição vigente)"],
+    itens:[
+      "Altura do guarda-corpo conforme mínimo normativo",
+      "Vãos entre elementos verticais dentro do limite admissível",
+      "Resistência estrutural do guarda-corpo (fixação e ancoragem)",
+      "Corrimão contínuo e com dimensão de empunhadura adequada",
+      "Material e acabamento sem riscos de corte ou ferimento"
+    ]
+  },
+  { codigo:"FVS-40", nome:"Colocação de Bancadas", rev:"00",
+    normas:["Sem norma ABNT específica confirmada para colocação de bancadas — prática de mercado/fabricante do material (granito, mármore, quartzo) (verificar antes de uso formal)","Correlato: NBR 15575-3:2021 - Desempenho de edificações habitacionais - Sistemas de pisos"],
+    itens:[
+      "Nivelamento e prumo da bancada conferidos // verificar",
+      "Fixação e apoio estrutural adequados ao peso da peça // verificar",
+      "Recortes para cuba, cooktop e torneira conferidos com os equipamentos // verificar",
+      "Emendas entre módulos executadas com alinhamento e vedação // verificar",
+      "Ausência de trincas, manchas ou defeitos aparentes na peça // verificar"
+    ]
+  },
+  { codigo:"FVS-41", nome:"Nicho", rev:"00",
+    normas:["Sem norma ABNT específica confirmada para execução de nichos — prática de mercado/fabricante (verificar antes de uso formal)","Correlato: NBR 9575:2010 - Impermeabilização - Seleção e projeto (quando o nicho estiver em área molhada e exigir impermeabilização)"],
+    itens:[
+      "Dimensões e posição do nicho conforme projeto // verificar",
+      "Impermeabilização do nicho em área molhada // verificar",
+      "Caimento do fundo do nicho evitando acúmulo de água // verificar",
+      "Revestimento interno do nicho alinhado com o revestimento do ambiente // verificar"
+    ]
+  },
+  { codigo:"FVS-42", nome:"Instalação de Louças e Metais", rev:"00",
     normas:["NBR 15097-1:2011 - Aparelhos sanitários de material cerâmico - Parte 1: Requisitos e métodos de ensaio","NBR 15097-2:2011 - Parte 2: Procedimento para instalação","NBR 10281:2015 - Torneiras - Requisitos e métodos de ensaio","NBR 16749:2016 - Aparelhos sanitários - Misturadores - Requisitos e métodos de ensaio"],
     itens:[
       "Fixação da bacia sanitária/lavatório firme e nivelada",
@@ -564,16 +585,7 @@ const FVS_CATALOGO = [
       "Limpeza e proteção das peças até a entrega"
     ]
   },
-  { codigo:"FVS-38", nome:"Instalação de Rodapés", rev:"00",
-    normas:["Sem norma ABNT específica de execução de rodapés identificada nesta pesquisa — prática de mercado/fabricante (verificar antes de uso formal)","Correlato: NBR 15575-3:2021 - Desempenho de edificações habitacionais - Sistemas de pisos"],
-    itens:[
-      "Nivelamento e alinhamento do rodapé com o piso",
-      "Fixação firme sem folgas ou som cavo",
-      "Encontros e cantos (internos/externos) bem acabados",
-      "Rejunte/silicone aplicado entre rodapé e piso/parede"
-    ]
-  },
-  { codigo:"FVS-42", nome:"Instalação de Torneiras", rev:"00",
+  { codigo:"FVS-43", nome:"Instalação de Torneiras", rev:"00",
     normas:["Sem norma ABNT específica confirmada para o serviço de instalação de torneiras (como produto específico) — prática de mercado/fabricante (verificar antes de uso formal)","Correlato: NBR 10281:2015 - Torneiras - Requisitos e métodos de ensaio (norma de produto, não de instalação)"],
     itens:[
       "Vedação da conexão com a tubulação sem vazamentos // verificar",
@@ -582,7 +594,7 @@ const FVS_CATALOGO = [
       "Acabamento e limpeza da torneira instalada // verificar"
     ]
   },
-  { codigo:"FVS-43", nome:"Exaustões Mecânicas", rev:"00",
+  { codigo:"FVS-44", nome:"Exaustões Mecânicas", rev:"00",
     normas:["Sem norma ABNT específica confirmada para exaustão mecânica residencial simples — prática de mercado/fabricante (verificar antes de uso formal)","Correlato: NBR 16401-3:2008 - Instalações de ar-condicionado - Sistemas centrais e unitários - Parte 3: Qualidade do ar interior (quando integrada a sistema de climatização)"],
     itens:[
       "Dimensionamento do duto e exaustor conforme ambiente // verificar",
@@ -591,17 +603,6 @@ const FVS_CATALOGO = [
       "Funcionamento testado antes da entrega // verificar"
     ]
   },
-  { codigo:"FVS-47", nome:"Rufos", rev:"00",
-    normas:["NBR 16323:2014 - Telhas de aço - Requisitos e métodos de ensaio (correlato, componentes metálicos de cobertura)","RUFOS (procedimento interno TERGOS) — sem norma ABNT específica de execução de rufos identificada, segue o procedimento interno"],
-    itens:[
-      "Ferramentas e equipamentos em condições adequadas de uso; rufos disponíveis nas medidas e dobras corretas; acabamentos/tratamentos do muro finalizados; atividade realizada em dia sem chuva",
-      "Rufos limpos com álcool no trecho que receberá o selante, antes da aplicação",
-      "Rufos posicionados sobre a alvenaria com selante à base de PU (ou similar) na sobreposição — trespasse mínimo de 3 cm (1,5 cm de cada peça)",
-      "Furos para fixação feitos somente após a sobreposição — bucha inserida e parafuso instalado com canhão compatível",
-      "Cordão de selante aplicado no encontro entre rufos e na cabeça de cada parafuso instalado, garantindo vedação completa",
-      "Em rufo entre muros ou sobre telhados, aba superior embutida na alvenaria superior, com corte feito com serra mármore na marcação previamente definida",
-      "Formato, dobras e demais detalhes do rufo conferidos conforme a situação específica de cada trecho, antes da solicitação/fabricação das peças"
-    ]
-  },
+
 ];
 window.FVS_CATALOGO = FVS_CATALOGO;
