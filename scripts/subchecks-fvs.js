@@ -79,7 +79,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-20|00": {
+  "FVS-01|00": {
     "Plano de demolição disponível, contemplando os riscos ocupacionais em todas as etapas e as medidas de prevenção — considerando linhas de energia/água, construções vizinhas, remoção de entulho, aberturas no piso, áreas de circulação de emergência e trânsito de veículos/pessoas": [
       "Plano de demolição elaborado e disponível em obra antes do início",
       "Riscos ocupacionais de cada etapa identificados no plano",
@@ -166,7 +166,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-12|00": {
+  "FVS-04|00": {
     "Perfuração do fuste executada mecanicamente (perfuratriz) até a profundidade especificada em projeto, com verticalidade e diâmetro conferidos": [
       "Equipamento perfuratriz posicionado e centralizado conforme locação de projeto",
       "Verticalidade do fuste conferida durante a perfuração",
@@ -283,7 +283,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-04|00": {
+  "FVS-12|00": {
     "Medidas do projeto topográfico conferidas antes da locação, para evitar erros de levantamento e marcações indevidas": [
       "Projeto topográfico disponível e conferido antes do início da locação",
       "Medidas do levantamento topográfico conferidas em campo",
@@ -499,7 +499,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-01|00": {
+  "FVS-20|00": {
     "Ensaio de compactação (Proctor) realizado para o material de aterro utilizado": [
       "Ensaio de compactação conforme NBR 7182 realizado para cada tipo de material/jazida usado no aterro",
       "Novo ensaio realizado a cada 300 m³ de material ou quando houver mudança de material",
@@ -646,7 +646,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-06|00": {
+  "FVS-07|00": {
     "Projetos necessários disponíveis e funcionários, equipamentos e centrais de trabalho liberados pela segurança do trabalho, antes do início da montagem": [
       "Projetos estrutural e de fôrmas disponíveis em obra antes do início da montagem",
       "Equipe treinada e com EPIs adequados para a atividade",
@@ -739,7 +739,7 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-07|00": {
+  "FVS-06|00": {
     "Bitola, quantidade e posicionamento das barras conforme projeto estrutural": [
       "Diâmetro das barras conferido com paquímetro/gabarito e comparado à especificação de projeto",
       "Quantidade de barras por elemento (pilar, viga, laje) conferida com o detalhamento",
@@ -1112,35 +1112,113 @@ window.FVS_SUBCHECKS = {
       "Alinhamento em planta conferido com projeto de locação",
       "Nível de arrasamento das fiadas conferido com projeto"
     ],
-    "Espessura e preenchimento das juntas de assentamento conforme especificação": [
-      "Espessura da junta horizontal conferida (ex.: 10 mm ± 3 mm)",
-      "Junta vertical preenchida integralmente, sem vazios",
-      "Traço da argamassa de assentamento conforme especificação",
-      "Uniformidade da espessura de junta ao longo da parede"
+    "Laje limpa e desimpedida, com saliências de concreto retiradas, periferia protegida e pontos de ancoragem/amarração de cintos de segurança definidos e liberados pela segurança do trabalho, antes do início": [
+      "Laje limpa e desimpedida conferida antes do início",
+      "Saliências de concreto retiradas",
+      "Periferia da laje protegida contra queda",
+      "Pontos de ancoragem/amarração de cintos definidos e liberados pela segurança do trabalho"
     ],
-    "Prumo e esquadro das paredes conferidos": [
-      "Prumo conferido a cada fiada com prumo/nível a laser",
-      "Esquadro dos encontros de parede conferido (método 3-4-5)",
-      "Tolerância de prumo respeitada em toda a altura do pano (ex.: ±3 mm por pavimento)",
-      "Desvios corrigidos antes do avanço das fiadas seguintes"
+    "Projeto de marcação de alvenaria disponível — medidas internas dos cômodos (com espessuras reais), medidas das faces a partir dos eixos principais, trechos com blocos/canaletas cheias sinalizados, vãos de portas/janelas com folga para contramarcos": [
+      "Projeto de marcação de alvenaria disponível em obra",
+      "Medidas internas dos cômodos conferidas, considerando espessuras reais",
+      "Trechos com blocos/canaletas cheias (bancadas, contra vergas, nichos) sinalizados",
+      "Dimensões de vãos de portas/janelas conferidas, com folga para chumbamento dos contramarcos"
     ],
-    "Encunhamento entre alvenaria e estrutura executado no prazo especificado": [
-      "Espaço para encunhamento respeitado no topo da parede (ex.: 2 a 3 cm)",
-      "Encunhamento executado após prazo mínimo de acomodação da alvenaria (ex.: 14 dias, conforme especificação)",
-      "Argamassa/material de encunhamento preenchendo totalmente o vão",
-      "Ausência de fissura horizontal no encontro alvenaria-estrutura após o encunhamento"
+    "Resistência da estrutura avaliada para receber a carga da alvenaria — escoramento do pavimento inferior estudado quando houver concentração de blocos na laje": [
+      "Capacidade da estrutura para a carga da alvenaria avaliada com o responsável técnico",
+      "Pontos de concentração de blocos na laje identificados",
+      "Necessidade de escoramento do pavimento inferior avaliada",
+      "Escoramento instalado quando necessário, antes do abastecimento de blocos"
     ],
-    "Vergas e contravergas em vãos de portas e janelas conforme especificação": [
-      "Verga instalada sobre todos os vãos de portas e janelas",
-      "Contraverga instalada sob vãos de janelas",
-      "Apoio da verga/contraverga sobre a alvenaria conferido (ex.: mín. 20 cm de cada lado)",
-      "Material da verga/contraverga (concreto/pré-moldado) conforme especificação"
+    "Chapisco colante aplicado nos pilares e vigas que receberão alvenaria com pelo menos 3 dias de antecedência, usando desempenadeira de aço denteada": [
+      "Chapisco colante aplicado em todos os pilares/vigas que receberão alvenaria",
+      "Aplicação realizada com desempenadeira de aço denteada",
+      "Prazo mínimo de 3 dias entre a aplicação e o início da alvenaria respeitado",
+      "Aderência do chapisco conferida antes do início da alvenaria"
     ],
-    "Amarração/tela em encontros com pilares e vigas para evitar fissuras": [
-      "Tela metálica/plástica instalada no encontro entre alvenaria e pilar/viga",
-      "Ferro cabelo ou grampo de amarração instalado conforme especificação, quando aplicável",
-      "Continuidade da amarração ao longo de toda a altura do encontro",
-      "Ausência de fissura visível no encontro após conclusão da alvenaria"
+    "Tela de amarração fixada nos pilares com chapisco a cada duas fiadas, com pistola fincapinos, executada por profissional treinado e habilitado": [
+      "Tela de amarração posicionada a cada duas fiadas nos pilares com chapisco",
+      "Fixação executada com pistola fincapinos",
+      "Atividade executada por profissional treinado e habilitado",
+      "Fixação conferida quanto à firmeza antes de prosseguir a elevação"
+    ],
+    "Traço da argamassa de assentamento conforme especificado/ensaiado para a alvenaria em questão": [
+      "Traço da argamassa conferido com a especificação/ensaio para a alvenaria em questão",
+      "Argamassa preparada na proporção correta antes do uso",
+      "Consistência da argamassa adequada ao assentamento",
+      "Excesso de adição de cimento evitado, para não enrijecer a alvenaria"
+    ],
+    "Impermeabilização com material asfáltico executada na base de alvenarias em contato direto com a fundação, em toda a extensão que receberá o bloco": [
+      "Necessidade de impermeabilização identificada nas alvenarias em contato direto com a fundação",
+      "Material asfáltico aplicado em toda a extensão que receberá a alvenaria",
+      "Continuidade da impermeabilização conferida, sem falhas",
+      "Impermeabilização protegida até o assentamento da primeira fiada"
+    ],
+    "Eixos de referência transferidos para o pavimento; medidas da periferia da laje e prumo dos pilares periféricos conferidos": [
+      "Eixos de referência da edificação transferidos para o pavimento de trabalho",
+      "Medidas da periferia da laje conferidas com o projeto",
+      "Prumo dos pilares da periferia conferido",
+      "Desvios identificados comunicados ao responsável técnico"
+    ],
+    "Nivelamento da laje conferido, com correção de desníveis já na 1ª fiada — enchimento superior a 3 cm distribuído nas fiadas superiores": [
+      "Nivelamento da laje conferido, identificando o ponto mais crítico",
+      "Pontos de nível passados para a 1ª fiada",
+      "Desníveis corrigidos com enchimento de argamassa na 1ª fiada",
+      "Enchimento superior a 3 cm distribuído nas fiadas superiores, até a altura da canaleta da contra verga"
+    ],
+    "Marcação das paredes de periferia e ambientes internos com linha de nylon, local molhado antes do assentamento da 1ª fiada — amarração, nível, prumo e esquadro conferidos": [
+      "Paredes de periferia marcadas primeiro, seguidas dos ambientes internos",
+      "Marcação sinalizada com linha de nylon conforme o projeto",
+      "Local molhado antes do assentamento da 1ª fiada",
+      "Amarração, nível, prumo e esquadro de todas as paredes marcadas conferidos"
+    ],
+    "Locação dos vãos de portas com escantilhão/gabarito — bonecas com no mínimo 7 cm acabados (recomendado 9 cm), marcação do vão com 9 cm a mais que o vão acabado": [
+      "Locação dos vãos de portas conferida com o projeto usando escantilhão/gabarito",
+      "Bonecas ao lado dos vãos com no mínimo 7 cm acabados",
+      "Marcação do vão com 9 cm a mais que o vão acabado",
+      "Dimensão dos cômodos conferida após a execução da 1ª fiada"
+    ],
+    "Passagem das tubulações elétricas, hidráulicas e de gás conferida durante a marcação e elevação da alvenaria": [
+      "Projetos de elétrica, hidráulica e gás consultados antes da marcação",
+      "Passagens das tubulações conferidas durante a marcação da alvenaria",
+      "Posicionamento conferido novamente durante a elevação",
+      "Ausência de conflito entre tubulações e blocos estruturais (canaletas cheias)"
+    ],
+    "Alinhamento, nível, prumo e esquadro conferidos a cada fiada durante a elevação, com juntas de assentamento (verticais e horizontais) de 1 a 1,5 cm": [
+      "Alinhamento conferido a cada fiada com nível a laser e linha de pedreiro",
+      "Nível e prumo conferidos a cada fiada",
+      "Esquadro conferido com esquadro grande",
+      "Espessura das juntas verticais e horizontais entre 1 e 1,5 cm"
+    ],
+    "Vergas e contra-vergas executadas em bloco ou estrutura pré-moldada cheio e armado, com comprimento do vão mais pelo menos 30 cm de cada lado e duas barras de 8 mm": [
+      "Blocos canaleta ou estrutura pré-moldada posicionados para vergas e contra-vergas",
+      "Comprimento da verga/contra-verga conferido — vão mais pelo menos 30 cm de cada lado",
+      "Duas barras de 8 mm instaladas conforme especificado",
+      "Concretagem da verga/contra-verga conferida"
+    ],
+    "Junta de dilatação executada entre a laje e a última fiada da alvenaria de cada pavimento, com folga máxima de 2 cm para aplicação de espuma expansiva de poliuretano": [
+      "Junta de dilatação prevista na última fiada de cada pavimento",
+      "Folga da junta conferida — máximo de 2 cm",
+      "Espuma expansiva de poliuretano aplicada na junta",
+      "Continuidade da junta conferida em todo o perímetro"
+    ],
+    "Encunhamento executado somente após 14 dias da alvenaria finalizada e com pelo menos 2 andares superiores com alvenaria executada há mais de 7 dias": [
+      "Data de finalização da alvenaria registrada",
+      "Prazo mínimo de 14 dias respeitado antes do encunhamento",
+      "Pelo menos 2 andares superiores com alvenaria executada há mais de 7 dias conferidos",
+      "Liberação do encunhamento registrada pelo responsável técnico"
+    ],
+    "Amarração entre blocos por intertravamento, com comprimento mínimo equivalente a um terço do tijolo — tela de reforço utilizada nos trechos onde a amarração não for respeitada": [
+      "Intertravamento entre blocos conferido em toda a alvenaria",
+      "Comprimento mínimo de amarração equivalente a um terço do tijolo respeitado",
+      "Trechos sem amarração adequada identificados",
+      "Tela de reforço instalada nos trechos sem amarração adequada, conforme o revestimento previsto"
+    ],
+    "Cortes para fixação de tubulações e caixas de instalações executados somente após o encunhamento finalizado, sem quebrar os cantos dos vãos durante o transporte de materiais": [
+      "Cortes para tubulações/caixas realizados somente após o encunhamento finalizado",
+      "Cantos dos vãos de portas/janelas protegidos durante o transporte de materiais",
+      "Espalas de vãos acabadas após a execução de toda a alvenaria da fachada",
+      "Vãos de portas sem contramarco com acabamento pronto para medição in loco"
     ]
   },
 
@@ -1184,23 +1262,77 @@ window.FVS_SUBCHECKS = {
   },
 
   "FVS-18|00": {
-    "Chapisco aplicado como base de aderência em fachada": [
-      "Chapisco em toda a área da fachada antes do emboço, sem falhas",
-      "Traço conforme especificação, adequado à exposição externa",
-      "Cura mínima respeitada antes do emboço (24 a 72 h)",
-      "Superfície base limpa e isenta de desmoldante/eflorescência"
+    "Todas as alvenarias concluídas e encunhadas (interna e externa), com contramarcos das janelas chumbados, antes do início": [
+      "Alvenarias externas e internas conferidas como concluídas e encunhadas",
+      "Contramarcos das janelas chumbados e conferidos",
+      "Liberação da etapa de alvenaria registrada antes do início",
+      "Ausência de pendências de alvenaria na fachada a revestir"
     ],
-    "Espessura do reboco conforme especificação, considerando exposição externa": [
-      "Espessura conferida com gabarito (ex.: 20 a 25 mm, podendo variar conforme sistema)",
-      "Espessura uniforme em toda a fachada, sem áreas de sobre-espessura que favoreçam fissuração",
-      "Mestras niveladas com referência ao prumo geral da fachada",
-      "Reforço com tela em encontros de materiais diferentes (alvenaria/concreto)"
+    "Instalações hidráulicas, elétricas, gás canalizado e passagens para exaustão/ar-condicionado em alvenarias de fachada concluídas": [
+      "Instalações hidráulicas e elétricas em alvenaria de fachada conferidas como concluídas",
+      "Passagens de gás canalizado conferidas",
+      "Passagens para exaustão e ar-condicionado conferidas e concluídas",
+      "Ausência de pendências de instalações na fachada a revestir"
     ],
-    "Juntas de dilatação e trabalho respeitadas na fachada": [
-      "Juntas de dilatação estrutural mantidas sem continuidade do reboco sobre elas",
-      "Juntas de fachada (painéis) posicionadas conforme projeto, com espaçamento máximo especificado",
-      "Vedação das juntas com material compressível/selante conforme especificação",
-      "Junta perimetral em esquadrias respeitada, sem rigidez que gere fissura"
+    "Fachada protegida com tela fachadeiro (nylon); EPIs (cintos, trava-quedas, cordas de linha de vida, talabartes) e balancinhos montados e verificados antes do início": [
+      "Tela fachadeiro instalada em toda a extensão da fachada",
+      "EPIs de trabalho em altura disponíveis e em condições de uso",
+      "Balancinhos montados e verificados antes do início da atividade",
+      "Liberação da segurança do trabalho registrada antes do início"
+    ],
+    "Argamassa para o reboco definida e validada, com traço conforme indicação do fabricante": [
+      "Traço da argamassa conferido com a indicação do fabricante",
+      "Argamassa validada pelo responsável técnico antes do uso",
+      "Preparo da argamassa conferido na proporção correta",
+      "Consistência da argamassa adequada à aplicação"
+    ],
+    "Referência de prumo (calango) definida por trecho de fachada — no mínimo 2 prumos descidos por trecho para comparar a diferença de espessura": [
+      "Face/pano de fachada de cada trecho definido antes do início",
+      "Referência de prumo (pilar, viga ou alvenaria) definida para cada trecho",
+      "No mínimo 2 prumos descidos por trecho estudado",
+      "Diferença de espessura entre os prumos conferida"
+    ],
+    "Pontos para o reboco posicionados com taliscas, a distância horizontal máxima de 2 m entre si": [
+      "Espessuras definidas antes do posicionamento das taliscas",
+      "Taliscas posicionadas conforme as espessuras definidas",
+      "Distância horizontal entre taliscas conferida — máximo de 2 m",
+      "Taliscas conferidas antes do início do chapisco"
+    ],
+    "Chapisco colante aplicado com desempenadeira denteada nas faces lisas de elementos estruturais (vigas e pilares)": [
+      "Faces lisas de vigas e pilares identificadas para chapisco colante",
+      "Chapisco colante aplicado com desempenadeira denteada",
+      "Cobertura uniforme conferida em toda a face estrutural",
+      "Aderência do chapisco colante conferida antes da próxima etapa"
+    ],
+    "Toda a alvenaria a revestir chapiscada com argamassa de cimento e areia lavada grossa (traço conforme fabricante, ex. 1:3), com camada de espessura máxima de 5 mm e textura final rugosa": [
+      "Traço do chapisco conferido conforme indicação do fabricante",
+      "Toda a alvenaria a revestir chapiscada, sem falhas",
+      "Espessura máxima de 5 mm respeitada",
+      "Textura final rugosa, aderente e resistente conferida"
+    ],
+    "Armadura eventualmente exposta protegida com argamassa estrutural, traçada conforme indicação do fabricante": [
+      "Armaduras expostas identificadas antes do chapisco",
+      "Argamassa estrutural aplicada conforme traço do fabricante",
+      "Cobertura completa da armadura exposta conferida",
+      "Cura da argamassa estrutural respeitada antes da próxima etapa"
+    ],
+    "Tela de amarração soldada galvanizada (nunca tela galinheiro/pinteiro ou similar) aplicada nos encontros de alvenaria com elementos estruturais, passando cerca de 25 cm de cada lado": [
+      "Encontros de alvenaria com elementos estruturais identificados",
+      "Tela soldada galvanizada aplicada — nunca tela galinheiro/pinteiro",
+      "Tela passando cerca de 25 cm de cada lado do encontro",
+      "Fixação da tela conferida antes da aplicação da argamassa"
+    ],
+    "Chapisco curado no mínimo 3 dias antes de receber a argamassa de revestimento, e umedecido com brocha imediatamente antes da aplicação": [
+      "Data de aplicação do chapisco registrada",
+      "Prazo mínimo de 3 dias de cura respeitado",
+      "Chapisco umedecido com brocha imediatamente antes da aplicação",
+      "Umedecimento uniforme conferido em toda a área"
+    ],
+    "Emboço chapado com espessura máxima de 3 cm por camada — espessuras entre 3 e 5 cm executadas em duas cheias, e entre 5 e 8 cm em três cheias, com tela eletrosoldada galvanizada fixada entre a primeira e a segunda cheia": [
+      "Espessura total do emboço conferida antes da aplicação",
+      "Camada única aplicada quando espessura até 3 cm",
+      "Duas cheias aplicadas quando espessura entre 3 e 5 cm",
+      "Três cheias com tela eletrosoldada entre a primeira e a segunda aplicadas quando espessura entre 5 e 8 cm"
     ],
     "Planeza e prumo da fachada dentro da tolerância": [
       "Régua de 2 m não acusa vão maior que o admissível (ex.: 5 mm)",
@@ -1208,11 +1340,35 @@ window.FVS_SUBCHECKS = {
       "Alinhamento entre pavimentos conferido (sem desalinhamento visível)",
       "Verificação registrada por trecho/pano de fachada"
     ],
+    "Sarrafeamento realizado no ponto correto (teste de pressão com os dedos), com régua apoiada nas mestras, de baixo para cima": [
+      "Ponto de sarrafeamento conferido pelo teste de pressão com os dedos",
+      "Régua apoiada nas mestras durante o sarrafeamento",
+      "Sarrafeamento realizado de baixo para cima",
+      "Superfície final conferida quanto à planeza"
+    ],
+    "Aditivo colante aplicado entre camadas de revestimento executadas em dias diferentes, para melhorar a aderência": [
+      "Camadas executadas em dias diferentes identificadas",
+      "Aditivo colante (ImperviaFix ou Bianco) aplicado entre as camadas",
+      "Aplicação conforme especificação do fabricante",
+      "Aderência entre camadas conferida"
+    ],
     "Proteção contra chuva e insolação direta durante a cura": [
       "Execução suspensa ou com proteção em caso de chuva prevista nas primeiras horas",
       "Proteção (tela/lona) em fachadas com insolação direta intensa",
       "Umedecimento de cura conforme condições climáticas do local",
       "Cura mínima respeitada antes da aplicação de revestimento final (pintura/textura/cerâmica)"
+    ],
+    "Acabamento em textura aplicado com filtro/espuma após o ponto de desempeno, com desempenadeira frisada, quando o revestimento final for em textura": [
+      "Necessidade de acabamento em textura conferida com o projeto",
+      "Ponto de desempeno aguardado antes do acabamento",
+      "Desempenadeira frisada utilizada no desempeno",
+      "Acabamento final com filtro/espuma aplicado uniformemente"
+    ],
+    "Acabamento final (textura/desempenado) uniforme": [
+      "Textura final uniforme em toda a extensão da fachada, sem emendas visíveis",
+      "Ausência de marcas de desempenadeira ou ferramentas de acabamento",
+      "Uniformidade de cor/textura entre painéis de diferentes dias de execução",
+      "Inspeção final sob luz rasante para identificar irregularidades antes da pintura"
     ],
     "Caimento e pingadeiras em platibandas e peitoris executados": [
       "Caimento para fora da fachada executado em platibandas, parapeitos e peitoris (evita escorrimento sobre a parede)",
@@ -1220,11 +1376,11 @@ window.FVS_SUBCHECKS = {
       "Caimento mínimo conferido com nível (ex.: mín. 2 a 3%)",
       "Ausência de acúmulo de água em superfícies horizontais expostas"
     ],
-    "Acabamento final (textura/desempenado) uniforme": [
-      "Textura final uniforme em toda a extensão da fachada, sem emendas visíveis",
-      "Ausência de marcas de desempenadeira ou ferramentas de acabamento",
-      "Uniformidade de cor/textura entre painéis de diferentes dias de execução",
-      "Inspeção final sob luz rasante para identificar irregularidades antes da pintura"
+    "Juntas de dilatação posicionadas na altura dos fundos das vigas, no encontro com as alvenarias, em todos os pavimentos — marcadas com mangueira de nível e abertas com frisador ou corte, conforme o estágio de cura": [
+      "Posição das juntas conferida — altura dos fundos das vigas, encontro com alvenarias",
+      "Juntas previstas em todos os pavimentos",
+      "Marcação realizada com mangueira de nível",
+      "Abertura executada com frisador, corte com colher (argamassa fresca) ou serra mármore (após cura), conforme o estágio"
     ]
   },
 
@@ -1832,11 +1988,47 @@ window.FVS_SUBCHECKS = {
   },
 
   "FVS-34|01": {
-    "Caimento do peitoril para fora, evitando infiltração // verificar": [
-      "Caimento mínimo para o exterior conferido com nível (ex.: mín. 2 a 3%) [Prática de mercado/fabricante — não é norma ABNT confirmada]",
-      "Pingadeira (quebra-água) formada na borda externa do peitoril [Prática de mercado/fabricante — não é norma ABNT confirmada]",
-      "Ausência de empoçamento em teste com água jogada sobre a peça [Prática de mercado/fabricante — não é norma ABNT confirmada]",
-      "Encontro entre peitoril e esquadria vedado contra infiltração [Prática de mercado/fabricante — não é norma ABNT confirmada]"
+    "Ferramentas em condições de uso; pedras disponíveis nas medidas corretas; contramarcos de janela já assentados (para peitoris); base arrematada com no mínimo 7 dias de cura; validade dos produtos de assentamento conferida": [
+      "Ferramentas conferidas em condições de uso",
+      "Pedras disponíveis nas medidas corretas antes do início",
+      "Contramarcos de janela já assentados, quando aplicável a peitoris",
+      "Cura mínima de 7 dias da base conferida, e validade dos produtos verificada"
+    ],
+    "Pedras solicitadas à marmoraria com no mínimo 3 cm de sobra para pingadeira em cada lado, com friso na face inferior — em acabamento de muro, medida total igual à espessura da alvenaria mais 6 cm (3 cm de cada lado)": [
+      "Medição in loco realizada antes da solicitação à marmoraria",
+      "Sobra mínima de 3 cm de cada lado para pingadeira conferida no pedido",
+      "Friso na face inferior solicitado, salvo caso específico",
+      "Medida total conferida — espessura da alvenaria mais 6 cm, em acabamento de muro"
+    ],
+    "Medidas dos locais de assentamento e das respectivas pedras conferidas antes do início; material (tipo de rocha) conferido conforme solicitado na marmoraria": [
+      "Medidas dos locais de assentamento conferidas antes do início",
+      "Medidas das pedras recebidas conferidas com o local",
+      "Tipo de rocha conferido conforme o solicitado",
+      "Peças danificadas ou fora de especificação identificadas antes da instalação"
+    ],
+    "Argamassa ACIII utilizada para o assentamento — branca quando necessário para evitar manchas, traçada nas proporções indicadas pelo fabricante": [
+      "Tipo de argamassa conferido — ACIII",
+      "Necessidade de argamassa branca avaliada conforme cor/tipo da pedra",
+      "Traço conferido nas proporções indicadas pelo fabricante",
+      "Ponto de assentamento conferido antes do uso"
+    ],
+    "Colagem executada em dupla camada (argamassa na base e na peça), com os cordões seguindo o mesmo sentido em ambas para facilitar a expulsão de bolhas de ar": [
+      "Argamassa aplicada na base com desempenadeira dentada",
+      "Argamassa aplicada também na peça a ser assentada",
+      "Cordões de argamassa na base e na peça no mesmo sentido",
+      "Ausência de bolhas de ar conferida após o assentamento"
+    ],
+    "Peça posicionada e pressionada com martelo de borracha ou vibrador de cerâmica mecânico": [
+      "Peça posicionada no local correto antes da fixação",
+      "Pressão aplicada com martelo de borracha ou vibrador mecânico",
+      "Nivelamento da peça conferido após o assentamento",
+      "Ausência de vazios sob a peça conferida"
+    ],
+    "Caimento de aproximadamente 2% instalado — para dentro da obra em acabamento de muro, para fora da fachada em peitoris de janela": [
+      "Caimento de aproximadamente 2% conferido com nível",
+      "Direção do caimento conferida — para dentro em muro, para fora em peitoril de janela",
+      "Caimento uniforme ao longo de toda a peça",
+      "Escoamento de água conferido visualmente após instalação"
     ],
     "Nivelamento e assentamento firme da soleira // verificar": [
       "Soleira nivelada com o piso acabado adjacente, sem ressalto que cause tropeço [Prática de mercado/fabricante — não é norma ABNT confirmada]",
@@ -1844,17 +2036,35 @@ window.FVS_SUBCHECKS = {
       "Ausência de som cavo em teste de percussão após a cura [Prática de mercado/fabricante — não é norma ABNT confirmada]",
       "Bordas da soleira alinhadas com o vão da porta/esquadria [Prática de mercado/fabricante — não é norma ABNT confirmada]"
     ],
-    "Dimensões e balanço da peça conforme especificação // verificar": [
-      "Comprimento e largura da peça conferidos com o vão de projeto [Prática de mercado/fabricante — não é norma ABNT confirmada]",
-      "Balanço (projeção) do peitoril além da face da parede conforme especificação [Prática de mercado/fabricante — não é norma ABNT confirmada]",
-      "Espessura da peça conforme especificado (resistência a cargas de uso) [Prática de mercado/fabricante — não é norma ABNT confirmada]",
-      "Ausência de trincas ou lascas nas bordas da peça instalada [Prática de mercado/fabricante — não é norma ABNT confirmada]"
+    "Espaço de 0,5 cm entre a peça e o contramarco previsto em peitoris de janela, para aplicação de selante à base de PU": [
+      "Espaço de 0,5 cm conferido entre peça e contramarco",
+      "Espaço uniforme ao longo de toda a extensão",
+      "Espaço livre de resíduos antes da selagem",
+      "Conferência do espaço antes da aplicação do selante"
+    ],
+    "Espaço entre peça e contramarco selado com PU, delimitado com fita crepe, com as pedras secas e livres de oleosidade antes da selagem": [
+      "Fita crepe aplicada para delimitar o espaço a ser vedado",
+      "Pedras conferidas secas e livres de oleosidade antes da selagem",
+      "Selante PU aplicado de forma contínua e uniforme",
+      "Fita crepe removida após a aplicação, com acabamento conferido"
     ],
     "Vedação e rejunte das bordas da peça // verificar": [
       "Rejunte aplicado entre a peça e a alvenaria/esquadria adjacente, sem frestas [Prática de mercado/fabricante — não é norma ABNT confirmada]",
       "Material de rejunte/selante compatível com exposição externa, quando aplicável [Prática de mercado/fabricante — não é norma ABNT confirmada]",
       "Uniformidade do acabamento nas bordas visíveis [Prática de mercado/fabricante — não é norma ABNT confirmada]",
       "Limpeza de resíduos de argamassa/rejunte na superfície da peça [Prática de mercado/fabricante — não é norma ABNT confirmada]"
+    ],
+    "Todas as peças de peitoril conferidas quanto a danos/fissuras antes da instalação das esquadrias das janelas": [
+      "Cada peça de peitoril inspecionada visualmente antes da instalação das esquadrias",
+      "Peças danificadas ou fissuradas identificadas e substituídas",
+      "Registro da conferência realizado",
+      "Liberação para instalação das esquadrias registrada"
+    ],
+    "Cordão de silicone/PU aplicado nas extremidades da pedra que se prolongam além da fachada, antes da instalação das janelas, para evitar manchamento por escorrimento de água": [
+      "Extremidades da pedra que se prolongam além da fachada identificadas",
+      "Cordão de silicone/PU aplicado nessas extremidades",
+      "Aplicação realizada antes da instalação das janelas",
+      "Ausência de sinais de manchamento conferida após aplicação"
     ]
   },
 
@@ -1931,39 +2141,6 @@ window.FVS_SUBCHECKS = {
   },
 
   "FVS-37|00": {
-    "Nivelamento e prumo da bancada conferidos // verificar": [
-      "Nível da bancada conferido com nível de bolha/laser em todo o comprimento [Prática de mercado/fabricante — não é norma ABNT confirmada]",
-      "Ausência de desnível perceptível entre módulos/emendas [Prática de mercado/fabricante — não é norma ABNT confirmada]",
-      "Apoio uniforme sobre a base/marcenaria, sem pontos de balanço não previstos [Prática de mercado/fabricante — não é norma ABNT confirmada]",
-      "Prumo das laterais/saias conferido quando existentes [Prática de mercado/fabricante — não é norma ABNT confirmada]"
-    ],
-    "Fixação e apoio estrutural adequados ao peso da peça // verificar": [
-      "Suportes/mãos-francesas dimensionados para o peso e balanço da bancada [Prática de mercado/fabricante — não é norma ABNT confirmada]",
-      "Fixação da peça sobre os armários/base sem trincar o material [Prática de mercado/fabricante — não é norma ABNT confirmada]",
-      "Ausência de movimento ao aplicar carga/pressão manual na bancada [Prática de mercado/fabricante — não é norma ABNT confirmada]",
-      "Reforços adicionais em balanços maiores conforme especificação do fabricante [Prática de mercado/fabricante — não é norma ABNT confirmada]"
-    ],
-    "Recortes para cuba, cooktop e torneira conferidos com os equipamentos // verificar": [
-      "Dimensão dos recortes conferida com o equipamento a ser instalado antes do corte definitivo [Prática de mercado/fabricante — não é norma ABNT confirmada]",
-      "Acabamento das bordas do recorte sem lascas ou trincas [Prática de mercado/fabricante — não é norma ABNT confirmada]",
-      "Posição dos furos de torneira/válvulas conferida com o projeto hidráulico [Prática de mercado/fabricante — não é norma ABNT confirmada]",
-      "Vedação (silicone) aplicada entre cuba/cooktop e a bancada [Prática de mercado/fabricante — não é norma ABNT confirmada]"
-    ],
-    "Emendas entre módulos executadas com alinhamento e vedação // verificar": [
-      "Emenda entre módulos alinhada em nível e face, sem ressalto ao tato [Prática de mercado/fabricante — não é norma ABNT confirmada]",
-      "Cola/resina de emenda com cor compatível ao material, sem linha visível excessiva [Prática de mercado/fabricante — não é norma ABNT confirmada]",
-      "Vedação da emenda contra infiltração de líquidos [Prática de mercado/fabricante — não é norma ABNT confirmada]",
-      "Polimento final da emenda nivelado com o restante da superfície [Prática de mercado/fabricante — não é norma ABNT confirmada]"
-    ],
-    "Ausência de trincas, manchas ou defeitos aparentes na peça // verificar": [
-      "Inspeção visual de toda a superfície sob luz adequada, sem trincas ou lascas [Prática de mercado/fabricante — não é norma ABNT confirmada]",
-      "Ausência de manchas de água ou produtos químicos no material poroso (quando aplicável) [Prática de mercado/fabricante — não é norma ABNT confirmada]",
-      "Polimento/acabamento uniforme em toda a extensão visível [Prática de mercado/fabricante — não é norma ABNT confirmada]",
-      "Proteção (impermeabilizante) aplicada em pedras naturais porosas, quando especificado [Prática de mercado/fabricante — não é norma ABNT confirmada]"
-    ]
-  },
-
-  "FVS-37|01": {
     "Nivelamento e prumo da bancada conferidos // verificar": [
       "Nível da bancada conferido com nível de bolha/laser em todo o comprimento [Prática de mercado/fabricante — não é norma ABNT confirmada]",
       "Ausência de desnível perceptível entre módulos/emendas [Prática de mercado/fabricante — não é norma ABNT confirmada]",
@@ -2182,216 +2359,6 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
-  "FVS-44|00": {
-    "Laje limpa e desimpedida, com saliências de concreto retiradas, periferia protegida e pontos de ancoragem/amarração de cintos de segurança definidos e liberados pela segurança do trabalho, antes do início": [
-      "Laje limpa e desimpedida conferida antes do início",
-      "Saliências de concreto retiradas",
-      "Periferia da laje protegida contra queda",
-      "Pontos de ancoragem/amarração de cintos definidos e liberados pela segurança do trabalho"
-    ],
-    "Projeto de marcação de alvenaria disponível — medidas internas dos cômodos (com espessuras reais), medidas das faces a partir dos eixos principais, trechos com blocos/canaletas cheias sinalizados, vãos de portas/janelas com folga para contramarcos": [
-      "Projeto de marcação de alvenaria disponível em obra",
-      "Medidas internas dos cômodos conferidas, considerando espessuras reais",
-      "Trechos com blocos/canaletas cheias (bancadas, contra vergas, nichos) sinalizados",
-      "Dimensões de vãos de portas/janelas conferidas, com folga para chumbamento dos contramarcos"
-    ],
-    "Resistência da estrutura avaliada para receber a carga da alvenaria — escoramento do pavimento inferior estudado quando houver concentração de blocos na laje": [
-      "Capacidade da estrutura para a carga da alvenaria avaliada com o responsável técnico",
-      "Pontos de concentração de blocos na laje identificados",
-      "Necessidade de escoramento do pavimento inferior avaliada",
-      "Escoramento instalado quando necessário, antes do abastecimento de blocos"
-    ],
-    "Chapisco colante aplicado nos pilares e vigas que receberão alvenaria com pelo menos 3 dias de antecedência, usando desempenadeira de aço denteada": [
-      "Chapisco colante aplicado em todos os pilares/vigas que receberão alvenaria",
-      "Aplicação realizada com desempenadeira de aço denteada",
-      "Prazo mínimo de 3 dias entre a aplicação e o início da alvenaria respeitado",
-      "Aderência do chapisco conferida antes do início da alvenaria"
-    ],
-    "Tela de amarração fixada nos pilares com chapisco a cada duas fiadas, com pistola fincapinos, executada por profissional treinado e habilitado": [
-      "Tela de amarração posicionada a cada duas fiadas nos pilares com chapisco",
-      "Fixação executada com pistola fincapinos",
-      "Atividade executada por profissional treinado e habilitado",
-      "Fixação conferida quanto à firmeza antes de prosseguir a elevação"
-    ],
-    "Traço da argamassa de assentamento conforme especificado/ensaiado para a alvenaria em questão": [
-      "Traço da argamassa conferido com a especificação/ensaio para a alvenaria em questão",
-      "Argamassa preparada na proporção correta antes do uso",
-      "Consistência da argamassa adequada ao assentamento",
-      "Excesso de adição de cimento evitado, para não enrijecer a alvenaria"
-    ],
-    "Impermeabilização com material asfáltico executada na base de alvenarias em contato direto com a fundação, em toda a extensão que receberá o bloco": [
-      "Necessidade de impermeabilização identificada nas alvenarias em contato direto com a fundação",
-      "Material asfáltico aplicado em toda a extensão que receberá a alvenaria",
-      "Continuidade da impermeabilização conferida, sem falhas",
-      "Impermeabilização protegida até o assentamento da primeira fiada"
-    ],
-    "Eixos de referência transferidos para o pavimento; medidas da periferia da laje e prumo dos pilares periféricos conferidos": [
-      "Eixos de referência da edificação transferidos para o pavimento de trabalho",
-      "Medidas da periferia da laje conferidas com o projeto",
-      "Prumo dos pilares da periferia conferido",
-      "Desvios identificados comunicados ao responsável técnico"
-    ],
-    "Nivelamento da laje conferido, com correção de desníveis já na 1ª fiada — enchimento superior a 3 cm distribuído nas fiadas superiores": [
-      "Nivelamento da laje conferido, identificando o ponto mais crítico",
-      "Pontos de nível passados para a 1ª fiada",
-      "Desníveis corrigidos com enchimento de argamassa na 1ª fiada",
-      "Enchimento superior a 3 cm distribuído nas fiadas superiores, até a altura da canaleta da contra verga"
-    ],
-    "Marcação das paredes de periferia e ambientes internos com linha de nylon, local molhado antes do assentamento da 1ª fiada — amarração, nível, prumo e esquadro conferidos": [
-      "Paredes de periferia marcadas primeiro, seguidas dos ambientes internos",
-      "Marcação sinalizada com linha de nylon conforme o projeto",
-      "Local molhado antes do assentamento da 1ª fiada",
-      "Amarração, nível, prumo e esquadro de todas as paredes marcadas conferidos"
-    ],
-    "Locação dos vãos de portas com escantilhão/gabarito — bonecas com no mínimo 7 cm acabados (recomendado 9 cm), marcação do vão com 9 cm a mais que o vão acabado": [
-      "Locação dos vãos de portas conferida com o projeto usando escantilhão/gabarito",
-      "Bonecas ao lado dos vãos com no mínimo 7 cm acabados",
-      "Marcação do vão com 9 cm a mais que o vão acabado",
-      "Dimensão dos cômodos conferida após a execução da 1ª fiada"
-    ],
-    "Passagem das tubulações elétricas, hidráulicas e de gás conferida durante a marcação e elevação da alvenaria": [
-      "Projetos de elétrica, hidráulica e gás consultados antes da marcação",
-      "Passagens das tubulações conferidas durante a marcação da alvenaria",
-      "Posicionamento conferido novamente durante a elevação",
-      "Ausência de conflito entre tubulações e blocos estruturais (canaletas cheias)"
-    ],
-    "Alinhamento, nível, prumo e esquadro conferidos a cada fiada durante a elevação, com juntas de assentamento (verticais e horizontais) de 1 a 1,5 cm": [
-      "Alinhamento conferido a cada fiada com nível a laser e linha de pedreiro",
-      "Nível e prumo conferidos a cada fiada",
-      "Esquadro conferido com esquadro grande",
-      "Espessura das juntas verticais e horizontais entre 1 e 1,5 cm"
-    ],
-    "Vergas e contra-vergas executadas em bloco ou estrutura pré-moldada cheio e armado, com comprimento do vão mais pelo menos 30 cm de cada lado e duas barras de 8 mm": [
-      "Blocos canaleta ou estrutura pré-moldada posicionados para vergas e contra-vergas",
-      "Comprimento da verga/contra-verga conferido — vão mais pelo menos 30 cm de cada lado",
-      "Duas barras de 8 mm instaladas conforme especificado",
-      "Concretagem da verga/contra-verga conferida"
-    ],
-    "Junta de dilatação executada entre a laje e a última fiada da alvenaria de cada pavimento, com folga máxima de 2 cm para aplicação de espuma expansiva de poliuretano": [
-      "Junta de dilatação prevista na última fiada de cada pavimento",
-      "Folga da junta conferida — máximo de 2 cm",
-      "Espuma expansiva de poliuretano aplicada na junta",
-      "Continuidade da junta conferida em todo o perímetro"
-    ],
-    "Encunhamento executado somente após 14 dias da alvenaria finalizada e com pelo menos 2 andares superiores com alvenaria executada há mais de 7 dias": [
-      "Data de finalização da alvenaria registrada",
-      "Prazo mínimo de 14 dias respeitado antes do encunhamento",
-      "Pelo menos 2 andares superiores com alvenaria executada há mais de 7 dias conferidos",
-      "Liberação do encunhamento registrada pelo responsável técnico"
-    ],
-    "Amarração entre blocos por intertravamento, com comprimento mínimo equivalente a um terço do tijolo — tela de reforço utilizada nos trechos onde a amarração não for respeitada": [
-      "Intertravamento entre blocos conferido em toda a alvenaria",
-      "Comprimento mínimo de amarração equivalente a um terço do tijolo respeitado",
-      "Trechos sem amarração adequada identificados",
-      "Tela de reforço instalada nos trechos sem amarração adequada, conforme o revestimento previsto"
-    ],
-    "Cortes para fixação de tubulações e caixas de instalações executados somente após o encunhamento finalizado, sem quebrar os cantos dos vãos durante o transporte de materiais": [
-      "Cortes para tubulações/caixas realizados somente após o encunhamento finalizado",
-      "Cantos dos vãos de portas/janelas protegidos durante o transporte de materiais",
-      "Espalas de vãos acabadas após a execução de toda a alvenaria da fachada",
-      "Vãos de portas sem contramarco com acabamento pronto para medição in loco"
-    ]
-  },
-
-  "FVS-46|00": {
-    "Todas as alvenarias concluídas e encunhadas (interna e externa), com contramarcos das janelas chumbados, antes do início": [
-      "Alvenarias externas e internas conferidas como concluídas e encunhadas",
-      "Contramarcos das janelas chumbados e conferidos",
-      "Liberação da etapa de alvenaria registrada antes do início",
-      "Ausência de pendências de alvenaria na fachada a revestir"
-    ],
-    "Instalações hidráulicas, elétricas, gás canalizado e passagens para exaustão/ar-condicionado em alvenarias de fachada concluídas": [
-      "Instalações hidráulicas e elétricas em alvenaria de fachada conferidas como concluídas",
-      "Passagens de gás canalizado conferidas",
-      "Passagens para exaustão e ar-condicionado conferidas e concluídas",
-      "Ausência de pendências de instalações na fachada a revestir"
-    ],
-    "Fachada protegida com tela fachadeiro (nylon); EPIs (cintos, trava-quedas, cordas de linha de vida, talabartes) e balancinhos montados e verificados antes do início": [
-      "Tela fachadeiro instalada em toda a extensão da fachada",
-      "EPIs de trabalho em altura disponíveis e em condições de uso",
-      "Balancinhos montados e verificados antes do início da atividade",
-      "Liberação da segurança do trabalho registrada antes do início"
-    ],
-    "Argamassa para o reboco definida e validada, com traço conforme indicação do fabricante": [
-      "Traço da argamassa conferido com a indicação do fabricante",
-      "Argamassa validada pelo responsável técnico antes do uso",
-      "Preparo da argamassa conferido na proporção correta",
-      "Consistência da argamassa adequada à aplicação"
-    ],
-    "Referência de prumo (calango) definida por trecho de fachada — no mínimo 2 prumos descidos por trecho para comparar a diferença de espessura": [
-      "Face/pano de fachada de cada trecho definido antes do início",
-      "Referência de prumo (pilar, viga ou alvenaria) definida para cada trecho",
-      "No mínimo 2 prumos descidos por trecho estudado",
-      "Diferença de espessura entre os prumos conferida"
-    ],
-    "Pontos para o reboco posicionados com taliscas, a distância horizontal máxima de 2 m entre si": [
-      "Espessuras definidas antes do posicionamento das taliscas",
-      "Taliscas posicionadas conforme as espessuras definidas",
-      "Distância horizontal entre taliscas conferida — máximo de 2 m",
-      "Taliscas conferidas antes do início do chapisco"
-    ],
-    "Chapisco colante aplicado com desempenadeira denteada nas faces lisas de elementos estruturais (vigas e pilares)": [
-      "Faces lisas de vigas e pilares identificadas para chapisco colante",
-      "Chapisco colante aplicado com desempenadeira denteada",
-      "Cobertura uniforme conferida em toda a face estrutural",
-      "Aderência do chapisco colante conferida antes da próxima etapa"
-    ],
-    "Toda a alvenaria a revestir chapiscada com argamassa de cimento e areia lavada grossa (traço conforme fabricante, ex. 1:3), com camada de espessura máxima de 5 mm e textura final rugosa": [
-      "Traço do chapisco conferido conforme indicação do fabricante",
-      "Toda a alvenaria a revestir chapiscada, sem falhas",
-      "Espessura máxima de 5 mm respeitada",
-      "Textura final rugosa, aderente e resistente conferida"
-    ],
-    "Armadura eventualmente exposta protegida com argamassa estrutural, traçada conforme indicação do fabricante": [
-      "Armaduras expostas identificadas antes do chapisco",
-      "Argamassa estrutural aplicada conforme traço do fabricante",
-      "Cobertura completa da armadura exposta conferida",
-      "Cura da argamassa estrutural respeitada antes da próxima etapa"
-    ],
-    "Tela de amarração soldada galvanizada (nunca tela galinheiro/pinteiro ou similar) aplicada nos encontros de alvenaria com elementos estruturais, passando cerca de 25 cm de cada lado": [
-      "Encontros de alvenaria com elementos estruturais identificados",
-      "Tela soldada galvanizada aplicada — nunca tela galinheiro/pinteiro",
-      "Tela passando cerca de 25 cm de cada lado do encontro",
-      "Fixação da tela conferida antes da aplicação da argamassa"
-    ],
-    "Chapisco curado no mínimo 3 dias antes de receber a argamassa de revestimento, e umedecido com brocha imediatamente antes da aplicação": [
-      "Data de aplicação do chapisco registrada",
-      "Prazo mínimo de 3 dias de cura respeitado",
-      "Chapisco umedecido com brocha imediatamente antes da aplicação",
-      "Umedecimento uniforme conferido em toda a área"
-    ],
-    "Emboço chapado com espessura máxima de 3 cm por camada — espessuras entre 3 e 5 cm executadas em duas cheias, e entre 5 e 8 cm em três cheias, com tela eletrosoldada galvanizada fixada entre a primeira e a segunda cheia": [
-      "Espessura total do emboço conferida antes da aplicação",
-      "Camada única aplicada quando espessura até 3 cm",
-      "Duas cheias aplicadas quando espessura entre 3 e 5 cm",
-      "Três cheias com tela eletrosoldada entre a primeira e a segunda aplicadas quando espessura entre 5 e 8 cm"
-    ],
-    "Sarrafeamento realizado no ponto correto (teste de pressão com os dedos), com régua apoiada nas mestras, de baixo para cima": [
-      "Ponto de sarrafeamento conferido pelo teste de pressão com os dedos",
-      "Régua apoiada nas mestras durante o sarrafeamento",
-      "Sarrafeamento realizado de baixo para cima",
-      "Superfície final conferida quanto à planeza"
-    ],
-    "Aditivo colante aplicado entre camadas de revestimento executadas em dias diferentes, para melhorar a aderência": [
-      "Camadas executadas em dias diferentes identificadas",
-      "Aditivo colante (ImperviaFix ou Bianco) aplicado entre as camadas",
-      "Aplicação conforme especificação do fabricante",
-      "Aderência entre camadas conferida"
-    ],
-    "Acabamento em textura aplicado com filtro/espuma após o ponto de desempeno, com desempenadeira frisada, quando o revestimento final for em textura": [
-      "Necessidade de acabamento em textura conferida com o projeto",
-      "Ponto de desempeno aguardado antes do acabamento",
-      "Desempenadeira frisada utilizada no desempeno",
-      "Acabamento final com filtro/espuma aplicado uniformemente"
-    ],
-    "Juntas de dilatação posicionadas na altura dos fundos das vigas, no encontro com as alvenarias, em todos os pavimentos — marcadas com mangueira de nível e abertas com frisador ou corte, conforme o estágio de cura": [
-      "Posição das juntas conferida — altura dos fundos das vigas, encontro com alvenarias",
-      "Juntas previstas em todos os pavimentos",
-      "Marcação realizada com mangueira de nível",
-      "Abertura executada com frisador, corte com colher (argamassa fresca) ou serra mármore (após cura), conforme o estágio"
-    ]
-  },
-
   "FVS-47|00": {
     "Ferramentas e equipamentos em condições adequadas de uso; rufos disponíveis nas medidas e dobras corretas; acabamentos/tratamentos do muro finalizados; atividade realizada em dia sem chuva": [
       "Ferramentas e equipamentos conferidos em condições de uso",
@@ -2436,74 +2403,5 @@ window.FVS_SUBCHECKS = {
       "Ajustes registrados quando houver divergência entre o solicitado e o necessário"
     ]
   },
-
-  "FVS-48|00": {
-    "Ferramentas em condições de uso; pedras disponíveis nas medidas corretas; contramarcos de janela já assentados (para peitoris); base arrematada com no mínimo 7 dias de cura; validade dos produtos de assentamento conferida": [
-      "Ferramentas conferidas em condições de uso",
-      "Pedras disponíveis nas medidas corretas antes do início",
-      "Contramarcos de janela já assentados, quando aplicável a peitoris",
-      "Cura mínima de 7 dias da base conferida, e validade dos produtos verificada"
-    ],
-    "Pedras solicitadas à marmoraria com no mínimo 3 cm de sobra para pingadeira em cada lado, com friso na face inferior — em acabamento de muro, medida total igual à espessura da alvenaria mais 6 cm (3 cm de cada lado)": [
-      "Medição in loco realizada antes da solicitação à marmoraria",
-      "Sobra mínima de 3 cm de cada lado para pingadeira conferida no pedido",
-      "Friso na face inferior solicitado, salvo caso específico",
-      "Medida total conferida — espessura da alvenaria mais 6 cm, em acabamento de muro"
-    ],
-    "Medidas dos locais de assentamento e das respectivas pedras conferidas antes do início; material (tipo de rocha) conferido conforme solicitado na marmoraria": [
-      "Medidas dos locais de assentamento conferidas antes do início",
-      "Medidas das pedras recebidas conferidas com o local",
-      "Tipo de rocha conferido conforme o solicitado",
-      "Peças danificadas ou fora de especificação identificadas antes da instalação"
-    ],
-    "Argamassa ACIII utilizada para o assentamento — branca quando necessário para evitar manchas, traçada nas proporções indicadas pelo fabricante": [
-      "Tipo de argamassa conferido — ACIII",
-      "Necessidade de argamassa branca avaliada conforme cor/tipo da pedra",
-      "Traço conferido nas proporções indicadas pelo fabricante",
-      "Ponto de assentamento conferido antes do uso"
-    ],
-    "Colagem executada em dupla camada (argamassa na base e na peça), com os cordões seguindo o mesmo sentido em ambas para facilitar a expulsão de bolhas de ar": [
-      "Argamassa aplicada na base com desempenadeira dentada",
-      "Argamassa aplicada também na peça a ser assentada",
-      "Cordões de argamassa na base e na peça no mesmo sentido",
-      "Ausência de bolhas de ar conferida após o assentamento"
-    ],
-    "Peça posicionada e pressionada com martelo de borracha ou vibrador de cerâmica mecânico": [
-      "Peça posicionada no local correto antes da fixação",
-      "Pressão aplicada com martelo de borracha ou vibrador mecânico",
-      "Nivelamento da peça conferido após o assentamento",
-      "Ausência de vazios sob a peça conferida"
-    ],
-    "Caimento de aproximadamente 2% instalado — para dentro da obra em acabamento de muro, para fora da fachada em peitoris de janela": [
-      "Caimento de aproximadamente 2% conferido com nível",
-      "Direção do caimento conferida — para dentro em muro, para fora em peitoril de janela",
-      "Caimento uniforme ao longo de toda a peça",
-      "Escoamento de água conferido visualmente após instalação"
-    ],
-    "Espaço de 0,5 cm entre a peça e o contramarco previsto em peitoris de janela, para aplicação de selante à base de PU": [
-      "Espaço de 0,5 cm conferido entre peça e contramarco",
-      "Espaço uniforme ao longo de toda a extensão",
-      "Espaço livre de resíduos antes da selagem",
-      "Conferência do espaço antes da aplicação do selante"
-    ],
-    "Espaço entre peça e contramarco selado com PU, delimitado com fita crepe, com as pedras secas e livres de oleosidade antes da selagem": [
-      "Fita crepe aplicada para delimitar o espaço a ser vedado",
-      "Pedras conferidas secas e livres de oleosidade antes da selagem",
-      "Selante PU aplicado de forma contínua e uniforme",
-      "Fita crepe removida após a aplicação, com acabamento conferido"
-    ],
-    "Todas as peças de peitoril conferidas quanto a danos/fissuras antes da instalação das esquadrias das janelas": [
-      "Cada peça de peitoril inspecionada visualmente antes da instalação das esquadrias",
-      "Peças danificadas ou fissuradas identificadas e substituídas",
-      "Registro da conferência realizado",
-      "Liberação para instalação das esquadrias registrada"
-    ],
-    "Cordão de silicone/PU aplicado nas extremidades da pedra que se prolongam além da fachada, antes da instalação das janelas, para evitar manchamento por escorrimento de água": [
-      "Extremidades da pedra que se prolongam além da fachada identificadas",
-      "Cordão de silicone/PU aplicado nessas extremidades",
-      "Aplicação realizada antes da instalação das janelas",
-      "Ausência de sinais de manchamento conferida após aplicação"
-    ]
-  }
 
 };

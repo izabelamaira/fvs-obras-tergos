@@ -5,7 +5,7 @@
 // IMPORTANTE: este conteúdo ainda precisa ser validado por um engenheiro/responsável
 // técnico antes de uso formal em campo (itens, normas e tolerâncias sujeitos a revisão).
 const FVS_CATALOGO = [
-  { codigo:"FVS-01", nome:"Compactação de Aterro", rev:"00",
+  { codigo:"FVS-20", nome:"Compactação de Aterro", rev:"00",
     normas:["NBR 5681:2015 - Controle tecnológico da execução de aterros em obras de edificação","NBR 7182:2020 - Solo - Ensaio de compactação","NBR 7185:2016 - Solo - Determinação da massa específica aparente, in situ, com emprego de frasco de areia","NBR 9813:2016 - Solo - Determinação da massa específica aparente, in situ, com emprego de cilindro de cravação"],
     itens:[
       "Ensaio de compactação (Proctor) realizado para o material de aterro utilizado",
@@ -57,7 +57,7 @@ const FVS_CATALOGO = [
       "Formulário \"Controle de Execução de Estaca Hélice Contínua\" preenchido para cada estaca executada, a partir de cópia do modelo salva na pasta da obra — nunca editado por cima da planilha modelo (prática interna TERGOS)"
     ]
   },
-  { codigo:"FVS-04", nome:"Fundações Rasas - Blocos e Cintas", rev:"00",
+  { codigo:"FVS-12", nome:"Fundações Rasas - Blocos e Cintas", rev:"00",
     normas:["NBR 6122:2022 - Projeto e execução de fundações","NBR 6118:2023 - Projeto de estruturas de concreto - Procedimento","NBR 6489:2019 - Solo - Prova de carga estática em fundação direta","NBR 16889:2020 - Concreto - Determinação da consistência pelo abatimento do tronco de cone","NBR 14931:2023 - Execução de estruturas de concreto - Procedimento","Caderno de Encargos SUDECAP - Capítulo 4: Fundações, itens 4.4 (Fundações em Superfície) e 4.4.2 (Condições Específicas)","PES 5 - Fundações Rasas - Blocos e Cintas (procedimento interno TERGOS)","FVS 5 - Fundações Rasas - Blocos e Cintas (planilha real da TERGOS, 2023) — fonte dos itens revisados/adicionados a partir dela, marcados \"prática interna TERGOS\""],
     itens:[
       "Medidas do projeto topográfico conferidas antes da locação, para evitar erros de levantamento e marcações indevidas",
@@ -88,7 +88,7 @@ const FVS_CATALOGO = [
       "Diâmetros e materiais conforme projeto hidrossanitário"
     ]
   },
-  { codigo:"FVS-06", nome:"Montagem de forma e desforma", rev:"00",
+  { codigo:"FVS-07", nome:"Montagem de forma e desforma", rev:"00",
     normas:["NBR 15696:2009 - Fôrmas e escoramentos para estruturas de concreto - Projeto, dimensionamento e procedimentos executivos","NBR 6118:2023 - Projeto de estruturas de concreto - Procedimento","PES 6 - Estrutura em Concreto Armado (procedimento interno TERGOS)","FVS 6 - Estrutura em Concreto Armado - Fôrmas (planilha real da TERGOS, 2023) — fonte dos itens revisados/adicionados a partir dela"],
     itens:[
       "Projetos necessários disponíveis e funcionários, equipamentos e centrais de trabalho liberados pela segurança do trabalho, antes do início da montagem",
@@ -108,7 +108,7 @@ const FVS_CATALOGO = [
       "Superfície do concreto após desforma sem falhas de concretagem (bicheiras/ninhos)"
     ]
   },
-  { codigo:"FVS-07", nome:"Montagem de Armadura", rev:"00",
+  { codigo:"FVS-06", nome:"Montagem de Armadura", rev:"00",
     normas:["NBR 7480:2022 - Aço destinado a armaduras para estruturas de concreto armado - Requisitos","NBR 6118:2023 - Projeto de estruturas de concreto - Procedimento"],
     itens:[
       "Bitola, quantidade e posicionamento das barras conforme projeto estrutural",
@@ -168,7 +168,7 @@ const FVS_CATALOGO = [
       "Base/suporte das unidades condensadoras dimensionado e nivelado"
     ]
   },
-  { codigo:"FVS-12", nome:"Tubulão (fuste mecanizado, base manual)", rev:"00",
+  { codigo:"FVS-04", nome:"Tubulão (fuste mecanizado, base manual)", rev:"00",
     normas:["NBR 6122:2022 - Projeto e execução de fundações","NBR 16903:2020 - Prova de carga estática em fundação profunda","NR-18 (item 18.7.2) - Segurança e Saúde no Trabalho na Indústria da Construção — Escavações, Fundações e Desmonte de Rochas","NR-33 - Segurança e Saúde nos Trabalhos em Espaços Confinados","Caderno de Encargos SUDECAP - Capítulo 4: Fundações, item 4.5 (Tabela 10 - Tubulão)","FVS 4.1 - Fundações Profundas - Tubulões (planilha real da TERGOS, 2023) — fonte dos itens dimensionais/de proteção adicionados a partir dela","PES 4.1 - Fundações Profundas - Tubulões (procedimento interno TERGOS) — itens marcados \"prática interna TERGOS\" não constam nas normas ABNT"],
     itens:[
       "Perfuração do fuste executada mecanicamente (perfuratriz) até a profundidade especificada em projeto, com verticalidade e diâmetro conferidos",
@@ -192,7 +192,7 @@ const FVS_CATALOGO = [
       "Ensaio de integridade e/ou prova de carga realizados conforme especificado pelo projetista, com resultado aprovado antes da concretagem do bloco de coroamento"
     ]
   },
-  { codigo:"FVS-20", nome:"Demolições e Movimentações de Terra", rev:"00",
+  { codigo:"FVS-01", nome:"Demolições e Movimentações de Terra", rev:"00",
     normas:["NR-18 - Segurança e Saúde no Trabalho na Indústria da Construção","NBR 5681:2015 - Controle tecnológico da execução de aterros em obras de edificação","PES 2 - Demolições e Movimentações de Terra (procedimento interno TERGOS)","FVS 2 - Demolições e Movimentações de Terra (planilha real da TERGOS, 2023)"],
     itens:[
       "Plano de demolição disponível, contemplando os riscos ocupacionais em todas as etapas e as medidas de prevenção — considerando linhas de energia/água, construções vizinhas, remoção de entulho, aberturas no piso, áreas de circulação de emergência e trânsito de veículos/pessoas",
@@ -248,15 +248,28 @@ const FVS_CATALOGO = [
     ]
   },
   { codigo:"FVS-16", nome:"Alvenaria de Vedação", rev:"00",
-    normas:["NBR 15270-1:2017 - Componentes cerâmicos - Blocos e tijolos para alvenaria - Parte 1: Requisitos (verificar edição vigente)","NBR 15575-4:2021 - Edificações habitacionais - Desempenho - Parte 4: Sistemas de vedações verticais internas e externas (norma de execução NBR 8545 está cancelada, sem substituta direta confirmada)"],
+    normas:["NBR 15270-1:2017 - Componentes cerâmicos - Blocos e tijolos para alvenaria - Parte 1: Requisitos (verificar edição vigente)","NBR 15575-4:2021 - Edificações habitacionais - Desempenho - Parte 4: Sistemas de vedações verticais internas e externas (norma de execução NBR 8545 está cancelada, sem substituta direta confirmada)","5. Alvenarias de Vedação (procedimento interno TERGOS) — itens não sourceados em norma ABNT específica, seguem o procedimento interno"],
     itens:[
       "Bloco/tijolo cerâmico conforme especificação dimensional e resistência",
       "Modulação e amarração da alvenaria conforme projeto de paginação",
-      "Espessura e preenchimento das juntas de assentamento conforme especificação",
-      "Prumo e esquadro das paredes conferidos",
-      "Encunhamento entre alvenaria e estrutura executado no prazo especificado",
-      "Vergas e contravergas em vãos de portas e janelas conforme especificação",
-      "Amarração/tela em encontros com pilares e vigas para evitar fissuras"
+      "Laje limpa e desimpedida, com saliências de concreto retiradas, periferia protegida e pontos de ancoragem/amarração de cintos de segurança definidos e liberados pela segurança do trabalho, antes do início",
+      "Projeto de marcação de alvenaria disponível — medidas internas dos cômodos (com espessuras reais), medidas das faces a partir dos eixos principais, trechos com blocos/canaletas cheias sinalizados, vãos de portas/janelas com folga para contramarcos",
+      "Resistência da estrutura avaliada para receber a carga da alvenaria — escoramento do pavimento inferior estudado quando houver concentração de blocos na laje",
+      "Chapisco colante aplicado nos pilares e vigas que receberão alvenaria com pelo menos 3 dias de antecedência, usando desempenadeira de aço denteada",
+      "Tela de amarração fixada nos pilares com chapisco a cada duas fiadas, com pistola fincapinos, executada por profissional treinado e habilitado",
+      "Traço da argamassa de assentamento conforme especificado/ensaiado para a alvenaria em questão",
+      "Impermeabilização com material asfáltico executada na base de alvenarias em contato direto com a fundação, em toda a extensão que receberá o bloco",
+      "Eixos de referência transferidos para o pavimento; medidas da periferia da laje e prumo dos pilares periféricos conferidos",
+      "Nivelamento da laje conferido, com correção de desníveis já na 1ª fiada — enchimento superior a 3 cm distribuído nas fiadas superiores",
+      "Marcação das paredes de periferia e ambientes internos com linha de nylon, local molhado antes do assentamento da 1ª fiada — amarração, nível, prumo e esquadro conferidos",
+      "Locação dos vãos de portas com escantilhão/gabarito — bonecas com no mínimo 7 cm acabados (recomendado 9 cm), marcação do vão com 9 cm a mais que o vão acabado",
+      "Passagem das tubulações elétricas, hidráulicas e de gás conferida durante a marcação e elevação da alvenaria",
+      "Alinhamento, nível, prumo e esquadro conferidos a cada fiada durante a elevação, com juntas de assentamento (verticais e horizontais) de 1 a 1,5 cm",
+      "Vergas e contra-vergas executadas em bloco ou estrutura pré-moldada cheio e armado, com comprimento do vão mais pelo menos 30 cm de cada lado e duas barras de 8 mm",
+      "Junta de dilatação executada entre a laje e a última fiada da alvenaria de cada pavimento, com folga máxima de 2 cm para aplicação de espuma expansiva de poliuretano",
+      "Encunhamento executado somente após 14 dias da alvenaria finalizada e com pelo menos 2 andares superiores com alvenaria executada há mais de 7 dias",
+      "Amarração entre blocos por intertravamento, com comprimento mínimo equivalente a um terço do tijolo — tela de reforço utilizada nos trechos onde a amarração não for respeitada",
+      "Cortes para fixação de tubulações e caixas de instalações executados somente após o encunhamento finalizado, sem quebrar os cantos dos vãos durante o transporte de materiais"
     ]
   },
   { codigo:"FVS-17", nome:"Reboco Interno", rev:"00",
@@ -271,15 +284,28 @@ const FVS_CATALOGO = [
     ]
   },
   { codigo:"FVS-18", nome:"Reboco Externo", rev:"00",
-    normas:["NBR 13749:2013 - Revestimento de paredes e tetos de argamassas inorgânicas - Especificação","NBR 7200:1998 - Execução de revestimento de paredes e tetos de argamassas inorgânicas - Procedimento"],
+    normas:["NBR 13749:2013 - Revestimento de paredes e tetos de argamassas inorgânicas - Especificação","NBR 7200:1998 - Execução de revestimento de paredes e tetos de argamassas inorgânicas - Procedimento","NR-18 (item 18.15) - Trabalho em altura/proteção contra quedas","REVESTIMENTO EXTERNO - REBOCO (procedimento interno TERGOS) — itens não sourceados em norma ABNT específica seguem o procedimento interno"],
     itens:[
-      "Chapisco aplicado como base de aderência em fachada",
-      "Espessura do reboco conforme especificação, considerando exposição externa",
-      "Juntas de dilatação e trabalho respeitadas na fachada",
+      "Todas as alvenarias concluídas e encunhadas (interna e externa), com contramarcos das janelas chumbados, antes do início",
+      "Instalações hidráulicas, elétricas, gás canalizado e passagens para exaustão/ar-condicionado em alvenarias de fachada concluídas",
+      "Fachada protegida com tela fachadeiro (nylon); EPIs (cintos, trava-quedas, cordas de linha de vida, talabartes) e balancinhos montados e verificados antes do início",
+      "Argamassa para o reboco definida e validada, com traço conforme indicação do fabricante",
+      "Referência de prumo (calango) definida por trecho de fachada — no mínimo 2 prumos descidos por trecho para comparar a diferença de espessura",
+      "Pontos para o reboco posicionados com taliscas, a distância horizontal máxima de 2 m entre si",
+      "Chapisco colante aplicado com desempenadeira denteada nas faces lisas de elementos estruturais (vigas e pilares)",
+      "Toda a alvenaria a revestir chapiscada com argamassa de cimento e areia lavada grossa (traço conforme fabricante, ex. 1:3), com camada de espessura máxima de 5 mm e textura final rugosa",
+      "Armadura eventualmente exposta protegida com argamassa estrutural, traçada conforme indicação do fabricante",
+      "Tela de amarração soldada galvanizada (nunca tela galinheiro/pinteiro ou similar) aplicada nos encontros de alvenaria com elementos estruturais, passando cerca de 25 cm de cada lado",
+      "Chapisco curado no mínimo 3 dias antes de receber a argamassa de revestimento, e umedecido com brocha imediatamente antes da aplicação",
+      "Emboço chapado com espessura máxima de 3 cm por camada — espessuras entre 3 e 5 cm executadas em duas cheias, e entre 5 e 8 cm em três cheias, com tela eletrosoldada galvanizada fixada entre a primeira e a segunda cheia",
       "Planeza e prumo da fachada dentro da tolerância",
+      "Sarrafeamento realizado no ponto correto (teste de pressão com os dedos), com régua apoiada nas mestras, de baixo para cima",
+      "Aditivo colante aplicado entre camadas de revestimento executadas em dias diferentes, para melhorar a aderência",
       "Proteção contra chuva e insolação direta durante a cura",
+      "Acabamento em textura aplicado com filtro/espuma após o ponto de desempeno, com desempenadeira frisada, quando o revestimento final for em textura",
+      "Acabamento final (textura/desempenado) uniforme",
       "Caimento e pingadeiras em platibandas e peitoris executados",
-      "Acabamento final (textura/desempenado) uniforme"
+      "Juntas de dilatação posicionadas na altura dos fundos das vigas, no encontro com as alvenarias, em todos os pavimentos — marcadas com mangueira de nível e abertas com frisador ou corte, conforme o estágio de cura"
     ]
   },
   { codigo:"FVS-19", nome:"Execução de Revestimento de Piso Interno: Cerâmica e Porcelanato", rev:"00",
@@ -459,12 +485,21 @@ const FVS_CATALOGO = [
     ]
   },
   { codigo:"FVS-34", nome:"Assentamento de Peitoris e Soleiras", rev:"01",
-    normas:["Sem norma ABNT específica confirmada para assentamento de peitoris e soleiras — prática de mercado/fabricante (verificar antes de uso formal)","Correlato: NBR 13755:2017 - Revestimentos cerâmicos de fachadas e paredes externas com utilização de argamassa colante (quando o material da peça for cerâmico/porcelanato)"],
+    normas:["Sem norma ABNT específica confirmada para assentamento de peitoris e soleiras — prática de mercado/fabricante (verificar antes de uso formal)","Correlato: NBR 13755:2017 - Revestimentos cerâmicos de fachadas e paredes externas com utilização de argamassa colante (quando o material da peça for cerâmico/porcelanato)","PEITORIS (procedimento interno TERGOS) — sem norma ABNT específica de execução de peitoris em pedra identificada, segue o procedimento interno"],
     itens:[
-      "Caimento do peitoril para fora, evitando infiltração // verificar",
+      "Ferramentas em condições de uso; pedras disponíveis nas medidas corretas; contramarcos de janela já assentados (para peitoris); base arrematada com no mínimo 7 dias de cura; validade dos produtos de assentamento conferida",
+      "Pedras solicitadas à marmoraria com no mínimo 3 cm de sobra para pingadeira em cada lado, com friso na face inferior — em acabamento de muro, medida total igual à espessura da alvenaria mais 6 cm (3 cm de cada lado)",
+      "Medidas dos locais de assentamento e das respectivas pedras conferidas antes do início; material (tipo de rocha) conferido conforme solicitado na marmoraria",
+      "Argamassa ACIII utilizada para o assentamento — branca quando necessário para evitar manchas, traçada nas proporções indicadas pelo fabricante",
+      "Colagem executada em dupla camada (argamassa na base e na peça), com os cordões seguindo o mesmo sentido em ambas para facilitar a expulsão de bolhas de ar",
+      "Peça posicionada e pressionada com martelo de borracha ou vibrador de cerâmica mecânico",
+      "Caimento de aproximadamente 2% instalado — para dentro da obra em acabamento de muro, para fora da fachada em peitoris de janela",
       "Nivelamento e assentamento firme da soleira // verificar",
-      "Dimensões e balanço da peça conforme especificação // verificar",
-      "Vedação e rejunte das bordas da peça // verificar"
+      "Espaço de 0,5 cm entre a peça e o contramarco previsto em peitoris de janela, para aplicação de selante à base de PU",
+      "Espaço entre peça e contramarco selado com PU, delimitado com fita crepe, com as pedras secas e livres de oleosidade antes da selagem",
+      "Vedação e rejunte das bordas da peça // verificar",
+      "Todas as peças de peitoril conferidas quanto a danos/fissuras antes da instalação das esquadrias das janelas",
+      "Cordão de silicone/PU aplicado nas extremidades da pedra que se prolongam além da fachada, antes da instalação das janelas, para evitar manchamento por escorrimento de água"
     ]
   },
   { codigo:"FVS-35", nome:"Instalação de Gás", rev:"00",
@@ -489,16 +524,6 @@ const FVS_CATALOGO = [
     ]
   },
   { codigo:"FVS-37", nome:"Colocação de Bancadas", rev:"00",
-    normas:["Sem norma ABNT específica confirmada para colocação de bancadas — prática de mercado/fabricante do material (granito, mármore, quartzo) (verificar antes de uso formal)","Correlato: NBR 15575-3:2021 - Desempenho de edificações habitacionais - Sistemas de pisos"],
-    itens:[
-      "Nivelamento e prumo da bancada conferidos // verificar",
-      "Fixação e apoio estrutural adequados ao peso da peça // verificar",
-      "Recortes para cuba, cooktop e torneira conferidos com os equipamentos // verificar",
-      "Emendas entre módulos executadas com alinhamento e vedação // verificar",
-      "Ausência de trincas, manchas ou defeitos aparentes na peça // verificar"
-    ]
-  },
-  { codigo:"FVS-37", nome:"Colocação de Bancadas", rev:"01",
     normas:["Sem norma ABNT específica confirmada para colocação de bancadas — prática de mercado/fabricante do material (granito, mármore, quartzo) (verificar antes de uso formal)","Correlato: NBR 15575-3:2021 - Desempenho de edificações habitacionais - Sistemas de pisos"],
     itens:[
       "Nivelamento e prumo da bancada conferidos // verificar",
@@ -566,50 +591,6 @@ const FVS_CATALOGO = [
       "Funcionamento testado antes da entrega // verificar"
     ]
   },
-  { codigo:"FVS-44", nome:"Alvenarias de Vedação", rev:"00",
-    normas:["NBR 15270-1:2017 - Componentes cerâmicos - Blocos e tijolos para alvenaria - Parte 1: Requisitos","NBR 15812-1:2010 - Alvenaria estrutural - Blocos cerâmicos - Parte 1: Projeto","NBR 15575-4:2021 - Desempenho de edificações habitacionais - Sistemas de vedações verticais internas e externas","5. Alvenarias de Vedação (procedimento interno TERGOS) — itens não sourceados em norma ABNT específica, seguem o procedimento interno"],
-    itens:[
-      "Laje limpa e desimpedida, com saliências de concreto retiradas, periferia protegida e pontos de ancoragem/amarração de cintos de segurança definidos e liberados pela segurança do trabalho, antes do início",
-      "Projeto de marcação de alvenaria disponível — medidas internas dos cômodos (com espessuras reais), medidas das faces a partir dos eixos principais, trechos com blocos/canaletas cheias sinalizados, vãos de portas/janelas com folga para contramarcos",
-      "Resistência da estrutura avaliada para receber a carga da alvenaria — escoramento do pavimento inferior estudado quando houver concentração de blocos na laje",
-      "Chapisco colante aplicado nos pilares e vigas que receberão alvenaria com pelo menos 3 dias de antecedência, usando desempenadeira de aço denteada",
-      "Tela de amarração fixada nos pilares com chapisco a cada duas fiadas, com pistola fincapinos, executada por profissional treinado e habilitado",
-      "Traço da argamassa de assentamento conforme especificado/ensaiado para a alvenaria em questão",
-      "Impermeabilização com material asfáltico executada na base de alvenarias em contato direto com a fundação, em toda a extensão que receberá o bloco",
-      "Eixos de referência transferidos para o pavimento; medidas da periferia da laje e prumo dos pilares periféricos conferidos",
-      "Nivelamento da laje conferido, com correção de desníveis já na 1ª fiada — enchimento superior a 3 cm distribuído nas fiadas superiores",
-      "Marcação das paredes de periferia e ambientes internos com linha de nylon, local molhado antes do assentamento da 1ª fiada — amarração, nível, prumo e esquadro conferidos",
-      "Locação dos vãos de portas com escantilhão/gabarito — bonecas com no mínimo 7 cm acabados (recomendado 9 cm), marcação do vão com 9 cm a mais que o vão acabado",
-      "Passagem das tubulações elétricas, hidráulicas e de gás conferida durante a marcação e elevação da alvenaria",
-      "Alinhamento, nível, prumo e esquadro conferidos a cada fiada durante a elevação, com juntas de assentamento (verticais e horizontais) de 1 a 1,5 cm",
-      "Vergas e contra-vergas executadas em bloco ou estrutura pré-moldada cheio e armado, com comprimento do vão mais pelo menos 30 cm de cada lado e duas barras de 8 mm",
-      "Junta de dilatação executada entre a laje e a última fiada da alvenaria de cada pavimento, com folga máxima de 2 cm para aplicação de espuma expansiva de poliuretano",
-      "Encunhamento executado somente após 14 dias da alvenaria finalizada e com pelo menos 2 andares superiores com alvenaria executada há mais de 7 dias",
-      "Amarração entre blocos por intertravamento, com comprimento mínimo equivalente a um terço do tijolo — tela de reforço utilizada nos trechos onde a amarração não for respeitada",
-      "Cortes para fixação de tubulações e caixas de instalações executados somente após o encunhamento finalizado, sem quebrar os cantos dos vãos durante o transporte de materiais"
-    ]
-  },
-  { codigo:"FVS-46", nome:"Revestimento Externo - Reboco", rev:"00",
-    normas:["NBR 13749:2013 - Revestimento de paredes e tetos de argamassas inorgânicas - Especificação","NBR 7200:1998 - Execução de revestimento de paredes e tetos de argamassas inorgânicas - Procedimento","NR-18 (item 18.15) - Trabalho em altura/proteção contra quedas","REVESTIMENTO EXTERNO - REBOCO (procedimento interno TERGOS) — itens não sourceados em norma ABNT específica seguem o procedimento interno"],
-    itens:[
-      "Todas as alvenarias concluídas e encunhadas (interna e externa), com contramarcos das janelas chumbados, antes do início",
-      "Instalações hidráulicas, elétricas, gás canalizado e passagens para exaustão/ar-condicionado em alvenarias de fachada concluídas",
-      "Fachada protegida com tela fachadeiro (nylon); EPIs (cintos, trava-quedas, cordas de linha de vida, talabartes) e balancinhos montados e verificados antes do início",
-      "Argamassa para o reboco definida e validada, com traço conforme indicação do fabricante",
-      "Referência de prumo (calango) definida por trecho de fachada — no mínimo 2 prumos descidos por trecho para comparar a diferença de espessura",
-      "Pontos para o reboco posicionados com taliscas, a distância horizontal máxima de 2 m entre si",
-      "Chapisco colante aplicado com desempenadeira denteada nas faces lisas de elementos estruturais (vigas e pilares)",
-      "Toda a alvenaria a revestir chapiscada com argamassa de cimento e areia lavada grossa (traço conforme fabricante, ex. 1:3), com camada de espessura máxima de 5 mm e textura final rugosa",
-      "Armadura eventualmente exposta protegida com argamassa estrutural, traçada conforme indicação do fabricante",
-      "Tela de amarração soldada galvanizada (nunca tela galinheiro/pinteiro ou similar) aplicada nos encontros de alvenaria com elementos estruturais, passando cerca de 25 cm de cada lado",
-      "Chapisco curado no mínimo 3 dias antes de receber a argamassa de revestimento, e umedecido com brocha imediatamente antes da aplicação",
-      "Emboço chapado com espessura máxima de 3 cm por camada — espessuras entre 3 e 5 cm executadas em duas cheias, e entre 5 e 8 cm em três cheias, com tela eletrosoldada galvanizada fixada entre a primeira e a segunda cheia",
-      "Sarrafeamento realizado no ponto correto (teste de pressão com os dedos), com régua apoiada nas mestras, de baixo para cima",
-      "Aditivo colante aplicado entre camadas de revestimento executadas em dias diferentes, para melhorar a aderência",
-      "Acabamento em textura aplicado com filtro/espuma após o ponto de desempeno, com desempenadeira frisada, quando o revestimento final for em textura",
-      "Juntas de dilatação posicionadas na altura dos fundos das vigas, no encontro com as alvenarias, em todos os pavimentos — marcadas com mangueira de nível e abertas com frisador ou corte, conforme o estágio de cura"
-    ]
-  },
   { codigo:"FVS-47", nome:"Rufos", rev:"00",
     normas:["NBR 16323:2014 - Telhas de aço - Requisitos e métodos de ensaio (correlato, componentes metálicos de cobertura)","RUFOS (procedimento interno TERGOS) — sem norma ABNT específica de execução de rufos identificada, segue o procedimento interno"],
     itens:[
@@ -622,21 +603,5 @@ const FVS_CATALOGO = [
       "Formato, dobras e demais detalhes do rufo conferidos conforme a situação específica de cada trecho, antes da solicitação/fabricação das peças"
     ]
   },
-  { codigo:"FVS-48", nome:"Peitoris", rev:"00",
-    normas:["NBR 15575-4:2021 - Desempenho de edificações habitacionais - Sistemas de vedações verticais internas e externas","PEITORIS (procedimento interno TERGOS) — sem norma ABNT específica de execução de peitoris em pedra identificada, segue o procedimento interno"],
-    itens:[
-      "Ferramentas em condições de uso; pedras disponíveis nas medidas corretas; contramarcos de janela já assentados (para peitoris); base arrematada com no mínimo 7 dias de cura; validade dos produtos de assentamento conferida",
-      "Pedras solicitadas à marmoraria com no mínimo 3 cm de sobra para pingadeira em cada lado, com friso na face inferior — em acabamento de muro, medida total igual à espessura da alvenaria mais 6 cm (3 cm de cada lado)",
-      "Medidas dos locais de assentamento e das respectivas pedras conferidas antes do início; material (tipo de rocha) conferido conforme solicitado na marmoraria",
-      "Argamassa ACIII utilizada para o assentamento — branca quando necessário para evitar manchas, traçada nas proporções indicadas pelo fabricante",
-      "Colagem executada em dupla camada (argamassa na base e na peça), com os cordões seguindo o mesmo sentido em ambas para facilitar a expulsão de bolhas de ar",
-      "Peça posicionada e pressionada com martelo de borracha ou vibrador de cerâmica mecânico",
-      "Caimento de aproximadamente 2% instalado — para dentro da obra em acabamento de muro, para fora da fachada em peitoris de janela",
-      "Espaço de 0,5 cm entre a peça e o contramarco previsto em peitoris de janela, para aplicação de selante à base de PU",
-      "Espaço entre peça e contramarco selado com PU, delimitado com fita crepe, com as pedras secas e livres de oleosidade antes da selagem",
-      "Todas as peças de peitoril conferidas quanto a danos/fissuras antes da instalação das esquadrias das janelas",
-      "Cordão de silicone/PU aplicado nas extremidades da pedra que se prolongam além da fachada, antes da instalação das janelas, para evitar manchamento por escorrimento de água"
-    ]
-  }
 ];
 window.FVS_CATALOGO = FVS_CATALOGO;

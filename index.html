@@ -264,15 +264,15 @@ const RENOMEACOES_ITENS_FVS = {
     "Dupla colagem aplicada em porcelanatos de grande formato":
       "Dupla colagem aplicada em porcelanatos de grande formato, com argamassa espalhada também no verso da peça"
   },
-  "FVS-06|00": {
+  "FVS-07|00": {
     "Escoramento dimensionado e travado conforme carga prevista":
       "Escoramento dimensionado e travado conforme o projeto específico do pavimento/peça — nunca em quantidade menor que a indicada em projeto"
   },
-  "FVS-12|00": {
+  "FVS-04|00": {
     "Pontas dos vergalhões expostos e buracos de tubulões protegidos contra acidentes":
       "Pontas dos vergalhões expostos e buracos de tubulões protegidos com fita zebrada e sinalizados contra acidentes"
   },
-  "FVS-04|00": {
+  "FVS-12|00": {
     "Locação e cotas de assentamento (nível de arrasamento) dos blocos/sapatas/cintas conferidas com o projeto de fundações antes da escavação":
       "Centro dos blocos/sapatas/cintas conferido com arame e prumo de centro, antes da escavação — verificada a necessidade de apicoar a cabeça das estacas/tubulões",
     "Cava limpa e isenta de materiais nocivos (madeira, solo carreado por chuva, água acumulada) imediatamente antes do lançamento do concreto":
@@ -298,7 +298,35 @@ const RENOMEACOES_ITENS_FVS = {
   }
 };
 
+// Trocas de código pedidas por Bela em 2026-08-19, pra ordenar as FVS pela cronologia real da
+// obra (demolição/terraplenagem primeiro; tubulão antes de fundação rasa; armadura antes de
+// forma). Migra pelo NOME da FVS (não pelo código antigo) — assim é seguro rodar em toda
+// carga do app, mesmo repetidas vezes: depois da primeira migração o código já bate com o
+// novo, então a condição simplesmente não encontra mais nada pra trocar.
+const TROCAS_CODIGO_FVS = [
+  { nome:"Demolições e Movimentações de Terra", novoCodigo:"FVS-01" },
+  { nome:"Compactação de Aterro", novoCodigo:"FVS-20" },
+  { nome:"Tubulão (fuste mecanizado, base manual)", novoCodigo:"FVS-04" },
+  { nome:"Fundações Rasas - Blocos e Cintas", novoCodigo:"FVS-12" },
+  { nome:"Montagem de Armadura", novoCodigo:"FVS-06" },
+  { nome:"Montagem de forma e desforma", novoCodigo:"FVS-07" }
+];
+function migrarCodigosFvsTrocados(){
+  let mudou = false;
+  db.obras.forEach(obra=>{
+    todasFvsComContexto(obra).forEach(({fvsInst})=>{
+      const troca = TROCAS_CODIGO_FVS.find(t=>t.nome===fvsInst.nome);
+      if(troca && fvsInst.codigo!==troca.novoCodigo){
+        fvsInst.codigo = troca.novoCodigo;
+        mudou = true;
+      }
+    });
+  });
+  if(mudou) saveDB(db);
+}
+
 var db = loadDB();
+migrarCodigosFvsTrocados();
 sincronizarItensCatalogoFvs();
 var route = { view: "obras" };
 var pavimentosReordenando = false;
