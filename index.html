@@ -256,6 +256,30 @@ function uid(){ return Date.now().toString(36) + Math.random().toString(36).slic
 // critério de verificação mudou). Precisa vir ANTES da chamada a sincronizarItensCatalogoFvs()
 // logo abaixo — sendo const, não é hoisted como as functions, e a chamada é feita cedo.
 const RENOMEACOES_ITENS_FVS = {
+  "FVS-06|00": {
+    "Escoramento dimensionado e travado conforme carga prevista":
+      "Escoramento dimensionado e travado conforme o projeto específico do pavimento/peça — nunca em quantidade menor que a indicada em projeto"
+  },
+  "FVS-12|00": {
+    "Pontas dos vergalhões expostos e buracos de tubulões protegidos contra acidentes":
+      "Pontas dos vergalhões expostos e buracos de tubulões protegidos com fita zebrada e sinalizados contra acidentes"
+  },
+  "FVS-04|00": {
+    "Locação e cotas de assentamento (nível de arrasamento) dos blocos/sapatas/cintas conferidas com o projeto de fundações antes da escavação":
+      "Centro dos blocos/sapatas/cintas conferido com arame e prumo de centro, antes da escavação — verificada a necessidade de apicoar a cabeça das estacas/tubulões",
+    "Cava limpa e isenta de materiais nocivos (madeira, solo carreado por chuva, água acumulada) imediatamente antes do lançamento do concreto":
+      "Cava limpa e isenta de materiais nocivos (madeira, solo carreado por chuva, água acumulada), com blocos/cintas umedecidos imediatamente antes do lançamento do concreto, para não absorver água do concreto fresco",
+    "Bitola, quantidade, posicionamento e cobrimento da armadura da sapata/viga (cinta) conferidos com o projeto estrutural, com espaçadores garantindo o cobrimento mínimo":
+      "Bitola, quantidade, posicionamento e cobrimento da armadura da sapata/viga (cinta) conferidos com o projeto estrutural no momento da descida, com espaçadores garantindo o cobrimento mínimo"
+  },
+  "FVS-02|00": {
+    "Referência de nível (RN) e cotas conforme projeto":
+      "Referência de nível (RN) e cotas conferidas com o levantamento topográfico",
+    "Esquadro dos eixos de locação conferido (3-4-5 ou estação total)":
+      "Esquadro do gabarito conferido pelas diagonais do retângulo formado pelo encontro dos eixos principais — tolerância de 5 mm a cada 10 m (0,05%)",
+    "Gabarito de madeira travado e nivelado":
+      "Gabarito nivelado (nível de mangueira) e fixado de modo a resistir aos esforços dos fios de marcação — tolerância de 5 mm"
+  },
   "FVS-03|00": {
     "Locação e verticalidade/prumo do equipamento conferidos antes do início da perfuração — desvio entre eixo executado e eixo de projeto dentro de 10% do diâmetro da estaca (estacas isoladas não travadas)":
       "Centro da estaca conferido com arame e prumo de centro antes do início da perfuração — desvio máximo de 5 mm em relação ao eixo de projeto, com embocamento executado",

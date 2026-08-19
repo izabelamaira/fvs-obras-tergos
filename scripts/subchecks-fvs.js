@@ -11,6 +11,12 @@ window.FVS_SUBCHECKS = {
       "Profundidade final do fuste conferida com a cota especificada em projeto",
       "Diâmetro do fuste conferido com o especificado em projeto"
     ],
+    "Boca do furo protegida contra queda de materiais, entrada de água e acidentes, com sinalização visível enquanto o fuste estiver aberto": [
+      "Proteção instalada na boca do furo imediatamente após a perfuração",
+      "Proteção evita queda de materiais e entrada de água (inclusive de chuva)",
+      "Sinalização visível instalada para facilitar a localização do furo e evitar manobras sobre ele",
+      "Proteção e sinalização mantidas durante todo o período em que o fuste ficar aberto"
+    ],
     "Diâmetro do fuste conferido — mínimo de 0,9 m no trecho onde houver entrada do trabalhador para o alargamento da base (NR-18.7.2.17)": [
       "Diâmetro do fuste medido antes de qualquer entrada de trabalhador",
       "Diâmetro mínimo de 0,9 m (90 cm) respeitado no trecho onde houver descida de pessoa",
@@ -41,6 +47,18 @@ window.FVS_SUBCHECKS = {
       "Teste de atmosfera (gases tóxicos, inflamáveis e nível de oxigênio) realizado antes de cada entrada",
       "Equipe e equipamento de resgate disponíveis durante o trabalho no fuste"
     ],
+    "Sequência de abertura de tubulões planejada previamente — tubulões vizinhos dentro da distância mínima verificada com o geotécnico só abertos após a concretagem do anterior (prática interna TERGOS)": [
+      "Sequência de abertura dos tubulões planejada previamente conforme o layout do projeto",
+      "Distância mínima entre tubulões vizinhos verificada com o geotécnico",
+      "Tubulões vizinhos dentro dessa distância só abertos após a concretagem do anterior",
+      "Ausência de sinais de desmoronamento em tubulões recém-concretados na sequência de execução"
+    ],
+    "Fornecimento de concreto planejado com margem de aproximadamente 15% acima do volume de projeto — concretagem nunca paralisada no meio do elemento; se o volume for insuficiente, o conteúdo é desprezado e o elemento concretado em um segundo momento (prática interna TERGOS)": [
+      "Volume de concreto programado com margem de aproximadamente 15% acima do volume de projeto",
+      "Medidas reais do tubulão conferidas antes da programação do volume",
+      "Concretagem não iniciada sem confirmação de concreto suficiente para o elemento completo",
+      "Em caso de volume insuficiente durante a concretagem, o conteúdo lançado é desprezado e o elemento refeito em outro momento"
+    ],
     "Base alargada executada nas dimensões de projeto, com fundo limpo, e concretagem iniciada em até 24 horas após a conclusão do alargamento": [
       "Diâmetro e altura da base alargada conferidos com o especificado em projeto",
       "Fundo da escavação limpo, isento de material solto ou água, antes da concretagem",
@@ -59,17 +77,41 @@ window.FVS_SUBCHECKS = {
       "Distância mínima entre a armação e a parede do fuste respeitada",
       "Armação posicionada e centralizada antes da concretagem"
     ],
+    "Posicionamento das barras de aterramento (SPDA) conferido no projeto — quando previsto, a haste é introduzida junto com a armadura do tubulão, antes da concretagem": [
+      "Projeto de SPDA consultado para verificar exigência de haste de aterramento no tubulão",
+      "Quando previsto, a haste de aterramento é introduzida junto com a armadura, antes da concretagem",
+      "Posicionamento da haste conferido conforme especificado em projeto",
+      "Continuidade elétrica da haste de aterramento com o restante do sistema SPDA verificada"
+    ],
     "Cota de arrasamento conferida conforme projeto, incluindo vigas alavancas e poço de elevador quando aplicável — tolerância de ±5 mm a cada 10 m": [
       "Cota de arrasamento do tubulão conferida com o projeto",
       "Cota de vigas alavancas conferida, quando aplicável",
       "Cota do poço de elevador conferida, quando aplicável",
       "Tolerância de ±5 mm a cada 10 m respeitada"
     ],
-    "Pontas dos vergalhões expostos e buracos de tubulões protegidos contra acidentes": [
+    "Concreto lançado no centro do furo com uso de funil de madeira, evitando mistura de torrões de terra (prática interna TERGOS)": [
+      "Funil de madeira posicionado no centro do furo antes do início da concretagem",
+      "Concreto lançado sempre pelo centro do furo",
+      "Ausência de torrões de terra misturados ao concreto lançado",
+      "Paredes do furo inspecionadas quanto a desmoronamento durante a concretagem"
+    ],
+    "Esperas dos pilares posicionadas com o concreto ainda fresco, imediatamente após a concretagem": [
+      "Posição das esperas conferida com o projeto estrutural antes da concretagem",
+      "Esperas posicionadas imediatamente após a concretagem, com o concreto ainda fresco",
+      "Prumo e alinhamento das esperas conferidos após o posicionamento",
+      "Esperas protegidas até a execução do bloco/pilar"
+    ],
+    "Pontas dos vergalhões expostos e buracos de tubulões protegidos com fita zebrada e sinalizados contra acidentes": [
       "Pontas de vergalhões expostas identificadas após a concretagem",
       "Proteção (capacete plástico ou similar) instalada em todas as pontas expostas",
-      "Buracos de tubulões ainda não concretados sinalizados e/ou tapados",
+      "Buracos de tubulões ainda não concretados sinalizados com fita zebrada e/ou tapados",
       "Proteções conferidas periodicamente enquanto o risco persistir"
+    ],
+    "Formulário de Controle de Execução preenchido para cada tubulão — cota do terreno, cota de arrasamento, dimensões reais x teóricas, traço, volume real x teórico e anormalidades (desaprumo, desvio de locação, aterro, matacões) (prática interna TERGOS)": [
+      "Formulário de Controle de Execução preenchido para cada tubulão individualmente",
+      "Cota do terreno, cota de arrasamento e dimensões reais x teóricas registradas",
+      "Traço e volume de concreto (real x teórico) registrados",
+      "Anormalidades de execução (desaprumo, desvio de locação, aterro, matacões) registradas quando houver"
     ],
     "Ensaio de integridade e/ou prova de carga realizados conforme especificado pelo projetista, com resultado aprovado antes da concretagem do bloco de coroamento": [
       "Quantidade e localização dos ensaios definidas pelo responsável técnico do projeto e previstas na planilha",
@@ -80,11 +122,29 @@ window.FVS_SUBCHECKS = {
   },
 
   "FVS-04|00": {
-    "Locação e cotas de assentamento (nível de arrasamento) dos blocos/sapatas/cintas conferidas com o projeto de fundações antes da escavação": [
-      "Eixos e cotas de arrasamento locados por topografia conforme projeto de fundações",
-      "Profundidade de assentamento conferida com a cota de apoio indicada em projeto (nível do terreno de fundação)",
-      "Compatibilidade com o perfil de sondagem existente conferida (tipo de solo na cota de apoio)",
+    "Medidas do projeto topográfico conferidas antes da locação, para evitar erros de levantamento e marcações indevidas": [
+      "Projeto topográfico disponível e conferido antes do início da locação",
+      "Medidas do levantamento topográfico conferidas em campo",
+      "Divergências entre o levantamento e o projeto comunicadas ao responsável técnico",
+      "Marcações realizadas somente após a conferência das medidas"
+    ],
+    "Centro dos blocos/sapatas/cintas conferido com arame e prumo de centro, antes da escavação — verificada a necessidade de apicoar a cabeça das estacas/tubulões": [
+      "Centro de cada bloco/sapata conferido com arame e prumo de centro antes da escavação",
+      "Cabeça das estacas/tubulões inspecionada quanto à necessidade de apicoamento",
+      "Apicoamento executado quando necessário, sem danificar a armação da estaca/tubulão",
       "Registro fotográfico da locação antes do início da escavação"
+    ],
+    "Identificação de cada bloco/sapata/cinta conferida de acordo com o projeto": [
+      "Numeração/identificação de cada bloco/sapata/cinta conferida com o projeto",
+      "Identificação marcada em campo de forma visível e durável",
+      "Identificação mantida legível até o fim da execução",
+      "Identificação registrada na ficha de controle correspondente"
+    ],
+    "Cotas de arrasamento das estacas/tubulões e cotas dos blocos/cintas conferidas conforme projeto": [
+      "Cota de arrasamento das estacas/tubulões conferida com o projeto",
+      "Cota de assentamento (arrasamento) dos blocos/cintas conferida com o projeto",
+      "Compatibilidade entre as duas cotas conferida antes da concretagem",
+      "Divergências registradas e comunicadas ao responsável técnico"
     ],
     "Fundo da vala/cava compactado e recoberto com lastro de concreto magro (não estrutural) de 5 cm de espessura, antes da armação": [
       "Fundo da vala compactado e nivelado antes do lançamento do lastro",
@@ -98,17 +158,29 @@ window.FVS_SUBCHECKS = {
       "Dimensões internas das formas conferidas com as dimensões de projeto do bloco/sapata/cinta",
       "Escoramento/travamento das formas suficiente para suportar o lançamento do concreto sem deformar"
     ],
-    "Cava limpa e isenta de materiais nocivos (madeira, solo carreado por chuva, água acumulada) imediatamente antes do lançamento do concreto": [
+    "Cava limpa e isenta de materiais nocivos (madeira, solo carreado por chuva, água acumulada), com blocos/cintas umedecidos imediatamente antes do lançamento do concreto, para não absorver água do concreto fresco": [
       "Cava limpa de madeiras, entulho e solo carreado por chuva antes da concretagem",
       "Água acumulada no fundo da cava totalmente esgotada antes do lançamento",
-      "Escoamento de águas externas à fundação direcionado para local de bombeamento, evitando novo acúmulo",
+      "Blocos/cintas umedecidos imediatamente antes do lançamento do concreto",
       "Inspeção final da cava registrada (fotografia) imediatamente antes da concretagem"
     ],
-    "Bitola, quantidade, posicionamento e cobrimento da armadura da sapata/viga (cinta) conferidos com o projeto estrutural, com espaçadores garantindo o cobrimento mínimo": [
+    "Bitola, quantidade, posicionamento e cobrimento da armadura da sapata/viga (cinta) conferidos com o projeto estrutural no momento da descida, com espaçadores garantindo o cobrimento mínimo": [
       "Bitola e quantidade das barras conferidas com o projeto estrutural",
       "Posicionamento e amarração das barras conforme detalhamento de projeto",
       "Espaçadores instalados garantindo o cobrimento mínimo especificado em projeto",
       "Emendas e ancoragens das barras conforme comprimento especificado em projeto"
+    ],
+    "Posicionamento das barras de aterramento (SPDA) conferido no projeto — quando previsto, a haste é posicionada junto com a armação dos blocos/cintas": [
+      "Projeto de SPDA consultado para verificar exigência de haste de aterramento no bloco/cinta",
+      "Quando previsto, a haste de aterramento é posicionada junto com a armação, na mesma operação",
+      "Posicionamento da haste conferido conforme especificado em projeto",
+      "Continuidade elétrica da haste de aterramento com o restante do sistema SPDA verificada"
+    ],
+    "Eventuais alterações em relação ao projeto original (tipo de aço, espaçamentos, posicionamento, seções) conferidas e registradas": [
+      "Projeto original conferido antes da execução para identificar alterações posteriores",
+      "Alterações de tipo de aço, espaçamentos, posicionamento ou seções identificadas, quando houver",
+      "Alterações aprovadas pelo responsável técnico antes da execução",
+      "Alterações registradas na ficha de controle do elemento"
     ],
     "Classe de resistência do concreto (fck) e consistência (slump) conferidos conforme especificação de projeto, com corpos de prova moldados para ensaio": [
       "Fck do concreto entregue (nota fiscal/laudo do concreto usinado) compatível com o especificado em projeto",
@@ -121,6 +193,12 @@ window.FVS_SUBCHECKS = {
       "Base em planta (quadrada/retangular/trapezoidal) conferida conforme tipo de sapata especificado",
       "Elementos vizinhos (blocos/sapatas próximos) sem invadir divisa ou passeio público",
       "Divergências de quantitativo (volume executado x projetado) registradas e justificadas"
+    ],
+    "Formulário de Controle de Execução preenchido para cada bloco/cinta — cota do terreno, cota de arrasamento, medidas, volume de concreto (projeto x executado), traço, sobreconsumo e existência de barra de aterramento (prática interna TERGOS)": [
+      "Formulário de Controle de Execução preenchido para cada bloco/cinta individualmente",
+      "Cota do terreno, cota de arrasamento e medidas do elemento registradas",
+      "Volume de concreto (projeto x executado), traço e sobreconsumo registrados",
+      "Existência de barra de aterramento registrada no formulário"
     ],
     "Prova de carga estática em fundação direta realizada conforme NBR 6489 (quando exigida pelo projetista), com resultado aprovado pela fiscalização antes da execução": [
       "Quantidade e localização dos ensaios de prova de carga definidas pelo responsável técnico do projeto e previstas na planilha",
@@ -305,16 +383,22 @@ window.FVS_SUBCHECKS = {
   },
 
   "FVS-02|00": {
-    "Referência de nível (RN) e cotas conforme projeto": [
-      "RN física implantada em local protegido e não sujeito a movimentação",
-      "Cota da RN conferida por nivelamento topográfico com projeto de terraplenagem/implantação",
-      "Cotas de nível transportadas para pontos de controle da obra a partir da RN",
-      "Diferença entre cota de projeto e cota executada dentro da tolerância (ex.: ±1 cm)"
+    "Terreno limpo e escavado até as cotas corretas para execução das fundações, antes do início da locação": [
+      "Terreno limpo e desobstruído conferido antes do início da locação",
+      "Escavação até as cotas corretas para execução das fundações conferida",
+      "Ausência de entulho, vegetação ou material que dificulte a locação",
+      "Liberação do serviço de locação registrada após a conferência"
     ],
-    "Esquadro dos eixos de locação conferido (3-4-5 ou estação total)": [
-      "Ângulo reto entre eixos conferido pelo método 3-4-5 ou com estação total",
-      "Diagonais dos retângulos de locação medidas e conferidas (diferença entre diagonais dentro da tolerância)",
-      "Erro de esquadro registrado inferior ao limite admissível de projeto",
+    "Referência de nível (RN) e cotas conferidas com o levantamento topográfico": [
+      "Levantamento topográfico da obra disponível e conferido antes do início da locação",
+      "Cota da RN conferida por nivelamento topográfico com o levantamento apresentado",
+      "Cotas de nível transportadas para pontos de controle da obra a partir da RN",
+      "Medições do levantamento topográfico conferidas em campo"
+    ],
+    "Esquadro do gabarito conferido pelas diagonais do retângulo formado pelo encontro dos eixos principais — tolerância de 5 mm a cada 10 m (0,05%)": [
+      "Diagonais do retângulo formado pelo encontro dos eixos principais medidas",
+      "Diferença entre as diagonais dentro da tolerância de 5 mm a cada 10 m (0,05%)",
+      "Erro de esquadro registrado, quando houver, e comunicado ao responsável técnico",
       "Pontos de locação materializados com piquetes/gabaritos travados"
     ],
     "Afastamentos/recuos conforme projeto legal aprovado": [
@@ -323,11 +407,17 @@ window.FVS_SUBCHECKS = {
       "Projeção de platibandas, marquises e beirais não invade recuo mínimo exigido",
       "Divisas do terreno confirmadas com levantamento planialtimétrico/escritura antes da medição"
     ],
-    "Gabarito de madeira travado e nivelado": [
-      "Gabarito (tábuas corridas) fixado em estacas rígidas, sem folga ou balanço",
-      "Nível do gabarito conferido com nível óptico/laser em todo o perímetro",
-      "Marcações de eixos no gabarito legíveis e protegidas de apagamento",
-      "Gabarito posicionado a distância suficiente da escavação para não ser afetado"
+    "Gabarito nivelado (nível de mangueira) e fixado de modo a resistir aos esforços dos fios de marcação — tolerância de 5 mm": [
+      "Nivelamento do gabarito conferido com nível de mangueira",
+      "Gabarito fixado de modo a resistir aos esforços dos fios de marcação",
+      "Tolerância de 5 mm respeitada no nivelamento",
+      "Marcações de eixos no gabarito legíveis e protegidas de apagamento"
+    ],
+    "Marcação de todos os elementos estruturais conferida a partir dos eixos X e Y com trena metálica — tolerância de 5 mm": [
+      "Marcação de todos os elementos estruturais conferida a partir dos eixos X e Y",
+      "Trena metálica utilizada na conferência da marcação",
+      "Tolerância de 5 mm respeitada em cada elemento marcado",
+      "Marcação conferida antes da liberação para escavação/fundação"
     ],
     "Cotas de arrasamento e nível de soleira conferidos (tolerância de projeto)": [
       "Cota de arrasamento de blocos/sapatas conferida com nível a laser em relação à RN",
@@ -395,6 +485,30 @@ window.FVS_SUBCHECKS = {
   },
 
   "FVS-06|00": {
+    "Projetos necessários disponíveis e funcionários, equipamentos e centrais de trabalho liberados pela segurança do trabalho, antes do início da montagem": [
+      "Projetos estrutural e de fôrmas disponíveis em obra antes do início da montagem",
+      "Equipe treinada e com EPIs adequados para a atividade",
+      "Equipamentos e ferramentas inspecionados e em condições de uso",
+      "Liberação da segurança do trabalho (SESMT) registrada antes do início"
+    ],
+    "Eixos principais do edifício e nível de referência transferidos e conferidos em campo antes da montagem das fôrmas — tolerância de 5 mm": [
+      "Eixos principais transferidos para o pavimento por topografia",
+      "Nível de referência (RN) transferido e conferido no pavimento",
+      "Desvio conferido dentro da tolerância de 5 mm",
+      "Registro fotográfico da transferência de eixos e nível"
+    ],
+    "Medidas entre pilares conferidas para garantir dimensões críticas (vagas de garagem, poço de elevador, caixa de escada, limites da torre, dimensões internas dos ambientes, alinhamento de pilares com alvenarias) — tolerância de 5 mm": [
+      "Medidas entre pilares conferidas nos pontos críticos (garagem, poço de elevador, caixa de escada, limites da torre)",
+      "Dimensões internas dos ambientes conferidas antes da concretagem",
+      "Alinhamento de pilares com alvenarias futuras conferido, evitando necessidade de espalas",
+      "Tolerância de 5 mm respeitada em todas as medidas conferidas"
+    ],
+    "Prumo dos pilares conferido, incluindo o encontro das faces no topo do pilar com esquadro metálico — tolerância de 5 mm": [
+      "Prumo de cada pilar conferido antes da concretagem",
+      "Encontro das faces no topo do pilar conferido com esquadro metálico",
+      "Tolerância de 5 mm respeitada no prumo",
+      "Ajustes realizados antes da liberação para concretagem"
+    ],
     "Estanqueidade e alinhamento das fôrmas conferidos antes da concretagem": [
       "Ausência de frestas/aberturas que permitam vazamento de nata de cimento",
       "Prumo e nível das faces das fôrmas conferidos com prumo/nível a laser",
@@ -413,11 +527,35 @@ window.FVS_SUBCHECKS = {
       "Aplicação de desmoldante realizada antes da montagem da armadura",
       "Verificação final de limpeza registrada antes da liberação para concretagem"
     ],
-    "Escoramento dimensionado e travado conforme carga prevista": [
-      "Espaçamento entre escoras conforme plano de fôrmas/memorial de cálculo",
+    "Escoramento dimensionado e travado conforme o projeto específico do pavimento/peça — nunca em quantidade menor que a indicada em projeto": [
+      "Espaçamento entre escoras conforme plano de fôrmas/memorial de cálculo do pavimento/peça",
+      "Quantidade de escoras conferida — nunca inferior à indicada em projeto",
       "Escoras apoiadas sobre base firme e nivelada (sapatas/calços), sem afundamento",
-      "Contraventamento (travamento) das escoras instalado para evitar flambagem/deslocamento",
-      "Escoramento de pavimento inferior mantido (reescoramento) quando exigido por projeto"
+      "Contraventamento (travamento) das escoras instalado para evitar flambagem/deslocamento"
+    ],
+    "Fôrmas de vigas invertidas e semi-invertidas executadas separadamente nas partes inferior e superior à laje": [
+      "Vigas invertidas/semi-invertidas identificadas no projeto antes da montagem",
+      "Fôrma da parte inferior à laje executada separadamente da parte superior",
+      "Sequência de montagem conferida com o projeto estrutural",
+      "Escoramento de cada parte conferido individualmente"
+    ],
+    "Aberturas e furos em vigas para passagem de tubulações conferidos com o projeto executivo, com reforço nas bordas quando necessário": [
+      "Aberturas e furos conferidos com o projeto executivo antes da concretagem",
+      "Posição e dimensão de cada abertura conferida com o projeto",
+      "Necessidade de reforço nas bordas avaliada conforme projeto estrutural",
+      "Reforços instalados antes da concretagem, quando necessários"
+    ],
+    "Necessidade e posicionamento de contra-flechas conferidos conforme o projeto de fôrmas": [
+      "Projeto de fôrmas consultado para verificar exigência de contra-flecha",
+      "Posicionamento da contra-flecha conferido conforme especificado em projeto",
+      "Altura da contra-flecha medida e conferida",
+      "Contra-flecha registrada na liberação da fôrma para concretagem"
+    ],
+    "Eventuais alterações em relação ao projeto original (tipo de aço, espaçamentos, posicionamento, seções) conferidas e registradas": [
+      "Projeto original conferido antes da execução para identificar alterações posteriores",
+      "Alterações de tipo de aço, espaçamentos, posicionamento ou seções identificadas, quando houver",
+      "Alterações aprovadas pelo responsável técnico antes da execução",
+      "Alterações registradas na ficha de controle do elemento"
     ],
     "Prazo mínimo de desforma respeitado conforme resistência do concreto": [
       "Prazo mínimo de desforma de faces laterais respeitado (ex.: 3 dias, sem carga estrutural)",
