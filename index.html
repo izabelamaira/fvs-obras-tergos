@@ -158,6 +158,8 @@
   .rel-item .rel-status.parcial{background:#e0f4f8;color:#0891b2;}
   .rel-item .rel-obs{color:#444;margin-top:4px;}
   .rel-item .rel-foto{max-width:160px;max-height:160px;display:block;margin-top:6px;border:1px solid #ccc;}
+  .rel-elemento-titulo{font-size:16px;margin:0 0 12px 0;padding-bottom:6px;border-bottom:1px solid #999;page-break-before:always;}
+  .rel-elemento-titulo:first-of-type{page-break-before:avoid;}
   .rel-table{width:100%;border-collapse:collapse;font-size:12.5px;margin-bottom:16px;}
   .rel-table th, .rel-table td{border:1px solid #ccc;padding:6px 8px;text-align:left;}
   .rel-table th{background:#eee;}
@@ -1922,6 +1924,12 @@ function renderPavimentoEstrutura(app){
   btnPdfPav.onclick=()=>exportarRelatorioPavimento(obra, pav);
   main.appendChild(btnPdfPav);
 
+  const btnPdfCat = document.createElement("button");
+  btnPdfCat.className="btn"; btnPdfCat.style.cssText="width:100%;border:1px solid var(--border);background:none;color:var(--text);margin-top:8px;";
+  btnPdfCat.innerHTML=icon('document')+` Exportar fichas completas de "${escapeHtml(cat.nome)}" (PDF)`;
+  btnPdfCat.onclick=()=>exportarRelatorioCategoriaEstrutura(obra, pav, cat);
+  main.appendChild(btnPdfCat);
+
   renderListaAmbientes(main, cat, amb=>({view:"ambiente", obraId:obra.id, pavId:pav.id, catId:cat.id, ambId:amb.id}),
     `Nenhum elemento cadastrado ainda.<br>Toque em "+" para adicionar um elemento (ex: P1) ou vários numerados de uma vez.`, "elementos", "pilar");
 
@@ -3298,6 +3306,42 @@ function exportarRelatorioPavimento(obra, pav){
     });
   }
 
+  imprimirRelatorio(html);
+}
+
+function exportarRelatorioCategoriaEstrutura(obra, pav, cat){
+  let html = `
+    <div class="rel-header">
+      <h1>Fichas de Vistoria — ${escapeHtml(obra.nome)}</h1>
+      <div class="meta">Pavimento: ${escapeHtml(pav.nome)} · Estrutura: ${escapeHtml(cat.nome)} · ${cat.elementos.length} elemento(s)<br>Gerado em: ${dataHoraAtual()}</div>
+    </div>`;
+
+  if(!cat.elementos.length){
+    html += `<p>Nenhum elemento cadastrado nesta categoria.</p>`;
+  }
+  cat.elementos.forEach(elem=>{
+    html += `<h2 class="rel-elemento-titulo">${escapeHtml(cat.nome)} — ${escapeHtml(elem.nome)}</h2>`;
+    if(!elem.fvsList.length){
+      html += `<p>Nenhuma FVS aplicada a este elemento.</p>`;
+    }
+    elem.fvsList.forEach(fvsInst=>{
+      html += `<div class="rel-fvs-bloco">
+        <h2>${escapeHtml(fvsInst.codigo)} / ${escapeHtml(fvsInst.nome)} — Rev.: ${escapeHtml(fvsInst.rev)}</h2>
+        <div class="rel-normas"><b>Normas de referência:</b> ${fvsInst.normas.map(escapeHtml).join(" · ")}</div>`;
+      fvsInst.itens.forEach((item, idx)=>{
+        const st = item.status || "pend";
+        html += `<div class="rel-item">
+          ${idx+1}. ${escapeHtml(item.texto)}
+          <span class="rel-status ${st}">${STATUS_LABEL[st]}</span>
+          ${item.obs? `<div class="rel-obs"><b>Obs.:</b> ${escapeHtml(item.obs)}</div>` : ""}
+          ${item.foto? `<img class="rel-foto" src="${item.foto}">` : ""}
+        </div>`;
+      });
+      html += `</div>`;
+    });
+  });
+
+  html += `<div class="meta" style="margin-top:30px;">Responsável técnico: _______________________________ &nbsp;&nbsp; Data: ___/___/______</div>`;
   imprimirRelatorio(html);
 }
 
