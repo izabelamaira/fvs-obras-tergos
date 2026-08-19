@@ -248,6 +248,7 @@ function saveDB(db){ localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); }
 function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
 
 var db = loadDB();
+sincronizarItensCatalogoFvs();
 var route = { view: "obras" };
 var pavimentosReordenando = false;
 
@@ -2022,6 +2023,34 @@ function abrirCatalogo(amb){
   };
 }
 
+// Quando o catálogo ganha itens novos numa FVS já existente (mesmo código+revisão), as
+// instâncias já aplicadas em ambientes/elementos não mudam sozinhas — cada fvsInst guarda
+// sua própria cópia dos itens (ver criarInstanciaFvs). Roda uma vez ao carregar o app e
+// adiciona, sem tocar no que já foi respondido, qualquer item do catálogo que ainda não
+// exista na instância aplicada (comparando pelo texto do item).
+function sincronizarItensCatalogoFvs(){
+  if(!window.FVS_CATALOGO) return;
+  let mudou = false;
+  db.obras.forEach(obra=>{
+    todasFvsComContexto(obra).forEach(({fvsInst})=>{
+      const fvs = FVS_CATALOGO.find(f=>f.codigo===fvsInst.codigo && f.rev===fvsInst.rev);
+      if(!fvs) return;
+      const textosExistentes = new Set(fvsInst.itens.map(i=>i.texto));
+      fvs.itens.forEach(txt=>{
+        if(!textosExistentes.has(txt)){
+          fvsInst.itens.push({
+            texto: txt, status:"pend", obs:"", foto:null,
+            subitens: subChecksDoItem(fvs.codigo, fvs.rev, txt).map(s=>({ texto:s, status:"pend" }))
+          });
+          mudou = true;
+        }
+      });
+      fvsInst.normas = fvs.normas;
+    });
+  });
+  if(mudou) saveDB(db);
+}
+
 function criarInstanciaFvs(fvs){
   return {
     instId: uid(),
@@ -2057,10 +2086,23 @@ function abrirChecklist(obra,pav,amb,fvsInst){
       <h2>${escapeHtml(fvsInst.codigo)} / ${escapeHtml(fvsInst.nome)}</h2>
       <div class="normas-box"><b>Normas de referência:</b><br>${normasHtml}</div>
       <label>Fornecedor/Encarregado responsável</label>
-      <select id="m-fornecedor">
-        <option value="">— Nenhum —</option>
-        ${opcoesFornecedor}
-      </select>
+      <div style="display:flex;gap:6px;align-items:center;">
+        <select id="m-fornecedor" style="flex:1;">
+          <option value="">— Nenhum —</option>
+          ${opcoesFornecedor}
+        </select>
+        <button type="button" class="btn" id="m-novo-fornecedor" title="Cadastrar novo fornecedor/encarregado" style="width:auto;margin-top:4px;padding:10px 12px;background:none;border:1px solid var(--border);color:var(--text);">+</button>
+      </div>
+      <div id="m-novo-fornecedor-form" style="display:none;margin-top:8px;padding:10px;border:1px solid var(--border);border-radius:8px;">
+        <label style="margin-top:0;">Nome</label>
+        <input id="m-nf-nome" placeholder="Ex: João Silva">
+        <label>Telefone</label>
+        <input id="m-nf-telefone" type="tel" placeholder="Ex: (31) 99999-9999">
+        <div style="display:flex;gap:8px;margin-top:10px;">
+          <button type="button" class="btn primary" id="m-nf-salvar" style="margin-top:0;">Cadastrar</button>
+          <button type="button" class="btn" id="m-nf-cancelar" style="margin-top:0;background:none;border:1px solid var(--border);color:var(--text);">Cancelar</button>
+        </div>
+      </div>
       <div id="m-aprov-reinsp-wrap">${blocoAprovacaoReinspecao(fvsInst)}</div>
       <div id="m-itens"></div>
       <div class="save-bar">
@@ -2109,6 +2151,26 @@ function abrirChecklist(obra,pav,amb,fvsInst){
     document.getElementById("m-fornecedor").onchange=(e)=>{
       fvsInst.fornecedorId = e.target.value || null;
       dirty = true; atualizarBotaoSalvar();
+    };
+    document.getElementById("m-novo-fornecedor").onclick=()=>{
+      const f = document.getElementById("m-novo-fornecedor-form");
+      const abrindo = f.style.display==="none";
+      f.style.display = abrindo ? "block" : "none";
+      if(abrindo) document.getElementById("m-nf-nome").focus();
+    };
+    document.getElementById("m-nf-cancelar").onclick=()=>{
+      document.getElementById("m-novo-fornecedor-form").style.display="none";
+    };
+    document.getElementById("m-nf-salvar").onclick=()=>{
+      const nome = document.getElementById("m-nf-nome").value.trim();
+      if(!nome) return alert("Digite o nome.");
+      const telefone = document.getElementById("m-nf-telefone").value.trim();
+      const novo = { id:uid(), nome, telefone };
+      fornecedoresDaObra(obra).push(novo);
+      fvsInst.fornecedorId = novo.id;
+      saveDB(db);
+      dirty = false;
+      draw();
     };
     const cont = document.getElementById("m-itens");
     fvsInst.itens.forEach((item, idx)=>{
