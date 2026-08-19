@@ -256,6 +256,14 @@ function uid(){ return Date.now().toString(36) + Math.random().toString(36).slic
 // critério de verificação mudou). Precisa vir ANTES da chamada a sincronizarItensCatalogoFvs()
 // logo abaixo — sendo const, não é hoisted como as functions, e a chamada é feita cedo.
 const RENOMEACOES_ITENS_FVS = {
+  "FVS-19|00": {
+    "Planeza e nivelamento do contrapiso antes do assentamento":
+      "Base nivelada, limpa e curada (mínimo de 14 dias para contrapiso e emboço) antes do assentamento",
+    "Tempo em aberto da argamassa colante respeitado":
+      "Argamassa aplicada em quantidade suficiente para o tamanho da peça, sem abrir pano maior que a peça — cordões em mesmo sentido, respeitando o tempo em aberto",
+    "Dupla colagem aplicada em porcelanatos de grande formato":
+      "Dupla colagem aplicada em porcelanatos de grande formato, com argamassa espalhada também no verso da peça"
+  },
   "FVS-06|00": {
     "Escoramento dimensionado e travado conforme carga prevista":
       "Escoramento dimensionado e travado conforme o projeto específico do pavimento/peça — nunca em quantidade menor que a indicada em projeto"
