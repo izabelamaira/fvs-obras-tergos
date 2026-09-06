@@ -1,0 +1,15 @@
+{
+  "name": "FVS Obras - TERGOS",
+  "short_name": "FVS Obras",
+  "description": "Controle de qualidade de obra por checklist ABNT (FVS) - TERGOS Construtora",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ebe3d1",
+  "theme_color": "#38384a",
+  "icons": [
+    { "src": "assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

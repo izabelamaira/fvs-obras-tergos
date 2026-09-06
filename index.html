@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>FVS OBRAS - TERGOS — Controle de Qualidade</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#38384a">
+<link rel="icon" href="assets/icons/icon-192.png">
+<link rel="apple-touch-icon" href="assets/icons/icon-apple-touch.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="FVS Obras">
 <style>
   :root{
     --bg:#f7f5f0; --card:#fff; --text:#38384a; --muted:#878791; --border:#e6e2d6;
@@ -3440,6 +3447,12 @@ function escapeHtml(str){
 }
 
 render();
+
+if("serviceWorker" in navigator){
+  window.addEventListener("load", ()=>{
+    navigator.serviceWorker.register("sw.js").catch(()=>{});
+  });
+}
 </script>
 </body>
 </html>

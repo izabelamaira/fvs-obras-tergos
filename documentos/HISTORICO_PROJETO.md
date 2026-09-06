@@ -215,11 +215,40 @@ Sessão longa, com vários pedidos encadeados. Resumo por assunto (todos confirm
 
 ---
 
-## 12. Como retomar
+## 12. Sessão via Claude Code / CLI — nível Unidade, importação inteligente de planta, ajustes finais
+
+Trabalho feito numa sessão separada de terminal (Claude Code), em paralelo/around a mesma época da sessão do Claude Desktop (seção 11) — **as duas sessões não compartilham contexto entre si**, por isso este registro existe: pra reconciliar o que cada uma fez quando alguém retomar o projeto depois. Confirmado por comparação direta de arquivos que nenhum trabalho das duas sessões foi perdido — é a mesma pasta/repositório, cada sessão editou por cima do que a outra já tinha feito.
+
+**Novo nível de hierarquia: Unidade (opcional)**
+- Modelo passou de `Obra → Pavimento → Ambiente → Serviço` para `Obra → Pavimento → Unidade (opcional) → Ambiente → Serviço`.
+- `pavimento.unidades` é um array novo, aditivo — pavimentos antigos sem essa propriedade continuam funcionando exatamente como antes (fallback automático pra `[]`). `pavimento.ambientes` passou a representar "ambientes comuns" (áreas fora de qualquer unidade — corredor, hall, casa de máquinas etc.).
+- Telas novas: lista de Unidades dentro do Pavimento, tela própria de Unidade (mesma listagem de ambientes reaproveitada). Botão "+" do Pavimento agora abre um menu (Novo Ambiente comum / Nova Unidade / Importar planta) em vez de ir direto pro cadastro.
+- Relatório PDF da obra ganhou coluna "Unidade" na tabela.
+
+**Importação inteligente de planta (PDF/DXF)**
+- Botão "Importar planta" dentro de um Pavimento ou de uma Unidade. Funciona com PDF (texto selecionável, via PDF.js carregado sob demanda de CDN) ou DXF (via biblioteca `dxf-parser`, também de CDN) — não funciona com PDF escaneado/foto. Precisa de internet só nesse momento da importação; o resto do app continua 100% offline.
+- Novo arquivo `scripts/nomes-comodo.js`: whitelist de ~35 nomes de cômodo válidos (Sala, Suíte Master, Banheiro, Cozinha etc.). Só texto que bate nessa lista vira candidato a ambiente — não qualquer texto solto do arquivo (pedido explícito da usuária, pra evitar que cota, nota de projeto ou título virasse "ambiente" por engano).
+- Classificação automática (função `classificarTextosPlanos` em `index.html`) separa: rótulos de unidade autônoma (ex.: "APTO 101"), áreas comuns/técnicas/especiais (escada, hall, casa de máquinas, reservatório, portaria etc.) e nomes de cômodo de verdade — associando cada cômodo à unidade mais próxima espacialmente (distância euclidiana simples, já que não há reconhecimento de geometria/parede).
+- Sugestão automática de FVS por tipo de ambiente (tabela de palavras-chave `SUGESTOES_FVS_POR_AMBIENTE`), pré-marcada mas sempre editável antes de confirmar.
+- **Sempre** mostra uma tela de revisão antes de gravar qualquer coisa — nunca cria ambiente/unidade automaticamente sem a usuária conferir. Texto que não bate em nenhuma categoria fica numa seção recolhida "não reconhecidos", desmarcada, sem se perder.
+- **Tentativa removida:** foi implementada e testada uma função pra detectar múltiplos pavimentos de uma vez a partir de um único DXF (agrupando por nome de layer, ex.: `PAV-TERREO`, `P01`/`P02`/`P03`/`P04` + layers satélite tipo `5-TEXTOS4`). Funcionou nos testes sintéticos, mas com o arquivo real da usuária (`2024-139-PROJETO LEGAL V03 pos analise.dxf`) o resultado não ficou confiável o bastante — a usuária pediu pra tirar essa opção. As funções `abrirImportarProjetoCompleto` e `classificarProjetoDxf` foram removidas do código; ficou só a importação pavimento-a-pavimento/unidade-a-unidade (que reaproveita a mesma inteligência de classificação, sem depender de nome de layer).
+
+**Outros ajustes**
+- Nome do app trocado de "Qualitab Obra" para **"FVS OBRAS - TERGOS"** no `<title>`, no cabeçalho da tela inicial e no nome do arquivo de backup exportado. A chave do `localStorage` (`qualitab_obra_v1`) **não foi alterada** de propósito — mudar isso faria os dados já salvos "sumirem" da tela.
+- Mensagem de estado vazio do Pavimento (quando não há nem unidade nem ambiente comum ainda) passou a mencionar explicitamente as duas opções: "Toque em '+' para adicionar uma Unidade Autônoma ou uma Área/Ambiente Comum".
+
+**Metodologia de teste usada nesta sessão:** Chrome headless (`--headless=new`) apontando pra um servidor HTTP local numa porta separada (origem diferente de `file://`, então o `localStorage` de teste nunca é o mesmo do app de produção — dispensa até o cuidado de capturar/restaurar valor original, já que são origens diferentes). Arquivos de teste (`_teste_temp*.html`, servidor Python de teste) sempre temporários, removidos ao final de cada rodada. Todas as rodadas de teste passaram antes de cada entrega.
+
+**Pendência que fica pra próxima sessão:** o catálogo de FVS e a whitelist de nomes de cômodo ainda não passaram por validação de engenheiro/responsável técnico (mesma ressalva já feita nas seções anteriores) — a whitelist em particular pode não cobrir termos regionais ou de escritórios de arquitetura diferentes; se isso acontecer na prática, a seção "não reconhecidos" da tela de importação é a válvula de escape (permite promover manualmente um texto que a lista não previu).
+
+---
+
+## 13. Como retomar
 
 1. Abrir `Documentos\FVS OBRAS - TERGOS\index.html` no navegador para conferir o estado atual do app.
-2. Ler este arquivo (seção 11 é o resumo mais recente) para reconstituir o contexto das decisões.
+2. Ler este arquivo (seções 11 e 12 são as mais recentes — sessão Desktop e sessão CLI, respectivamente) para reconstituir o contexto das decisões.
 3. Perguntar à Bela se o problema do backup no Android foi resolvido (seção 6 — pendência antiga, pode já estar superada).
 4. Perguntar à Bela qual caminho ela quer seguir quanto à sincronização entre dispositivos (seção 5), antes de investir tempo em qualquer arquitetura de backend.
-5. Os sub-checklists técnicos (seção 9, e as FVS-03/FVS-04 da seção 11) foram gerados por pesquisa e ainda não foram revisados por um engenheiro/responsável técnico da obra — reforçar essa validação antes de uso formal em campo, especialmente nos pontos marcados `// verificar` ou `// conferir`.
-6. A pasta é um repositório git desde 10/08/2026 — antes de mudanças grandes, considerar um novo commit como checkpoint (`git add -A && git commit -m "..."` dentro da pasta do projeto).
+5. Os sub-checklists técnicos (seção 9, as FVS-03/FVS-04 da seção 11, e a whitelist de nomes de cômodo da seção 12) foram gerados por pesquisa e ainda não foram revisados por um engenheiro/responsável técnico da obra — reforçar essa validação antes de uso formal em campo, especialmente nos pontos marcados `// verificar` ou `// conferir`.
+6. A pasta é um repositório git desde 10/08/2026 — antes de mudanças grandes, considerar um novo commit como checkpoint (`git add -A && git commit -m "..."` dentro da pasta do projeto). Nenhum commit novo foi feito na sessão CLI (seção 12) — considerar commitar o estado atual antes de seguir.
+7. Se outra sessão (Desktop, CLI, ou nova) for retomar o projeto, checar se ambas as frentes (seção 11 e seção 12) continuam presentes no `index.html` atual antes de presumir que uma sobrepôs a outra — as duas sessões não compartilham contexto entre si.
