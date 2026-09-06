@@ -1209,16 +1209,11 @@ function headerObra(obra){
   wrap.className = "obra-logo-wrap";
   wrap.title = "Toque para alterar a logo da obra";
   wrap.onclick=()=>{
-    const input = document.createElement("input");
-    input.type="file"; input.accept="image/*";
-    input.onchange=()=>{
-      const file = input.files[0];
-      if(!file) return;
+    abrirSeletorArquivo("image/*", (file)=>{
       const reader = new FileReader();
       reader.onload=(ev)=>{ obra.foto = ev.target.result; saveDB(db); render(); };
       reader.readAsDataURL(file);
-    };
-    input.click();
+    });
   };
   wrap.innerHTML = obra.foto
     ? `<img class="obra-logo-img" src="${obra.foto}" alt="${escapeHtml(obra.nome)}">`
@@ -1291,11 +1286,7 @@ function renderObras(app){
       const iconEl = item.querySelector(".icon");
       iconEl.onclick=(e)=>{
         e.stopPropagation();
-        const input = document.createElement("input");
-        input.type="file"; input.accept="image/*";
-        input.onchange=()=>{
-          const file = input.files[0];
-          if(!file) return;
+        abrirSeletorArquivo("image/*", (file)=>{
           const reader = new FileReader();
           reader.onload=(ev)=>{
             obra.foto = ev.target.result;
@@ -1303,8 +1294,7 @@ function renderObras(app){
             render();
           };
           reader.readAsDataURL(file);
-        };
-        input.click();
+        });
       };
       main.appendChild(item);
     });
@@ -2481,11 +2471,7 @@ function abrirChecklist(obra,pav,amb,fvsInst){
 
       const fotoBtn = box.querySelector('[data-act="foto"]');
       fotoBtn.onclick=()=>{
-        const input = document.createElement("input");
-        input.type="file"; input.accept="image/*"; input.capture="environment";
-        input.onchange=()=>{
-          const file = input.files[0];
-          if(!file) return;
+        abrirSeletorArquivo("image/*", (file)=>{
           const reader = new FileReader();
           reader.onload=(e)=>{
             item.foto = e.target.result;
@@ -2500,8 +2486,7 @@ function abrirChecklist(obra,pav,amb,fvsInst){
             atualizarBotaoSalvar();
           };
           reader.readAsDataURL(file);
-        };
-        input.click();
+        }, "environment");
       };
 
       if(mostrarAnexoDocumento){
@@ -2543,11 +2528,7 @@ function abrirChecklist(obra,pav,amb,fvsInst){
         }
         renderizarListaDocumentos();
         docBtn.onclick=()=>{
-          const input = document.createElement("input");
-          input.type="file"; input.accept=".pdf,.xml,application/pdf,text/xml,application/xml";
-          input.onchange=async ()=>{
-            const file = input.files[0];
-            if(!file) return;
+          abrirSeletorArquivo(".pdf,.xml,application/pdf,text/xml,application/xml", async (file)=>{
             let blob = file;
             if(!file.type){
               const ext = file.name.toLowerCase().split(".").pop();
@@ -2565,8 +2546,7 @@ function abrirChecklist(obra,pav,amb,fvsInst){
             dirty = true;
             atualizarBotaoSalvar();
             renderizarListaDocumentos();
-          };
-          input.click();
+          });
         };
       }
 
@@ -3157,6 +3137,24 @@ function abrirRevisaoImportacao(obra, pav, unid, candidatosBrutos){
 }
 
 // ---------- MODAL genérico ----------
+// Abre o seletor de arquivo nativo. O <input> precisa estar anexado ao DOM antes do
+// .click() — em alguns Android/Chrome, principalmente com o app instalado (PWA em modo
+// standalone), um <input type=file> criado solto (sem appendChild) não abre o seletor.
+function abrirSeletorArquivo(accept, onSelecionar, capture){
+  const input = document.createElement("input");
+  input.type = "file";
+  if(accept) input.accept = accept;
+  if(capture) input.capture = capture;
+  input.style.cssText = "position:fixed;top:-1000px;left:-1000px;width:1px;height:1px;opacity:0;";
+  input.onchange = ()=>{
+    const file = input.files[0];
+    input.remove();
+    if(file) onSelecionar(file);
+  };
+  document.body.appendChild(input);
+  input.click();
+}
+
 function openModal(innerHtml){
   closeModal();
   const bg = document.createElement("div");
@@ -3186,11 +3184,7 @@ function exportarBackup(){
 }
 
 function restaurarBackup(){
-  const input = document.createElement("input");
-  input.type="file"; input.accept="application/json,.json";
-  input.onchange=()=>{
-    const file = input.files[0];
-    if(!file) return;
+  abrirSeletorArquivo("application/json,.json", (file)=>{
     const reader = new FileReader();
     reader.onload=(e)=>{
       let novoDb;
@@ -3208,8 +3202,7 @@ function restaurarBackup(){
       alert("Backup restaurado com sucesso.");
     };
     reader.readAsText(file);
-  };
-  input.click();
+  });
 }
 
 // ---------- EXPORTAÇÃO DE RELATÓRIOS EM PDF (via impressão do navegador) ----------
