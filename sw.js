@@ -1,4 +1,4 @@
-const CACHE_NAME = "fvs-obras-tergos-v2";
+const CACHE_NAME = "fvs-obras-tergos-v3";
 const ARQUIVOS_APP = [
   "./",
   "./index.html",
@@ -7,7 +7,9 @@ const ARQUIVOS_APP = [
   "./scripts/subchecks-fvs.js",
   "./scripts/nomes-comodo.js",
   "./assets/icons/icon-192.png",
-  "./assets/icons/icon-512.png"
+  "./assets/icons/icon-512.png",
+  "./assets/icons/icon-192-maskable.png",
+  "./assets/icons/icon-512-maskable.png"
 ];
 
 self.addEventListener("install", (event) => {
