@@ -49,6 +49,12 @@
   .obra-logo-wrap .obra-logo-placeholder{display:flex;align-items:center;gap:8px;max-width:100%;color:var(--text);font-weight:600;font-size:16px;}
   .obra-logo-wrap .obra-logo-placeholder .nome{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .obra-logo-wrap .obra-logo-placeholder .edit-badge{width:22px;height:22px;border-radius:50%;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;color:var(--muted);}
+  .obra-capa{position:relative;height:190px;border-radius:14px;overflow:hidden;margin-bottom:14px;cursor:pointer;}
+  .obra-capa img{width:100%;height:100%;object-fit:cover;display:block;}
+  .obra-capa .capa-editar{position:absolute;right:10px;bottom:10px;width:38px;height:38px;border-radius:50%;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;}
+  .obra-capa.vazia{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--muted);background:var(--card);border:1.5px dashed var(--border);}
+  .obra-capa.vazia .capa-icone{width:46px;height:46px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--primary);}
+  .obra-capa.vazia .capa-texto{font-size:13.5px;font-weight:600;}
   main{padding:14px;}
   .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:10px;}
   .list-item{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:8px;cursor:pointer;transition:background .1s;}
@@ -1326,6 +1332,26 @@ function promptNovaObra(){
 }
 
 // ---------- TELA: OBRA (lista de pavimentos) ----------
+function capaObra(obra){
+  const div = document.createElement("div");
+  div.title = "Toque para " + (obra.fotoCapa ? "trocar" : "adicionar") + " a foto do prédio";
+  div.onclick = ()=>{
+    abrirSeletorArquivo("image/*", (file)=>{
+      const reader = new FileReader();
+      reader.onload=(ev)=>{ obra.fotoCapa = ev.target.result; saveDB(db); render(); };
+      reader.readAsDataURL(file);
+    });
+  };
+  if(obra.fotoCapa){
+    div.className = "obra-capa";
+    div.innerHTML = `<img src="${obra.fotoCapa}" alt="Foto do prédio — ${escapeHtml(obra.nome)}"><span class="capa-editar">${icon('camera')}</span>`;
+  } else {
+    div.className = "obra-capa vazia";
+    div.innerHTML = `<span class="capa-icone">${icon('building')}</span><span class="capa-texto">Adicionar foto do prédio</span>`;
+  }
+  return div;
+}
+
 function renderObra(app){
   const obra = getObra(route.obraId);
   app.appendChild(headerObra(obra));
@@ -1385,6 +1411,7 @@ function renderObra(app){
       <div class="cat-lbl">Não conformidades</div>
     </div>
   </div>`;
+  main.insertBefore(capaObra(obra), main.firstChild);
 
   if(nc>0) main.appendChild(graficoRankingFvsNC(obra));
 
@@ -1416,7 +1443,10 @@ function renderObra(app){
   main.appendChild(itemForn);
 
   if(!obra.pavimentos.length){
-    main.innerHTML += `<div class="empty">Nenhum pavimento cadastrado.<br>Toque em "+" para adicionar (ex: Térreo, 1º Andar).</div>`;
+    const vazio = document.createElement("div");
+    vazio.className = "empty";
+    vazio.innerHTML = `Nenhum pavimento cadastrado.<br>Toque em "+" para adicionar (ex: Térreo, 1º Andar).`;
+    main.appendChild(vazio);
   } else {
     if(obra.pavimentos.length > 1){
       const btnReordenar = document.createElement("button");
