@@ -161,7 +161,7 @@
   .rel-header{border-bottom:2px solid #222;padding-bottom:10px;margin-bottom:16px;}
   .rel-header h1{font-size:20px;margin:0 0 4px 0;}
   .rel-header .meta{font-size:12px;color:#444;}
-  .rel-fvs-bloco{margin-bottom:22px;page-break-inside:avoid;}
+  .rel-fvs-bloco{margin-bottom:14px;}
   .rel-fvs-bloco h2{font-size:15px;background:#eee;padding:6px 10px;margin:0 0 8px 0;border-radius:4px;}
   .rel-normas{font-size:11px;color:#444;margin-bottom:8px;}
   .rel-item{border:1px solid #ccc;border-radius:6px;padding:8px 10px;margin-bottom:6px;font-size:12.5px;page-break-inside:avoid;}
@@ -172,7 +172,9 @@
   .rel-item .rel-status.pend{background:#fef3e2;color:#b45309;}
   .rel-item .rel-status.parcial{background:#e0f4f8;color:#0891b2;}
   .rel-item .rel-obs{color:#444;margin-top:4px;}
-  .rel-item .rel-foto{max-width:160px;max-height:160px;display:block;margin-top:6px;border:1px solid #ccc;}
+  .rel-fotos{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
+  .rel-item .rel-foto{width:auto;height:150px;max-width:100%;object-fit:cover;border:1px solid #ccc;}
+  .rel-fotos .rel-foto{flex:0 1 auto;}
   .rel-elemento-titulo{font-size:16px;margin:0 0 12px 0;padding-bottom:6px;border-bottom:1px solid #999;page-break-before:always;}
   .rel-elemento-titulo:first-of-type{page-break-before:avoid;}
   .rel-table{width:100%;border-collapse:collapse;font-size:12.5px;margin-bottom:16px;}
@@ -3410,6 +3412,11 @@ function dataHoraAtual(){
   return new Date().toLocaleString("pt-BR");
 }
 
+function fotosHtmlRelatorio(refs){
+  if(!refs.length) return "";
+  return `<div class="rel-fotos">${refs.map(src=>imgHtml(src,"rel-foto","")).join("")}</div>`;
+}
+
 async function imprimirRelatorio(html){
   const area = document.getElementById("print-area");
   area.innerHTML = html;
@@ -3434,7 +3441,7 @@ function exportarRelatorioAmbiente(obra, pav, amb, unid, cat){
         ${idx+1}. ${escapeHtml(item.texto)}
         <span class="rel-status ${st}">${STATUS_LABEL[st]}</span>
         ${item.obs? `<div class="rel-obs"><b>Obs.:</b> ${escapeHtml(item.obs)}</div>` : ""}
-        ${fotosDoItem(item).map(src=>imgHtml(src,"rel-foto","")).join("")}
+        ${fotosHtmlRelatorio(fotosDoItem(item))}
       </div>`;
     });
     html += `</div>`;
@@ -3533,7 +3540,7 @@ function exportarRelatorioCategoriaEstrutura(obra, pav, cat){
           ${idx+1}. ${escapeHtml(item.texto)}
           <span class="rel-status ${st}">${STATUS_LABEL[st]}</span>
           ${item.obs? `<div class="rel-obs"><b>Obs.:</b> ${escapeHtml(item.obs)}</div>` : ""}
-          ${fotosDoItem(item).map(src=>imgHtml(src,"rel-foto","")).join("")}
+          ${fotosHtmlRelatorio(fotosDoItem(item))}
         </div>`;
       });
       html += `</div>`;
@@ -3625,7 +3632,7 @@ function exportarRelatorioFornecedor(obra, forn, itensNC){
       <span class="rel-status ${t.item.status}">${STATUS_LABEL[t.item.status]}</span><br>
       ${t.idx+1}. ${escapeHtml(t.item.texto)}
       ${t.item.obs? `<div class="rel-obs"><b>Obs.:</b> ${escapeHtml(t.item.obs)}</div>` : ""}
-      ${fotosDoItem(t.item).map(src=>imgHtml(src,"rel-foto","")).join("")}
+      ${fotosHtmlRelatorio(fotosDoItem(t.item))}
     </div>`;
   });
 
