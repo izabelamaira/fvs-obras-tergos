@@ -113,7 +113,11 @@
   .reorder-btn:disabled{opacity:.3;cursor:default;}
   .item-extra{margin-top:8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
   .item-extra textarea{min-height:36px;font-size:13px;}
-  .photo-thumb{width:52px;height:52px;border-radius:6px;object-fit:cover;border:1px solid var(--border);}
+  .photo-thumb{width:52px;height:52px;border-radius:6px;object-fit:cover;border:1px solid var(--border);cursor:pointer;}
+  .fotos-strip{display:flex;gap:6px;align-items:center;flex-wrap:wrap;width:100%;}
+  .fotos-count{font-size:12px;font-weight:700;}
+  .fotos-count.ok{color:var(--ok);}
+  .fotos-count.falta{color:var(--nc);}
   .photo-btn{width:52px;height:52px;border-radius:6px;border:1px dashed var(--border);background:none;color:var(--muted);font-size:20px;cursor:pointer;flex-shrink:0;}
   .doc-btn{padding:8px 10px;border-radius:8px;border:1px dashed var(--border);background:none;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;flex-shrink:0;}
   .doc-list{display:flex;gap:6px;flex-wrap:wrap;width:100%;}
@@ -443,6 +447,13 @@ function fornecedoresDaObra(obra){
 function getFornecedor(obra, id){ return fornecedoresDaObra(obra).find(f=>f.id===id); }
 
 function statusDeItem(item){ return item.status || "pend"; }
+
+const MIN_FOTOS_VERIFICACAO = 3;
+function fotosDoItem(item){
+  if(!item.fotos) item.fotos = item.foto ? [item.foto] : [];
+  delete item.foto;
+  return item.fotos;
+}
 
 function subChecksDoItem(codigo, rev, textoItem){
   const grupo = window.FVS_SUBCHECKS && window.FVS_SUBCHECKS[codigo+"|"+rev];
@@ -2435,8 +2446,11 @@ function abrirChecklist(obra,pav,amb,fvsInst){
         ${subChecksHtml}
         <div class="item-extra">
           ${temSub? `<button class="na-btn ${item.status==='na'?'active':''}" data-act="na">${item.status==='na'?'✓ N/A':'Marcar como N/A'}</button>` : ""}
-          <button class="photo-btn" data-act="foto">${icon('camera')}</button>
-          ${item.foto? `<img class="photo-thumb" src="${item.foto}">` : ""}
+          <div class="fotos-strip">
+            <button class="photo-btn" data-act="foto">${icon('camera')}</button>
+            ${fotosDoItem(item).map((src,fi)=>`<img class="photo-thumb" data-foto-idx="${fi}" src="${src}" title="Toque para remover">`).join("")}
+            <span class="fotos-count ${fotosDoItem(item).length>=MIN_FOTOS_VERIFICACAO?'ok':'falta'}">${fotosDoItem(item).length}/${MIN_FOTOS_VERIFICACAO} fotos${fotosDoItem(item).length<MIN_FOTOS_VERIFICACAO?` · faltam ${MIN_FOTOS_VERIFICACAO-fotosDoItem(item).length}`:' ✓'}</span>
+          </div>
           ${mostrarAnexoDocumento? `<button class="doc-btn" data-act="doc">${icon('document')} Anexar PDF/XML</button>` : ""}
           <textarea placeholder="Observação (opcional)">${escapeHtml(item.obs||"")}</textarea>
           ${mostrarAnexoDocumento? `<div class="doc-list">${item.documentos.map((d,di)=>`
@@ -2500,24 +2514,40 @@ function abrirChecklist(obra,pav,amb,fvsInst){
       };
 
       const fotoBtn = box.querySelector('[data-act="foto"]');
+      function atualizarFotosItem(){
+        const fotos = fotosDoItem(item);
+        const strip = box.querySelector(".fotos-strip");
+        strip.querySelectorAll(".photo-thumb").forEach(t=>t.remove());
+        const contador = strip.querySelector(".fotos-count");
+        fotos.forEach((src,fi)=>{
+          const t = document.createElement("img");
+          t.className = "photo-thumb"; t.src = src; t.title = "Toque para remover";
+          t.onclick = ()=>{
+            if(!confirm("Remover esta foto?")) return;
+            item.fotos.splice(fi,1);
+            dirty = true;
+            atualizarFotosItem();
+            atualizarBotaoSalvar();
+          };
+          strip.insertBefore(t, contador);
+        });
+        const n = fotos.length;
+        contador.className = "fotos-count " + (n>=MIN_FOTOS_VERIFICACAO ? "ok" : "falta");
+        contador.textContent = `${n}/${MIN_FOTOS_VERIFICACAO} fotos` + (n<MIN_FOTOS_VERIFICACAO ? ` · faltam ${MIN_FOTOS_VERIFICACAO-n}` : " ✓");
+      }
       fotoBtn.onclick=()=>{
         abrirSeletorArquivo("image/*", (file)=>{
           const reader = new FileReader();
           reader.onload=(e)=>{
-            item.foto = e.target.result;
+            fotosDoItem(item).push(e.target.result);
             dirty = true;
-            let thumb = box.querySelector(".photo-thumb");
-            if(!thumb){
-              thumb = document.createElement("img");
-              thumb.className = "photo-thumb";
-              fotoBtn.insertAdjacentElement("afterend", thumb);
-            }
-            thumb.src = item.foto;
+            atualizarFotosItem();
             atualizarBotaoSalvar();
           };
           reader.readAsDataURL(file);
-        }, "environment");
+        }, "environment", true);
       };
+      atualizarFotosItem();
 
       if(mostrarAnexoDocumento){
         const docBtn = box.querySelector('[data-act="doc"]');
@@ -3170,16 +3200,17 @@ function abrirRevisaoImportacao(obra, pav, unid, candidatosBrutos){
 // Abre o seletor de arquivo nativo. O <input> precisa estar anexado ao DOM antes do
 // .click() — em alguns Android/Chrome, principalmente com o app instalado (PWA em modo
 // standalone), um <input type=file> criado solto (sem appendChild) não abre o seletor.
-function abrirSeletorArquivo(accept, onSelecionar, capture){
+function abrirSeletorArquivo(accept, onSelecionar, capture, multiplo){
   const input = document.createElement("input");
   input.type = "file";
   if(accept) input.accept = accept;
   if(capture) input.capture = capture;
+  if(multiplo) input.multiple = true;
   input.style.cssText = "position:fixed;top:-1000px;left:-1000px;width:1px;height:1px;opacity:0;";
   input.onchange = ()=>{
-    const file = input.files[0];
+    const arquivos = Array.from(input.files || []);
     input.remove();
-    if(file) onSelecionar(file);
+    arquivos.forEach(f=>onSelecionar(f));
   };
   document.body.appendChild(input);
   input.click();
@@ -3265,7 +3296,7 @@ function exportarRelatorioAmbiente(obra, pav, amb, unid, cat){
         ${idx+1}. ${escapeHtml(item.texto)}
         <span class="rel-status ${st}">${STATUS_LABEL[st]}</span>
         ${item.obs? `<div class="rel-obs"><b>Obs.:</b> ${escapeHtml(item.obs)}</div>` : ""}
-        ${item.foto? `<img class="rel-foto" src="${item.foto}">` : ""}
+        ${fotosDoItem(item).map(src=>`<img class="rel-foto" src="${src}">`).join("")}
       </div>`;
     });
     html += `</div>`;
@@ -3364,7 +3395,7 @@ function exportarRelatorioCategoriaEstrutura(obra, pav, cat){
           ${idx+1}. ${escapeHtml(item.texto)}
           <span class="rel-status ${st}">${STATUS_LABEL[st]}</span>
           ${item.obs? `<div class="rel-obs"><b>Obs.:</b> ${escapeHtml(item.obs)}</div>` : ""}
-          ${item.foto? `<img class="rel-foto" src="${item.foto}">` : ""}
+          ${fotosDoItem(item).map(src=>`<img class="rel-foto" src="${src}">`).join("")}
         </div>`;
       });
       html += `</div>`;
@@ -3456,7 +3487,7 @@ function exportarRelatorioFornecedor(obra, forn, itensNC){
       <span class="rel-status ${t.item.status}">${STATUS_LABEL[t.item.status]}</span><br>
       ${t.idx+1}. ${escapeHtml(t.item.texto)}
       ${t.item.obs? `<div class="rel-obs"><b>Obs.:</b> ${escapeHtml(t.item.obs)}</div>` : ""}
-      ${t.item.foto? `<img class="rel-foto" src="${t.item.foto}">` : ""}
+      ${fotosDoItem(t.item).map(src=>`<img class="rel-foto" src="${src}">`).join("")}
     </div>`;
   });
 
