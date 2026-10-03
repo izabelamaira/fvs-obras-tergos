@@ -115,9 +115,7 @@
   .item-extra textarea{min-height:36px;font-size:13px;}
   .photo-thumb{width:52px;height:52px;border-radius:6px;object-fit:cover;border:1px solid var(--border);cursor:pointer;}
   .fotos-strip{display:flex;gap:6px;align-items:center;flex-wrap:wrap;width:100%;}
-  .fotos-count{font-size:12px;font-weight:700;}
-  .fotos-count.ok{color:var(--ok);}
-  .fotos-count.falta{color:var(--nc);}
+  .fotos-count{font-size:12px;font-weight:700;color:var(--muted);}
   .photo-btn{width:52px;height:52px;border-radius:6px;border:1px dashed var(--border);background:none;color:var(--muted);font-size:20px;cursor:pointer;flex-shrink:0;}
   .doc-btn{padding:8px 10px;border-radius:8px;border:1px dashed var(--border);background:none;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;flex-shrink:0;}
   .doc-list{display:flex;gap:6px;flex-wrap:wrap;width:100%;}
@@ -448,7 +446,7 @@ function getFornecedor(obra, id){ return fornecedoresDaObra(obra).find(f=>f.id==
 
 function statusDeItem(item){ return item.status || "pend"; }
 
-const MIN_FOTOS_VERIFICACAO = 3;
+const MAX_FOTOS_VERIFICACAO = 5;
 function fotosDoItem(item){
   if(!item.fotos) item.fotos = item.foto ? [item.foto] : [];
   delete item.foto;
@@ -2449,7 +2447,7 @@ function abrirChecklist(obra,pav,amb,fvsInst){
           <div class="fotos-strip">
             <button class="photo-btn" data-act="foto">${icon('camera')}</button>
             ${fotosDoItem(item).map((src,fi)=>`<img class="photo-thumb" data-foto-idx="${fi}" src="${src}" title="Toque para remover">`).join("")}
-            <span class="fotos-count ${fotosDoItem(item).length>=MIN_FOTOS_VERIFICACAO?'ok':'falta'}">${fotosDoItem(item).length}/${MIN_FOTOS_VERIFICACAO} fotos${fotosDoItem(item).length<MIN_FOTOS_VERIFICACAO?` · faltam ${MIN_FOTOS_VERIFICACAO-fotosDoItem(item).length}`:' ✓'}</span>
+            <span class="fotos-count">${fotosDoItem(item).length}/${MAX_FOTOS_VERIFICACAO} fotos</span>
           </div>
           ${mostrarAnexoDocumento? `<button class="doc-btn" data-act="doc">${icon('document')} Anexar PDF/XML</button>` : ""}
           <textarea placeholder="Observação (opcional)">${escapeHtml(item.obs||"")}</textarea>
@@ -2531,12 +2529,16 @@ function abrirChecklist(obra,pav,amb,fvsInst){
           };
           strip.insertBefore(t, contador);
         });
-        const n = fotos.length;
-        contador.className = "fotos-count " + (n>=MIN_FOTOS_VERIFICACAO ? "ok" : "falta");
-        contador.textContent = `${n}/${MIN_FOTOS_VERIFICACAO} fotos` + (n<MIN_FOTOS_VERIFICACAO ? ` · faltam ${MIN_FOTOS_VERIFICACAO-n}` : " ✓");
+        contador.textContent = `${fotos.length}/${MAX_FOTOS_VERIFICACAO} fotos`;
       }
       fotoBtn.onclick=()=>{
+        if(fotosDoItem(item).length >= MAX_FOTOS_VERIFICACAO){
+          return alert(`Limite de ${MAX_FOTOS_VERIFICACAO} fotos por verificação atingido. Remova uma foto para adicionar outra.`);
+        }
+        let vagasReservadas = fotosDoItem(item).length;
         abrirSeletorArquivo("image/*", (file)=>{
+          if(vagasReservadas >= MAX_FOTOS_VERIFICACAO) return;
+          vagasReservadas++;
           const reader = new FileReader();
           reader.onload=(e)=>{
             fotosDoItem(item).push(e.target.result);
