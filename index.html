@@ -172,6 +172,8 @@
   .rel-item .rel-status.pend{background:#fef3e2;color:#b45309;}
   .rel-item .rel-status.parcial{background:#e0f4f8;color:#0891b2;}
   .rel-item .rel-obs{color:#444;margin-top:4px;}
+  .rel-subitens{list-style:none;margin:6px 0 0 4px;padding:0;font-size:11.5px;}
+  .rel-subitens li{margin-bottom:3px;}
   .rel-fotos{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
   .rel-item .rel-foto{width:auto;height:150px;max-width:100%;object-fit:cover;border:1px solid #ccc;}
   .rel-fotos .rel-foto{flex:0 1 auto;}
@@ -3412,6 +3414,14 @@ function dataHoraAtual(){
   return new Date().toLocaleString("pt-BR");
 }
 
+function subitensHtmlRelatorio(item){
+  if(!item.subitens || !item.subitens.length) return "";
+  return `<ul class="rel-subitens">${item.subitens.map(sub=>{
+    const st = sub.status || (sub.feito ? "ok" : "pend");
+    return `<li><span class="rel-status ${st}">${STATUS_LABEL[st]}</span> ${escapeHtml(sub.texto)}</li>`;
+  }).join("")}</ul>`;
+}
+
 function fotosHtmlRelatorio(refs){
   if(!refs.length) return "";
   return `<div class="rel-fotos">${refs.map(src=>imgHtml(src,"rel-foto","")).join("")}</div>`;
@@ -3440,6 +3450,7 @@ function exportarRelatorioAmbiente(obra, pav, amb, unid, cat){
       html += `<div class="rel-item">
         ${idx+1}. ${escapeHtml(item.texto)}
         <span class="rel-status ${st}">${STATUS_LABEL[st]}</span>
+        ${subitensHtmlRelatorio(item)}
         ${item.obs? `<div class="rel-obs"><b>Obs.:</b> ${escapeHtml(item.obs)}</div>` : ""}
         ${fotosHtmlRelatorio(fotosDoItem(item))}
       </div>`;
@@ -3539,6 +3550,7 @@ function exportarRelatorioCategoriaEstrutura(obra, pav, cat){
         html += `<div class="rel-item">
           ${idx+1}. ${escapeHtml(item.texto)}
           <span class="rel-status ${st}">${STATUS_LABEL[st]}</span>
+        ${subitensHtmlRelatorio(item)}
           ${item.obs? `<div class="rel-obs"><b>Obs.:</b> ${escapeHtml(item.obs)}</div>` : ""}
           ${fotosHtmlRelatorio(fotosDoItem(item))}
         </div>`;
