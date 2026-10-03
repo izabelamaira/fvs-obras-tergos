@@ -417,7 +417,7 @@ async function resolverRefParaDataUrl(ref){
 // critério de verificação mudou). Precisa vir ANTES da chamada a sincronizarItensCatalogoFvs()
 // logo abaixo — sendo const, não é hoisted como as functions, e a chamada é feita cedo.
 const RENOMEACOES_ITENS_FVS = {
-  "FVS-33|00": {
+  "FVS-34|00": {
     "Planeza e nivelamento do contrapiso antes do assentamento":
       "Base nivelada, limpa e curada (mínimo de 14 dias para contrapiso e emboço) antes do assentamento",
     "Tempo em aberto da argamassa colante respeitado":
@@ -425,7 +425,7 @@ const RENOMEACOES_ITENS_FVS = {
     "Dupla colagem aplicada em porcelanatos de grande formato":
       "Dupla colagem aplicada em porcelanatos de grande formato, com argamassa espalhada também no verso da peça"
   },
-  "FVS-10|00": {
+  "FVS-11|00": {
     "Escoramento dimensionado e travado conforme carga prevista":
       "Escoramento dimensionado e travado conforme o projeto específico do pavimento/peça — nunca em quantidade menor que a indicada em projeto"
   },
@@ -474,43 +474,44 @@ const TROCAS_CODIGO_FVS = [
   { nome:"Tubulão (fuste mecanizado, base manual)", novoCodigo:"FVS-05" },
   { nome:"Fundações Rasas - Blocos e Cintas", novoCodigo:"FVS-06" },
   { nome:"Tubulação a céu aberto", novoCodigo:"FVS-07" },
-  { nome:"Laje de Piso (piso de concreto sobre solo)", novoCodigo:"FVS-08" },
-  { nome:"Montagem de Armadura", novoCodigo:"FVS-09" },
-  { nome:"Montagem de forma e desforma", novoCodigo:"FVS-10" },
-  { nome:"Concretagem de Peças Estruturais", novoCodigo:"FVS-11" },
-  { nome:"Instalações Elétricas", novoCodigo:"FVS-12" },
-  { nome:"Instalação Hidráulica", novoCodigo:"FVS-13" },
-  { nome:"Infra. Para Ar Condicionado", novoCodigo:"FVS-14" },
-  { nome:"Instalação de Gás", novoCodigo:"FVS-15" },
-  { nome:"Alvenaria Estrutural", novoCodigo:"FVS-16" },
-  { nome:"Alvenaria de Vedação", novoCodigo:"FVS-17" },
-  { nome:"Impermeabilização com Manta Asfáltica", novoCodigo:"FVS-18" },
-  { nome:"Impermeabilização com Argamassa Polimérica", novoCodigo:"FVS-19" },
-  { nome:"Colocação de Contramarco", novoCodigo:"FVS-20" },
-  { nome:"Reboco Interno", novoCodigo:"FVS-21" },
-  { nome:"Reboco Externo", novoCodigo:"FVS-22" },
-  { nome:"Fachada Aerada", novoCodigo:"FVS-23" },
-  { nome:"Rufos", novoCodigo:"FVS-24" },
-  { nome:"Assentamento de Peitoris e Soleiras", novoCodigo:"FVS-25" },
-  { nome:"Contrapiso", novoCodigo:"FVS-26" },
-  { nome:"Revestimento Interno em Gesso", novoCodigo:"FVS-27" },
-  { nome:"Forro de Gesso Acartonado", novoCodigo:"FVS-28" },
-  { nome:"Forro de Gesso em Placas", novoCodigo:"FVS-29" },
-  { nome:"Shaft Drywall", novoCodigo:"FVS-30" },
-  { nome:"Divisórias e Portas de Vidro", novoCodigo:"FVS-31" },
-  { nome:"Pintura e Textura", novoCodigo:"FVS-32" },
-  { nome:"Execução de Revestimento de Piso Interno: Cerâmica e Porcelanato", novoCodigo:"FVS-33" },
-  { nome:"Rejuntamento", novoCodigo:"FVS-34" },
-  { nome:"Piso vinílico", novoCodigo:"FVS-35" },
-  { nome:"Instalação de Rodapés", novoCodigo:"FVS-36" },
-  { nome:"Esquadria de Madeira", novoCodigo:"FVS-37" },
-  { nome:"Execução de Instalação de Esquadria de Alumínio", novoCodigo:"FVS-38" },
-  { nome:"Colocação de Guarda Corpo e Corrimão", novoCodigo:"FVS-39" },
-  { nome:"Colocação de Bancadas", novoCodigo:"FVS-40" },
-  { nome:"Nicho", novoCodigo:"FVS-41" },
-  { nome:"Instalação de Louças e Metais", novoCodigo:"FVS-42" },
-  { nome:"Instalação de Torneiras", novoCodigo:"FVS-43" },
-  { nome:"Exaustões Mecânicas", novoCodigo:"FVS-44" }
+  { nome:"Colarinho e Arranque de Pilares", novoCodigo:"FVS-08" },
+  { nome:"Laje de Piso (piso de concreto sobre solo)", novoCodigo:"FVS-09" },
+  { nome:"Montagem de Armadura", novoCodigo:"FVS-10" },
+  { nome:"Montagem de forma e desforma", novoCodigo:"FVS-11" },
+  { nome:"Concretagem de Peças Estruturais", novoCodigo:"FVS-12" },
+  { nome:"Instalações Elétricas", novoCodigo:"FVS-13" },
+  { nome:"Instalação Hidráulica", novoCodigo:"FVS-14" },
+  { nome:"Infra. Para Ar Condicionado", novoCodigo:"FVS-15" },
+  { nome:"Instalação de Gás", novoCodigo:"FVS-16" },
+  { nome:"Alvenaria Estrutural", novoCodigo:"FVS-17" },
+  { nome:"Alvenaria de Vedação", novoCodigo:"FVS-18" },
+  { nome:"Impermeabilização com Manta Asfáltica", novoCodigo:"FVS-19" },
+  { nome:"Impermeabilização com Argamassa Polimérica", novoCodigo:"FVS-20" },
+  { nome:"Colocação de Contramarco", novoCodigo:"FVS-21" },
+  { nome:"Reboco Interno", novoCodigo:"FVS-22" },
+  { nome:"Reboco Externo", novoCodigo:"FVS-23" },
+  { nome:"Fachada Aerada", novoCodigo:"FVS-24" },
+  { nome:"Rufos", novoCodigo:"FVS-25" },
+  { nome:"Assentamento de Peitoris e Soleiras", novoCodigo:"FVS-26" },
+  { nome:"Contrapiso", novoCodigo:"FVS-27" },
+  { nome:"Revestimento Interno em Gesso", novoCodigo:"FVS-28" },
+  { nome:"Forro de Gesso Acartonado", novoCodigo:"FVS-29" },
+  { nome:"Forro de Gesso em Placas", novoCodigo:"FVS-30" },
+  { nome:"Shaft Drywall", novoCodigo:"FVS-31" },
+  { nome:"Divisórias e Portas de Vidro", novoCodigo:"FVS-32" },
+  { nome:"Pintura e Textura", novoCodigo:"FVS-33" },
+  { nome:"Execução de Revestimento de Piso Interno: Cerâmica e Porcelanato", novoCodigo:"FVS-34" },
+  { nome:"Rejuntamento", novoCodigo:"FVS-35" },
+  { nome:"Piso vinílico", novoCodigo:"FVS-36" },
+  { nome:"Instalação de Rodapés", novoCodigo:"FVS-37" },
+  { nome:"Esquadria de Madeira", novoCodigo:"FVS-38" },
+  { nome:"Execução de Instalação de Esquadria de Alumínio", novoCodigo:"FVS-39" },
+  { nome:"Colocação de Guarda Corpo e Corrimão", novoCodigo:"FVS-40" },
+  { nome:"Colocação de Bancadas", novoCodigo:"FVS-41" },
+  { nome:"Nicho", novoCodigo:"FVS-42" },
+  { nome:"Instalação de Louças e Metais", novoCodigo:"FVS-43" },
+  { nome:"Instalação de Torneiras", novoCodigo:"FVS-44" },
+  { nome:"Exaustões Mecânicas", novoCodigo:"FVS-45" }
 ];
 function migrarCodigosFvsTrocados(){
   let mudou = false;
@@ -841,7 +842,7 @@ async function limparIfcBytes(obraId){
 // item.documentos; o conteúdo em si fica no IndexedDB, indexado pelo id do documento.
 const DOCS_DB_NAME = "qualitab_obra_docs";
 const DOCS_DB_STORE = "arquivos";
-const FVS_COM_ANEXO_DOCUMENTO = ["FVS-04","FVS-05","FVS-11"]; // Estacas Hélice Contínua, Tubulão, Concretagem de Peças Estruturais
+const FVS_COM_ANEXO_DOCUMENTO = ["FVS-04","FVS-05","FVS-12"]; // Estacas Hélice Contínua, Tubulão, Concretagem de Peças Estruturais
 function abrirDocsDB(){
   return new Promise((resolve, reject)=>{
     const req = indexedDB.open(DOCS_DB_NAME, 1);
@@ -2874,14 +2875,14 @@ async function extrairTextosDeDxf(file, statusEl){
 
 // Sugestão de FVS por tipo de ambiente (casamento por palavra-chave no nome)
 const SUGESTOES_FVS_POR_AMBIENTE = [
-  { palavras:["banheiro","lavabo","wc"], codigos:["FVS-19","FVS-23","FVS-41","FVS-42","FVS-10"] },
-  { palavras:["cozinha"], codigos:["FVS-19","FVS-23","FVS-37","FVS-41","FVS-10"] },
-  { palavras:["fachada"], codigos:["FVS-18","FVS-28"] },
-  { palavras:["sala","quarto","dormitorio","suite","escritorio"], codigos:["FVS-21","FVS-22","FVS-40"] },
-  { palavras:["varanda","sacada","terraco"], codigos:["FVS-18","FVS-19"] },
-  { palavras:["area de servico","lavanderia"], codigos:["FVS-19","FVS-23","FVS-10"] },
-  { palavras:["hall","corredor","circulacao"], codigos:["FVS-21","FVS-22"] },
-  { palavras:["garagem","estacionamento"], codigos:["FVS-22"] },
+  { palavras:["banheiro","lavabo","wc"], codigos:["FVS-20","FVS-24","FVS-42","FVS-43","FVS-11"] },
+  { palavras:["cozinha"], codigos:["FVS-20","FVS-24","FVS-38","FVS-42","FVS-11"] },
+  { palavras:["fachada"], codigos:["FVS-19","FVS-29"] },
+  { palavras:["sala","quarto","dormitorio","suite","escritorio"], codigos:["FVS-22","FVS-23","FVS-41"] },
+  { palavras:["varanda","sacada","terraco"], codigos:["FVS-19","FVS-20"] },
+  { palavras:["area de servico","lavanderia"], codigos:["FVS-20","FVS-24","FVS-11"] },
+  { palavras:["hall","corredor","circulacao"], codigos:["FVS-22","FVS-23"] },
+  { palavras:["garagem","estacionamento"], codigos:["FVS-23"] },
 ];
 
 function normalizarTexto(t){

@@ -131,7 +131,19 @@ const FVS_CATALOGO = [
       "Diâmetros e materiais conforme projeto hidrossanitário"
     ]
   },
-  { codigo:"FVS-08", nome:"Laje de Piso (piso de concreto sobre solo)", rev:"00",
+  { codigo:"FVS-08", nome:"Colarinho e Arranque de Pilares", rev:"00",
+    normas:["NBR 6118:2023 - Projeto de estruturas de concreto - Procedimento","NBR 14931:2004 - Execução de estruturas de concreto - Procedimento"],
+    itens:[
+      "Posicionamento e prumo dos arranques (barras de espera) conforme projeto estrutural",
+      "Comprimento de transpasse/emenda dos arranques conforme detalhamento do projeto",
+      "Cobrimento mínimo da armadura do colarinho garantido com espaçadores",
+      "Nível do topo do colarinho conferido conforme projeto",
+      "Dimensões da seção do colarinho conferidas com o projeto de fôrmas",
+      "Ausência de corrosão, óleo ou desmoldante nas barras de arranque antes da concretagem",
+      "Arranques expostos protegidos contra danos e deformações até a concretagem do lance seguinte"
+    ]
+  },
+  { codigo:"FVS-09", nome:"Laje de Piso (piso de concreto sobre solo)", rev:"00",
     normas:["NBR 6118:2023 - Projeto de estruturas de concreto - Procedimento","NBR 14931:2023 - Execução de estruturas de concreto - Procedimento","PES 6 - Lajes de Piso (procedimento interno TERGOS) — itens não sourceados em norma ABNT específica de piso sobre solo, seguem integralmente o procedimento interno"],
     itens:[
       "Terreno limpo e escavado, com fundações rasas e arranques dos pilares do próximo nível já executados, antes do início",
@@ -148,7 +160,7 @@ const FVS_CATALOGO = [
       "Juntas serradas do piso executadas conforme projeto específico, após a cura do concreto"
     ]
   },
-  { codigo:"FVS-09", nome:"Montagem de Armadura", rev:"00",
+  { codigo:"FVS-10", nome:"Montagem de Armadura", rev:"00",
     normas:["NBR 7480:2022 - Aço destinado a armaduras para estruturas de concreto armado - Requisitos","NBR 6118:2023 - Projeto de estruturas de concreto - Procedimento"],
     itens:[
       "Bitola, quantidade e posicionamento das barras conforme projeto estrutural",
@@ -160,7 +172,7 @@ const FVS_CATALOGO = [
       "Embutidos e passagens (elétrica/hidráulica) sem interferência na armadura"
     ]
   },
-  { codigo:"FVS-10", nome:"Montagem de forma e desforma", rev:"00",
+  { codigo:"FVS-11", nome:"Montagem de forma e desforma", rev:"00",
     normas:["NBR 15696:2009 - Fôrmas e escoramentos para estruturas de concreto - Projeto, dimensionamento e procedimentos executivos","NBR 6118:2023 - Projeto de estruturas de concreto - Procedimento","PES 6 - Estrutura em Concreto Armado (procedimento interno TERGOS)","FVS 6 - Estrutura em Concreto Armado - Fôrmas (planilha real da TERGOS, 2023) — fonte dos itens revisados/adicionados a partir dela"],
     itens:[
       "Projetos necessários disponíveis e funcionários, equipamentos e centrais de trabalho liberados pela segurança do trabalho, antes do início da montagem",
@@ -180,7 +192,7 @@ const FVS_CATALOGO = [
       "Superfície do concreto após desforma sem falhas de concretagem (bicheiras/ninhos)"
     ]
   },
-  { codigo:"FVS-11", nome:"Concretagem de Peças Estruturais", rev:"00",
+  { codigo:"FVS-12", nome:"Concretagem de Peças Estruturais", rev:"00",
     normas:["NBR 6118:2023 - Projeto de estruturas de concreto - Procedimento","NBR 12655:2022 - Concreto de cimento Portland - Preparo, controle, recebimento e aceitação - Procedimento","NBR 5738:2015 - Concreto - Procedimento para moldagem e cura de corpos de prova","NBR 5739:2018 - Concreto - Ensaio de compressão de corpos de prova cilíndricos"],
     itens:[
       "Nota fiscal/ficha de concreto conferida com especificação de projeto (fck, slump, brita)",
@@ -193,7 +205,7 @@ const FVS_CATALOGO = [
       "Temperatura e condições climáticas de concretagem controladas"
     ]
   },
-  { codigo:"FVS-12", nome:"Instalações Elétricas", rev:"00",
+  { codigo:"FVS-13", nome:"Instalações Elétricas", rev:"00",
     normas:["NBR 5410:2004 - Instalações elétricas de baixa tensão"],
     itens:[
       "Dimensionamento de condutores conforme carga e queda de tensão de projeto",
@@ -205,7 +217,7 @@ const FVS_CATALOGO = [
       "Quadro de distribuição identificado e com diagrama unifilar disponível"
     ]
   },
-  { codigo:"FVS-13", nome:"Instalação Hidráulica", rev:"00",
+  { codigo:"FVS-14", nome:"Instalação Hidráulica", rev:"00",
     normas:["NBR 5626:2020 - Sistemas prediais de água fria e água quente - Projeto, execução, ensaios e manutenção","NBR 8160:1999 - Sistemas prediais de esgoto sanitário - Projeto e execução"],
     itens:[
       "Diâmetros e materiais das tubulações conforme projeto hidrossanitário",
@@ -217,7 +229,7 @@ const FVS_CATALOGO = [
       "Isolamento térmico da tubulação de água quente conforme especificação"
     ]
   },
-  { codigo:"FVS-14", nome:"Infra. Para Ar Condicionado", rev:"00",
+  { codigo:"FVS-15", nome:"Infra. Para Ar Condicionado", rev:"00",
     normas:["NBR 16401-1:2024 - Instalações de ar-condicionado - Sistemas centrais e unitários - Parte 1: Projetos das instalações","NBR 16401-3:2008 - Parte 3: Qualidade do ar interior","NBR 7541:2015 - Tubos de cobre sem costura para ar-condicionado e refrigeração"],
     itens:[
       "Dimensionamento de dutos conforme carga térmica e projeto",
@@ -228,7 +240,7 @@ const FVS_CATALOGO = [
       "Base/suporte das unidades condensadoras dimensionado e nivelado"
     ]
   },
-  { codigo:"FVS-15", nome:"Instalação de Gás", rev:"00",
+  { codigo:"FVS-16", nome:"Instalação de Gás", rev:"00",
     normas:["NBR 15526:2016 - Redes de distribuição interna para gases combustíveis em instalações residenciais e comerciais - Projeto e execução","NBR 13103 - Aparelhos a gás para uso residencial - Instalação (verificar edição vigente)"],
     itens:[
       "Traçado e diâmetro da tubulação conforme projeto e memorial de cálculo",
@@ -239,7 +251,7 @@ const FVS_CATALOGO = [
       "Documentação técnica (ART/memorial) disponível para liberação"
     ]
   },
-  { codigo:"FVS-16", nome:"Alvenaria Estrutural", rev:"00",
+  { codigo:"FVS-17", nome:"Alvenaria Estrutural", rev:"00",
     normas:["NBR 16868-1:2020 - Alvenaria estrutural - Parte 1: Projeto","NBR 16868-2:2020 - Parte 2: Execução e controle de obras","NBR 16868-3:2020 - Parte 3: Métodos de ensaio"],
     itens:[
       "Bloco estrutural conforme especificação de resistência e classe de projeto",
@@ -251,7 +263,7 @@ const FVS_CATALOGO = [
       "Vergas, contravergas e reforços em aberturas conforme projeto"
     ]
   },
-  { codigo:"FVS-17", nome:"Alvenaria de Vedação", rev:"00",
+  { codigo:"FVS-18", nome:"Alvenaria de Vedação", rev:"00",
     normas:["NBR 15270-1:2017 - Componentes cerâmicos - Blocos e tijolos para alvenaria - Parte 1: Requisitos (verificar edição vigente)","NBR 15575-4:2021 - Edificações habitacionais - Desempenho - Parte 4: Sistemas de vedações verticais internas e externas (norma de execução NBR 8545 está cancelada, sem substituta direta confirmada)","5. Alvenarias de Vedação (procedimento interno TERGOS) — itens não sourceados em norma ABNT específica, seguem o procedimento interno"],
     itens:[
       "Bloco/tijolo cerâmico conforme especificação dimensional e resistência",
@@ -276,7 +288,7 @@ const FVS_CATALOGO = [
       "Cortes para fixação de tubulações e caixas de instalações executados somente após o encunhamento finalizado, sem quebrar os cantos dos vãos durante o transporte de materiais"
     ]
   },
-  { codigo:"FVS-18", nome:"Impermeabilização com Manta Asfáltica", rev:"00",
+  { codigo:"FVS-19", nome:"Impermeabilização com Manta Asfáltica", rev:"00",
     normas:["NBR 9575:2010 - Impermeabilização - Seleção e projeto","NBR 9574:2008 - Execução de impermeabilização","NBR 13707:2018 - Manta asfáltica para impermeabilização - Requisitos (verificar edição vigente)"],
     itens:[
       "Substrato regularizado, seco e sem fissuras antes da aplicação",
@@ -288,7 +300,7 @@ const FVS_CATALOGO = [
       "Ralos e caimentos finais conferidos após a impermeabilização"
     ]
   },
-  { codigo:"FVS-19", nome:"Impermeabilização com Argamassa Polimérica", rev:"00",
+  { codigo:"FVS-20", nome:"Impermeabilização com Argamassa Polimérica", rev:"00",
     normas:["NBR 9575:2010 - Impermeabilização - Seleção e projeto","NBR 9574:2008 - Execução de impermeabilização","NBR 11905:2015 - Argamassa polimérica industrializada para impermeabilização - Requisitos"],
     itens:[
       "Substrato preparado, regularizado e curado antes da aplicação",
@@ -300,7 +312,7 @@ const FVS_CATALOGO = [
       "Camada de proteção mecânica aplicada sem danificar a impermeabilização"
     ]
   },
-  { codigo:"FVS-20", nome:"Colocação de Contramarco", rev:"00",
+  { codigo:"FVS-21", nome:"Colocação de Contramarco", rev:"00",
     normas:["NBR 10821-4:2017 - Esquadrias para edificações - Parte 4: Requisitos de desempenho adicionais e instalação (referência de instalação; não há norma específica exclusiva para contramarco confirmada)"],
     itens:[
       "Prumo, nível e esquadro do contramarco conferidos antes da fixação",
@@ -309,7 +321,7 @@ const FVS_CATALOGO = [
       "Dimensões internas do contramarco compatíveis com a esquadria a instalar"
     ]
   },
-  { codigo:"FVS-21", nome:"Reboco Interno", rev:"00",
+  { codigo:"FVS-22", nome:"Reboco Interno", rev:"00",
     normas:["NBR 13749:2013 - Revestimento de paredes e tetos de argamassas inorgânicas - Especificação","NBR 7200:1998 - Execução de revestimento de paredes e tetos de argamassas inorgânicas - Procedimento"],
     itens:[
       "Chapisco aplicado como base de aderência antes do emboço",
@@ -320,7 +332,7 @@ const FVS_CATALOGO = [
       "Juntas de trabalho e encontros com outros materiais tratados"
     ]
   },
-  { codigo:"FVS-22", nome:"Reboco Externo", rev:"00",
+  { codigo:"FVS-23", nome:"Reboco Externo", rev:"00",
     normas:["NBR 13749:2013 - Revestimento de paredes e tetos de argamassas inorgânicas - Especificação","NBR 7200:1998 - Execução de revestimento de paredes e tetos de argamassas inorgânicas - Procedimento","NR-18 (item 18.15) - Trabalho em altura/proteção contra quedas","REVESTIMENTO EXTERNO - REBOCO (procedimento interno TERGOS) — itens não sourceados em norma ABNT específica seguem o procedimento interno"],
     itens:[
       "Todas as alvenarias concluídas e encunhadas (interna e externa), com contramarcos das janelas chumbados, antes do início",
@@ -345,7 +357,7 @@ const FVS_CATALOGO = [
       "Juntas de dilatação posicionadas na altura dos fundos das vigas, no encontro com as alvenarias, em todos os pavimentos — marcadas com mangueira de nível e abertas com frisador ou corte, conforme o estágio de cura"
     ]
   },
-  { codigo:"FVS-23", nome:"Fachada Aerada", rev:"00",
+  { codigo:"FVS-24", nome:"Fachada Aerada", rev:"00",
     normas:["Sem norma ABNT específica confirmada para fachada ventilada/aerada em geral — prática de mercado/fabricante do sistema (verificar antes de uso formal)","Correlato: NBR 15575-4:2021 - Desempenho de edificações habitacionais - Sistemas de vedações verticais"],
     itens:[
       "Estrutura de fixação (perfis/mísulas) nivelada e ancorada // verificar",
@@ -354,7 +366,7 @@ const FVS_CATALOGO = [
       "Estanqueidade e remates (encontros, cantos, platibandas) tratados // verificar"
     ]
   },
-  { codigo:"FVS-24", nome:"Rufos", rev:"00",
+  { codigo:"FVS-25", nome:"Rufos", rev:"00",
     normas:["NBR 16323:2014 - Telhas de aço - Requisitos e métodos de ensaio (correlato, componentes metálicos de cobertura)","RUFOS (procedimento interno TERGOS) — sem norma ABNT específica de execução de rufos identificada, segue o procedimento interno"],
     itens:[
       "Ferramentas e equipamentos em condições adequadas de uso; rufos disponíveis nas medidas e dobras corretas; acabamentos/tratamentos do muro finalizados; atividade realizada em dia sem chuva",
@@ -366,7 +378,7 @@ const FVS_CATALOGO = [
       "Formato, dobras e demais detalhes do rufo conferidos conforme a situação específica de cada trecho, antes da solicitação/fabricação das peças"
     ]
   },
-  { codigo:"FVS-25", nome:"Assentamento de Peitoris e Soleiras", rev:"01",
+  { codigo:"FVS-26", nome:"Assentamento de Peitoris e Soleiras", rev:"01",
     normas:["Sem norma ABNT específica confirmada para assentamento de peitoris e soleiras — prática de mercado/fabricante (verificar antes de uso formal)","Correlato: NBR 13755:2017 - Revestimentos cerâmicos de fachadas e paredes externas com utilização de argamassa colante (quando o material da peça for cerâmico/porcelanato)","PEITORIS (procedimento interno TERGOS) — sem norma ABNT específica de execução de peitoris em pedra identificada, segue o procedimento interno"],
     itens:[
       "Ferramentas em condições de uso; pedras disponíveis nas medidas corretas; contramarcos de janela já assentados (para peitoris); base arrematada com no mínimo 7 dias de cura; validade dos produtos de assentamento conferida",
@@ -384,7 +396,7 @@ const FVS_CATALOGO = [
       "Cordão de silicone/PU aplicado nas extremidades da pedra que se prolongam além da fachada, antes da instalação das janelas, para evitar manchamento por escorrimento de água"
     ]
   },
-  { codigo:"FVS-26", nome:"Contrapiso", rev:"00",
+  { codigo:"FVS-27", nome:"Contrapiso", rev:"00",
     normas:["NBR 13753:1996 - Revestimento de piso interno e/ou externo com placas cerâmicas e com utilização de argamassa colante (referência de execução de contrapiso; verificar edição vigente)","NBR 12655:2022 - Concreto - Preparo, controle e recebimento (aplicável quando contrapiso for em concreto)","CONTRAPISO (procedimento interno TERGOS) — fonte dos itens sobre caimento/caída para ralo, marcados abaixo"],
     itens:[
       "Instalações elétricas e hidráulicas de piso executadas e testadas, com ralos fechados (tubo dobrado ou preenchido com papel amassado) antes do início do contrapiso",
@@ -404,7 +416,7 @@ const FVS_CATALOGO = [
       "Cura do contrapiso realizada pelo período mínimo"
     ]
   },
-  { codigo:"FVS-27", nome:"Revestimento Interno em Gesso", rev:"00",
+  { codigo:"FVS-28", nome:"Revestimento Interno em Gesso", rev:"00",
     normas:["NBR 13867:1997 - Revestimento interno de paredes e tetos com pasta de gesso - Materiais, preparo, aplicação e acabamento (norma cancelada, sem substituta direta claramente identificada nesta pesquisa — verificar edição vigente antes de uso formal)"],
     itens:[
       "Superfície base preparada antes da aplicação do gesso",
@@ -414,7 +426,7 @@ const FVS_CATALOGO = [
       "Acabamento final liso e pronto para pintura"
     ]
   },
-  { codigo:"FVS-28", nome:"Forro de Gesso Acartonado", rev:"00",
+  { codigo:"FVS-29", nome:"Forro de Gesso Acartonado", rev:"00",
     normas:["NBR 15758-2:2009 - Sistemas construtivos em chapas de gesso para drywall - Parte 2: Requisitos para sistemas usados como forros (norma cancelada em 09/2025, revisão em consulta nacional — verificar edição vigente)","NBR 14715-1:2021 - Chapas de gesso para drywall - Requisitos"],
     itens:[
       "Nível da estrutura metálica (perfis) conferido antes da fixação das chapas",
@@ -424,7 +436,7 @@ const FVS_CATALOGO = [
       "Nível final do forro conferido em toda a área"
     ]
   },
-  { codigo:"FVS-29", nome:"Forro de Gesso em Placas", rev:"00",
+  { codigo:"FVS-30", nome:"Forro de Gesso em Placas", rev:"00",
     normas:["NBR 16382:2015 - Placas de gesso para forro - Requisitos","NBR 16591:2017 - Execução de forro autoportante com placas de gesso - Procedimento"],
     itens:[
       "Estrutura de sustentação (arames/tirantes) nivelada e firme",
@@ -434,7 +446,7 @@ const FVS_CATALOGO = [
       "Nível final do forro e platibandas/sancas conferidos"
     ]
   },
-  { codigo:"FVS-30", nome:"Shaft Drywall", rev:"00",
+  { codigo:"FVS-31", nome:"Shaft Drywall", rev:"00",
     normas:["NBR 15758-1:2009 - Sistemas construtivos em chapas de gesso para drywall - Parte 1: Requisitos para sistemas usados como paredes (norma cancelada em 09/2025, revisão em consulta nacional — verificar edição vigente)","NBR 14715-1:2021 - Chapas de gesso para drywall - Requisitos"],
     itens:[
       "Estrutura metálica (guias e montantes) fixada e nivelada",
@@ -444,7 +456,7 @@ const FVS_CATALOGO = [
       "Isolamento acústico e estanqueidade do shaft conforme projeto"
     ]
   },
-  { codigo:"FVS-31", nome:"Divisórias e Portas de Vidro", rev:"00",
+  { codigo:"FVS-32", nome:"Divisórias e Portas de Vidro", rev:"00",
     normas:["NBR 7199:2016 - Aplicações de vidros na construção civil - Requisitos (com emenda vigente a partir de 30/06/2025)"],
     itens:[
       "Espessura e tipo de vidro conforme especificação e aplicação",
@@ -454,7 +466,7 @@ const FVS_CATALOGO = [
       "Ausência de trincas, lascas ou defeitos aparentes após instalação"
     ]
   },
-  { codigo:"FVS-32", nome:"Pintura e Textura", rev:"00",
+  { codigo:"FVS-33", nome:"Pintura e Textura", rev:"00",
     normas:["NBR 15079-1:2025 - Tintas para construção civil - Requisitos de desempenho - Parte 1: Tinta fosca nas cores claras","NBR 15079-2:2025 - Parte 2: Tintas semiacetinada, acetinada e semibrilho nas cores claras (edição de 04/2025; verificar vigência antes de uso formal, pois edições anteriores da NBR 15079 foram canceladas)","NBR 13245:1995 - Execução de pinturas em edificações não industriais - Preparação de superfície (verificar edição vigente)","PINTURA INTERNA (procedimento interno TERGOS)"],
     itens:[
       "Projetos e instruções de revestimento disponíveis e alinhados, equipe treinada, antes do início",
@@ -470,7 +482,7 @@ const FVS_CATALOGO = [
       "Lote/validade da tinta conferido e produto conforme especificação"
     ]
   },
-  { codigo:"FVS-33", nome:"Execução de Revestimento de Piso Interno: Cerâmica e Porcelanato", rev:"00",
+  { codigo:"FVS-34", nome:"Execução de Revestimento de Piso Interno: Cerâmica e Porcelanato", rev:"00",
     normas:["NBR 13818/NBR 15463 - Placas cerâmicas","NBR 14081 (partes 1-5) - Argamassa colante","PORCELANATOS (procedimento interno TERGOS)","Manual de Recebimento e Armazenamento Portobello (fabricante) — fonte dos itens revisados/adicionados a partir do procedimento interno"],
     itens:[
       "Peças limpas com escova de nylon e água para retirar a película de proteção do tardoz, com descrição, tamanho, cor e lote conferidos com o projeto",
@@ -493,7 +505,7 @@ const FVS_CATALOGO = [
       "Peças limpas após a retirada das cunhas, com piso protegido (papelão e plástico bolha) até a entrega"
     ]
   },
-  { codigo:"FVS-34", nome:"Rejuntamento", rev:"00",
+  { codigo:"FVS-35", nome:"Rejuntamento", rev:"00",
     normas:["NBR 14992:2003 - Argamassa à base de cimento Portland para rejuntamento de placas cerâmicas - Requisitos e métodos de ensaio (verificar edição vigente)"],
     itens:[
       "Tempo de espera após assentamento respeitado antes do rejunte",
@@ -504,7 +516,7 @@ const FVS_CATALOGO = [
       "Cura do rejunte protegida de água e tráfego prematuro"
     ]
   },
-  { codigo:"FVS-35", nome:"Piso vinílico", rev:"00",
+  { codigo:"FVS-36", nome:"Piso vinílico", rev:"00",
     normas:["NBR 14917-1:2017 - Revestimentos resilientes para pisos - Manta e placa vinílica flexível homogênea ou heterogênea em PVC - Parte 1: Requisitos","NBR 14917-2:2022 - Parte 2: Procedimentos (instalação)"],
     itens:[
       "Nivelamento e planeza do substrato antes da instalação",
@@ -515,7 +527,7 @@ const FVS_CATALOGO = [
       "Acabamento em soleiras, ralos e transições de piso"
     ]
   },
-  { codigo:"FVS-36", nome:"Instalação de Rodapés", rev:"00",
+  { codigo:"FVS-37", nome:"Instalação de Rodapés", rev:"00",
     normas:["Sem norma ABNT específica de execução de rodapés identificada nesta pesquisa — prática de mercado/fabricante (verificar antes de uso formal)","Correlato: NBR 15575-3:2021 - Desempenho de edificações habitacionais - Sistemas de pisos"],
     itens:[
       "Nivelamento e alinhamento do rodapé com o piso",
@@ -524,7 +536,7 @@ const FVS_CATALOGO = [
       "Rejunte/silicone aplicado entre rodapé e piso/parede"
     ]
   },
-  { codigo:"FVS-37", nome:"Esquadria de Madeira", rev:"00",
+  { codigo:"FVS-38", nome:"Esquadria de Madeira", rev:"00",
     normas:["NBR 15930-1:2011 - Portas de madeira para edificações - Parte 1: Terminologia","NBR 15930-2:2011 - Parte 2: Requisitos","NBR 15930-3:2011 - Parte 3: Requisitos adicionais","NBR 15930-4:2011 - Parte 4: Instalação e manutenção"],
     itens:[
       "Dimensões e esquadro da esquadria conforme projeto",
@@ -534,7 +546,7 @@ const FVS_CATALOGO = [
       "Requisitos complementares atendidos (acústico/corta-fogo), quando especificados"
     ]
   },
-  { codigo:"FVS-38", nome:"Execução de Instalação de Esquadria de Alumínio", rev:"01",
+  { codigo:"FVS-39", nome:"Execução de Instalação de Esquadria de Alumínio", rev:"01",
     normas:["NBR 10821-1:2017 - Esquadrias para edificações - Parte 1: Terminologia","NBR 10821-2:2017 - Parte 2: Requisitos e classificação","NBR 10821-4:2017 - Parte 4: Requisitos de desempenho adicionais e instalação","NBR 10821-5:2017 - Parte 5: Manutenção e desempenho acústico"],
     itens:[
       "Dimensões e esquadro do vão e da esquadria conferidos",
@@ -545,7 +557,7 @@ const FVS_CATALOGO = [
       "Requisitos de segurança (guarda-corpo/queda) atendidos quando aplicável"
     ]
   },
-  { codigo:"FVS-39", nome:"Colocação de Guarda Corpo e Corrimão", rev:"00",
+  { codigo:"FVS-40", nome:"Colocação de Guarda Corpo e Corrimão", rev:"00",
     normas:["NBR 14718 - Guarda-corpos para edificação (verificar edição vigente)"],
     itens:[
       "Altura do guarda-corpo conforme mínimo normativo",
@@ -555,7 +567,7 @@ const FVS_CATALOGO = [
       "Material e acabamento sem riscos de corte ou ferimento"
     ]
   },
-  { codigo:"FVS-40", nome:"Colocação de Bancadas", rev:"00",
+  { codigo:"FVS-41", nome:"Colocação de Bancadas", rev:"00",
     normas:["Sem norma ABNT específica confirmada para colocação de bancadas — prática de mercado/fabricante do material (granito, mármore, quartzo) (verificar antes de uso formal)","Correlato: NBR 15575-3:2021 - Desempenho de edificações habitacionais - Sistemas de pisos"],
     itens:[
       "Nivelamento e prumo da bancada conferidos // verificar",
@@ -565,7 +577,7 @@ const FVS_CATALOGO = [
       "Ausência de trincas, manchas ou defeitos aparentes na peça // verificar"
     ]
   },
-  { codigo:"FVS-41", nome:"Nicho", rev:"00",
+  { codigo:"FVS-42", nome:"Nicho", rev:"00",
     normas:["Sem norma ABNT específica confirmada para execução de nichos — prática de mercado/fabricante (verificar antes de uso formal)","Correlato: NBR 9575:2010 - Impermeabilização - Seleção e projeto (quando o nicho estiver em área molhada e exigir impermeabilização)"],
     itens:[
       "Dimensões e posição do nicho conforme projeto // verificar",
@@ -574,7 +586,7 @@ const FVS_CATALOGO = [
       "Revestimento interno do nicho alinhado com o revestimento do ambiente // verificar"
     ]
   },
-  { codigo:"FVS-42", nome:"Instalação de Louças e Metais", rev:"00",
+  { codigo:"FVS-43", nome:"Instalação de Louças e Metais", rev:"00",
     normas:["NBR 15097-1:2011 - Aparelhos sanitários de material cerâmico - Parte 1: Requisitos e métodos de ensaio","NBR 15097-2:2011 - Parte 2: Procedimento para instalação","NBR 10281:2015 - Torneiras - Requisitos e métodos de ensaio","NBR 16749:2016 - Aparelhos sanitários - Misturadores - Requisitos e métodos de ensaio"],
     itens:[
       "Fixação da bacia sanitária/lavatório firme e nivelada",
@@ -585,7 +597,7 @@ const FVS_CATALOGO = [
       "Limpeza e proteção das peças até a entrega"
     ]
   },
-  { codigo:"FVS-43", nome:"Instalação de Torneiras", rev:"00",
+  { codigo:"FVS-44", nome:"Instalação de Torneiras", rev:"00",
     normas:["Sem norma ABNT específica confirmada para o serviço de instalação de torneiras (como produto específico) — prática de mercado/fabricante (verificar antes de uso formal)","Correlato: NBR 10281:2015 - Torneiras - Requisitos e métodos de ensaio (norma de produto, não de instalação)"],
     itens:[
       "Vedação da conexão com a tubulação sem vazamentos // verificar",
@@ -594,7 +606,7 @@ const FVS_CATALOGO = [
       "Acabamento e limpeza da torneira instalada // verificar"
     ]
   },
-  { codigo:"FVS-44", nome:"Exaustões Mecânicas", rev:"00",
+  { codigo:"FVS-45", nome:"Exaustões Mecânicas", rev:"00",
     normas:["Sem norma ABNT específica confirmada para exaustão mecânica residencial simples — prática de mercado/fabricante (verificar antes de uso formal)","Correlato: NBR 16401-3:2008 - Instalações de ar-condicionado - Sistemas centrais e unitários - Parte 3: Qualidade do ar interior (quando integrada a sistema de climatização)"],
     itens:[
       "Dimensionamento do duto e exaustor conforme ambiente // verificar",
