@@ -201,6 +201,7 @@
   .import-item .linha1 input[type=text]{margin-top:0;}
   .import-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
   .import-chip{font-size:12px;padding:5px 10px;border-radius:16px;border:1px solid var(--border);background:var(--card);color:var(--muted);cursor:pointer;}
+  .icon-foto-obra{width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;}
   .import-chip.on{background:var(--accent);color:#fff;border-color:var(--accent);}
   .import-grupo{border:1px solid var(--border);border-radius:10px;margin-bottom:10px;overflow:hidden;}
   .import-grupo-header{display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--bg);}
@@ -275,6 +276,137 @@ function saveDB(db){
   }
 }
 function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+
+// Imagens (fotos) ficam no IndexedDB, que tem espaço bem maior que o localStorage.
+// Nos dados da obra fica só uma referência "img:<id>". Dados antigos com a foto
+// inteira ("data:...") são convertidos na primeira abertura.
+const IMG_DB_NAME = "fvs-obras-imagens";
+const IMG_DB_STORE = "img";
+let _imgDBPromise = null;
+function abrirImgDB(){
+  if(!_imgDBPromise){
+    _imgDBPromise = new Promise((resolve, reject)=>{
+      const req = indexedDB.open(IMG_DB_NAME, 1);
+      req.onupgradeneeded = ()=>req.result.createObjectStore(IMG_DB_STORE);
+      req.onsuccess = ()=>resolve(req.result);
+      req.onerror = ()=>reject(req.error);
+    });
+  }
+  return _imgDBPromise;
+}
+async function gravarImagemIdb(id, valor){
+  const idb = await abrirImgDB();
+  return new Promise((res, rej)=>{
+    const tx = idb.transaction(IMG_DB_STORE, "readwrite");
+    tx.objectStore(IMG_DB_STORE).put(valor, id);
+    tx.oncomplete = ()=>res();
+    tx.onerror = ()=>rej(tx.error);
+    tx.onabort = ()=>rej(tx.error);
+  });
+}
+async function lerImagemIdb(id){
+  const idb = await abrirImgDB();
+  return new Promise((res, rej)=>{
+    const req = idb.transaction(IMG_DB_STORE).objectStore(IMG_DB_STORE).get(id);
+    req.onsuccess = ()=>res(req.result || null);
+    req.onerror = ()=>rej(req.error);
+  });
+}
+async function apagarImagemIdb(id){
+  const idb = await abrirImgDB();
+  return new Promise((res, rej)=>{
+    const tx = idb.transaction(IMG_DB_STORE, "readwrite");
+    tx.objectStore(IMG_DB_STORE).delete(id);
+    tx.oncomplete = ()=>res();
+    tx.onerror = ()=>rej(tx.error);
+  });
+}
+const _urlsImagem = {};
+function ehRefImagem(v){ return typeof v === "string" && v.startsWith("img:"); }
+function idDaRef(ref){ return ref.slice(4); }
+async function urlDaRefImagem(ref){
+  const id = idDaRef(ref);
+  if(!_urlsImagem[id]){
+    const valor = await lerImagemIdb(id);
+    if(!valor) return null;
+    _urlsImagem[id] = typeof valor === "string" ? valor : URL.createObjectURL(valor);
+  }
+  return _urlsImagem[id];
+}
+async function salvarArquivoImagem(arquivo){
+  const ref = "img:" + uid();
+  try{
+    await gravarImagemIdb(idDaRef(ref), arquivo);
+    return ref;
+  }catch(e){
+    return await new Promise((res, rej)=>{
+      const reader = new FileReader();
+      reader.onload = (ev)=>res(ev.target.result);
+      reader.onerror = ()=>rej(reader.error);
+      reader.readAsDataURL(arquivo);
+    });
+  }
+}
+async function salvarDataUrlImagem(dataUrl){
+  const ref = "img:" + uid();
+  try{
+    await gravarImagemIdb(idDaRef(ref), await (await fetch(dataUrl)).blob());
+    return ref;
+  }catch(e){
+    return dataUrl;
+  }
+}
+function imgHtml(valor, classe, alt){
+  if(!valor) return "";
+  const atr = ehRefImagem(valor) ? `data-imgref="${valor}"` : `src="${valor}"`;
+  return `<img class="${classe}" ${atr} alt="${escapeHtml(alt||"")}">`;
+}
+async function hidratarImagens(raiz){
+  const imgs = (raiz || document).querySelectorAll("img[data-imgref]");
+  for(const img of imgs){
+    const url = await urlDaRefImagem(img.dataset.imgref);
+    if(url){ img.src = url; await img.decode().catch(()=>{}); }
+  }
+}
+async function percorrerFotos(obj, fn){
+  for(const obra of obj.obras || []){
+    if(obra.foto) obra.foto = await fn(obra.foto);
+    if(obra.fotoCapa) obra.fotoCapa = await fn(obra.fotoCapa);
+    for(const pav of obra.pavimentos || []){
+      for(const amb of todosAmbientesDoPavimento(pav)){
+        for(const f of amb.fvsList || []){
+          for(const it of f.itens || []){
+            if(it.foto){ it.fotos = [it.foto, ...(it.fotos || [])]; delete it.foto; }
+            if(it.fotos){
+              for(let i = 0; i < it.fotos.length; i++) it.fotos[i] = await fn(it.fotos[i]);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+async function migrarFotosParaImagens(obj){
+  let mudou = false;
+  await percorrerFotos(obj, async (v)=>{
+    if(typeof v === "string" && v.startsWith("data:")){
+      const nova = await salvarDataUrlImagem(v);
+      if(nova !== v) mudou = true;
+      return nova;
+    }
+    return v;
+  });
+  return mudou;
+}
+async function resolverRefParaDataUrl(ref){
+  const valor = await lerImagemIdb(idDaRef(ref));
+  if(!valor) return "";
+  return await new Promise((res)=>{
+    const reader = new FileReader();
+    reader.onload = (ev)=>res(ev.target.result);
+    reader.readAsDataURL(valor);
+  });
+}
 
 // Quando o texto de um item existente é corrigido/reescrito no catálogo (não é item novo,
 // é o mesmo item com texto melhor — ex: tolerância errada corrigida), um simples "adicionar
@@ -1193,14 +1325,15 @@ function painelReinspecoes(obra){
 function render(){
   const app = document.getElementById("app");
   app.innerHTML = "";
-  if(route.view==="obras") return renderObras(app);
-  if(route.view==="obra") return renderObra(app);
-  if(route.view==="pavimento") return renderPavimento(app);
-  if(route.view==="pavimentoEstrutura") return renderPavimentoEstrutura(app);
-  if(route.view==="unidade") return renderUnidade(app);
-  if(route.view==="ambiente") return renderAmbiente(app);
-  if(route.view==="fornecedores") return renderFornecedores(app);
-  if(route.view==="fornecedor") return renderFornecedorDetalhe(app);
+  if(route.view==="obras") renderObras(app);
+  else if(route.view==="obra") renderObra(app);
+  else if(route.view==="pavimento") renderPavimento(app);
+  else if(route.view==="pavimentoEstrutura") renderPavimentoEstrutura(app);
+  else if(route.view==="unidade") renderUnidade(app);
+  else if(route.view==="ambiente") renderAmbiente(app);
+  else if(route.view==="fornecedores") renderFornecedores(app);
+  else if(route.view==="fornecedor") renderFornecedorDetalhe(app);
+  hidratarImagens(app);
 }
 
 function header(title, onBack, actionBtn){
@@ -1230,14 +1363,13 @@ function headerObra(obra){
   wrap.className = "obra-logo-wrap";
   wrap.title = "Toque para alterar a logo da obra";
   wrap.onclick=()=>{
-    abrirSeletorArquivo("image/*", (file)=>{
-      const reader = new FileReader();
-      reader.onload=(ev)=>{ obra.foto = ev.target.result; saveDB(db); render(); };
-      reader.readAsDataURL(file);
+    abrirSeletorArquivo("image/*", async (file)=>{
+      obra.foto = await salvarArquivoImagem(file);
+      saveDB(db); render();
     });
   };
   wrap.innerHTML = obra.foto
-    ? `<img class="obra-logo-img" src="${obra.foto}" alt="${escapeHtml(obra.nome)}">`
+    ? imgHtml(obra.foto, "obra-logo-img", obra.nome)
     : `<span class="obra-logo-placeholder"><span class="nome">${escapeHtml(obra.nome)}</span><span class="edit-badge">${icon('camera')}</span></span>`;
   h.appendChild(wrap);
 
@@ -1297,7 +1429,7 @@ function renderObras(app){
       item.className="list-item";
       item.onclick=()=>go({view:"obra", obraId:obra.id});
       item.innerHTML = `
-        <div class="icon editable" style="${obra.foto?`background-image:url('${obra.foto}')`:""}">${obra.foto?"":icon('crane')}<span class="edit-badge">${icon('camera')}</span></div>
+        <div class="icon editable">${obra.foto?imgHtml(obra.foto,"icon-foto-obra",obra.nome):icon('crane')}<span class="edit-badge">${icon('camera')}</span></div>
         <div class="info">
           <div class="title">${escapeHtml(obra.nome)}</div>
           <div class="sub">${obra.pavimentos.length} pavimento(s) · ${prog}% concluído ${nc?` · ${nc} não conformidade(s)`:""}</div>
@@ -1307,14 +1439,10 @@ function renderObras(app){
       const iconEl = item.querySelector(".icon");
       iconEl.onclick=(e)=>{
         e.stopPropagation();
-        abrirSeletorArquivo("image/*", (file)=>{
-          const reader = new FileReader();
-          reader.onload=(ev)=>{
-            obra.foto = ev.target.result;
-            saveDB(db);
-            render();
-          };
-          reader.readAsDataURL(file);
+        abrirSeletorArquivo("image/*", async (file)=>{
+          obra.foto = await salvarArquivoImagem(file);
+          saveDB(db);
+          render();
         });
       };
       main.appendChild(item);
@@ -1351,15 +1479,14 @@ function capaObra(obra){
   const div = document.createElement("div");
   div.title = "Toque para " + (obra.fotoCapa ? "trocar" : "adicionar") + " a foto do prédio";
   div.onclick = ()=>{
-    abrirSeletorArquivo("image/*", (file)=>{
-      const reader = new FileReader();
-      reader.onload=(ev)=>{ obra.fotoCapa = ev.target.result; saveDB(db); render(); };
-      reader.readAsDataURL(file);
+    abrirSeletorArquivo("image/*", async (file)=>{
+      obra.fotoCapa = await salvarArquivoImagem(file);
+      saveDB(db); render();
     });
   };
   if(obra.fotoCapa){
     div.className = "obra-capa";
-    div.innerHTML = `<img src="${obra.fotoCapa}" alt="Foto do prédio — ${escapeHtml(obra.nome)}"><span class="capa-editar">${icon('camera')}</span>`;
+    div.innerHTML = `${imgHtml(obra.fotoCapa, "", "Foto do prédio — " + obra.nome)}<span class="capa-editar">${icon('camera')}</span>`;
   } else {
     div.className = "obra-capa vazia";
     div.innerHTML = `<span class="capa-icone">${icon('building')}</span><span class="capa-texto">Adicionar foto do prédio</span>`;
@@ -2452,7 +2579,6 @@ function abrirChecklist(obra,pav,amb,fvsInst){
           ${temSub? `<button class="na-btn ${item.status==='na'?'active':''}" data-act="na">${item.status==='na'?'✓ N/A':'Marcar como N/A'}</button>` : ""}
           <div class="fotos-strip">
             <button class="photo-btn" data-act="foto">${icon('camera')}</button>
-            ${fotosDoItem(item).map((src,fi)=>`<img class="photo-thumb" data-foto-idx="${fi}" src="${src}" title="Toque para remover">`).join("")}
             <span class="fotos-count">${fotosDoItem(item).length}/${MAX_FOTOS_VERIFICACAO} fotos</span>
           </div>
           ${mostrarAnexoDocumento? `<button class="doc-btn" data-act="doc">${icon('document')} Anexar PDF/XML</button>` : ""}
@@ -2523,18 +2649,21 @@ function abrirChecklist(obra,pav,amb,fvsInst){
         const strip = box.querySelector(".fotos-strip");
         strip.querySelectorAll(".photo-thumb").forEach(t=>t.remove());
         const contador = strip.querySelector(".fotos-count");
-        fotos.forEach((src,fi)=>{
+        fotos.forEach((ref,fi)=>{
           const t = document.createElement("img");
-          t.className = "photo-thumb"; t.src = src; t.title = "Toque para remover";
-          t.onclick = ()=>{
+          t.className = "photo-thumb"; t.title = "Toque para remover";
+          if(ehRefImagem(ref)) t.dataset.imgref = ref; else t.src = ref;
+          t.onclick = async ()=>{
             if(!confirm("Remover esta foto?")) return;
-            item.fotos.splice(fi,1);
+            const [removida] = item.fotos.splice(fi,1);
+            if(ehRefImagem(removida)) apagarImagemIdb(idDaRef(removida)).catch(()=>{});
             dirty = true;
             atualizarFotosItem();
             atualizarBotaoSalvar();
           };
           strip.insertBefore(t, contador);
         });
+        hidratarImagens(strip);
         contador.textContent = `${fotos.length}/${MAX_FOTOS_VERIFICACAO} fotos`;
       }
       fotoBtn.onclick=()=>{
@@ -2542,17 +2671,13 @@ function abrirChecklist(obra,pav,amb,fvsInst){
           return alert(`Limite de ${MAX_FOTOS_VERIFICACAO} fotos por verificação atingido. Remova uma foto para adicionar outra.`);
         }
         let vagasReservadas = fotosDoItem(item).length;
-        abrirSeletorArquivo("image/*", (file)=>{
+        abrirSeletorArquivo("image/*", async (file)=>{
           if(vagasReservadas >= MAX_FOTOS_VERIFICACAO) return;
           vagasReservadas++;
-          const reader = new FileReader();
-          reader.onload=(e)=>{
-            fotosDoItem(item).push(e.target.result);
-            dirty = true;
-            atualizarFotosItem();
-            atualizarBotaoSalvar();
-          };
-          reader.readAsDataURL(file);
+          fotosDoItem(item).push(await salvarArquivoImagem(file));
+          dirty = true;
+          atualizarFotosItem();
+          atualizarBotaoSalvar();
         }, "environment", true);
       };
       atualizarFotosItem();
@@ -3241,8 +3366,10 @@ function closeModal(){
 }
 
 // ---------- BACKUP / RESTAURAÇÃO DOS DADOS ----------
-function exportarBackup(){
-  const dataStr = JSON.stringify(db, null, 2);
+async function exportarBackup(){
+  const copia = JSON.parse(JSON.stringify(db));
+  await percorrerFotos(copia, async (v)=> ehRefImagem(v) ? await resolverRefParaDataUrl(v) : v);
+  const dataStr = JSON.stringify(copia, null, 2);
   const blob = new Blob([dataStr], {type:"application/json"});
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -3255,7 +3382,7 @@ function exportarBackup(){
 function restaurarBackup(){
   abrirSeletorArquivo("application/json,.json", (file)=>{
     const reader = new FileReader();
-    reader.onload=(e)=>{
+    reader.onload=async (e)=>{
       let novoDb;
       try{ novoDb = JSON.parse(e.target.result); }
       catch(err){ return alert("Arquivo inválido. Selecione um backup .json exportado por este sistema."); }
@@ -3265,8 +3392,9 @@ function restaurarBackup(){
       if(db.obras.length && !confirm(`Restaurar este backup vai SUBSTITUIR os dados atuais (${db.obras.length} obra(s) cadastrada(s) agora). Deseja continuar?`)){
         return;
       }
+      await migrarFotosParaImagens(novoDb);
       db = novoDb;
-      saveDB(db);
+      if(!saveDB(db)) return;
       render();
       alert("Backup restaurado com sucesso.");
     };
@@ -3281,9 +3409,10 @@ function dataHoraAtual(){
   return new Date().toLocaleString("pt-BR");
 }
 
-function imprimirRelatorio(html){
+async function imprimirRelatorio(html){
   const area = document.getElementById("print-area");
   area.innerHTML = html;
+  await hidratarImagens(area);
   window.print();
 }
 
@@ -3304,7 +3433,7 @@ function exportarRelatorioAmbiente(obra, pav, amb, unid, cat){
         ${idx+1}. ${escapeHtml(item.texto)}
         <span class="rel-status ${st}">${STATUS_LABEL[st]}</span>
         ${item.obs? `<div class="rel-obs"><b>Obs.:</b> ${escapeHtml(item.obs)}</div>` : ""}
-        ${fotosDoItem(item).map(src=>`<img class="rel-foto" src="${src}">`).join("")}
+        ${fotosDoItem(item).map(src=>imgHtml(src,"rel-foto","")).join("")}
       </div>`;
     });
     html += `</div>`;
@@ -3403,7 +3532,7 @@ function exportarRelatorioCategoriaEstrutura(obra, pav, cat){
           ${idx+1}. ${escapeHtml(item.texto)}
           <span class="rel-status ${st}">${STATUS_LABEL[st]}</span>
           ${item.obs? `<div class="rel-obs"><b>Obs.:</b> ${escapeHtml(item.obs)}</div>` : ""}
-          ${fotosDoItem(item).map(src=>`<img class="rel-foto" src="${src}">`).join("")}
+          ${fotosDoItem(item).map(src=>imgHtml(src,"rel-foto","")).join("")}
         </div>`;
       });
       html += `</div>`;
@@ -3495,7 +3624,7 @@ function exportarRelatorioFornecedor(obra, forn, itensNC){
       <span class="rel-status ${t.item.status}">${STATUS_LABEL[t.item.status]}</span><br>
       ${t.idx+1}. ${escapeHtml(t.item.texto)}
       ${t.item.obs? `<div class="rel-obs"><b>Obs.:</b> ${escapeHtml(t.item.obs)}</div>` : ""}
-      ${fotosDoItem(t.item).map(src=>`<img class="rel-foto" src="${src}">`).join("")}
+      ${fotosDoItem(t.item).map(src=>imgHtml(src,"rel-foto","")).join("")}
     </div>`;
   });
 
@@ -3508,7 +3637,12 @@ function escapeHtml(str){
   return String(str).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 }
 
-render();
+(async ()=>{
+  try{
+    if(await migrarFotosParaImagens(db)) saveDB(db);
+  }catch(e){ /* sem IndexedDB: as fotos continuam como estão */ }
+  render();
+})();
 
 if("serviceWorker" in navigator){
   window.addEventListener("load", ()=>{
