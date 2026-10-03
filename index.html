@@ -267,7 +267,13 @@ function loadDB(){
   try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)) || { obras: [] }; }
   catch(e){ return { obras: [] }; }
 }
-function saveDB(db){ localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); }
+function saveDB(db){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); return true; }
+  catch(e){
+    alert("NÃO FOI POSSÍVEL SALVAR: o espaço de armazenamento do aparelho está cheio (as fotos ocupam muito espaço).\n\nAntes de continuar: toque em 💾 Exportar backup e guarde o arquivo. Depois remova fotos desnecessárias.");
+    return false;
+  }
+}
 function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
 
 // Quando o texto de um item existente é corrigido/reescrito no catálogo (não é item novo,
@@ -2347,7 +2353,7 @@ function abrirChecklist(obra,pav,amb,fvsInst){
     document.getElementById("m-close").onclick=fecharComConfirmacao;
     document.getElementById("modal-bg").onclick=(e)=>{ if(e.target.id==="modal-bg") fecharComConfirmacao(); };
     document.getElementById("m-salvar-fvs").onclick=()=>{
-      saveDB(db);
+      if(!saveDB(db)) return;
       dirty = false;
       atualizarBotaoSalvar();
     };
