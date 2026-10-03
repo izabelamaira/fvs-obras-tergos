@@ -3418,7 +3418,7 @@ function subitensHtmlRelatorio(item){
   if(!item.subitens || !item.subitens.length) return "";
   return `<ul class="rel-subitens">${item.subitens.map(sub=>{
     const st = sub.status || (sub.feito ? "ok" : "pend");
-    return `<li><span class="rel-status ${st}">${STATUS_LABEL[st]}</span> ${escapeHtml(sub.texto)}</li>`;
+    return `<li>${escapeHtml(sub.texto)} <span class="rel-status ${st}">${STATUS_LABEL[st]}</span></li>`;
   }).join("")}</ul>`;
 }
 
