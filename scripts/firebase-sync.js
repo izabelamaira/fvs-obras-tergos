@@ -111,6 +111,24 @@ import {
     return JSON.parse(JSON.stringify(obj));
   }
 
+  // Firestore recusa "array dentro de array" (ex.: campo: [[1,2],[3,4]]). Varre a obra
+  // inteira procurando esse padrão antes de enviar, pra apontar o campo exato se for isso.
+  function encontrarArrayAninhado(valor, caminho){
+    if(Array.isArray(valor)){
+      for(let i=0;i<valor.length;i++){
+        if(Array.isArray(valor[i])) return caminho + "[" + i + "] (array dentro de array)";
+        const achado = encontrarArrayAninhado(valor[i], caminho + "[" + i + "]");
+        if(achado) return achado;
+      }
+    } else if(valor && typeof valor === "object"){
+      for(const chave of Object.keys(valor)){
+        const achado = encontrarArrayAninhado(valor[chave], caminho + "." + chave);
+        if(achado) return achado;
+      }
+    }
+    return null;
+  }
+
   async function enviarObras(obras){
     if(!usuarioAtual || !obras.length) return;
     estadoSync = "sincronizando";
@@ -118,14 +136,19 @@ import {
       for(const obra of obras){
         obra.atualizadoEm = Date.now();
         obra.atualizadoPor = usuarioAtual.email;
-        await setDoc(doc(firestoreDb, "obras", obra.id), cloneSeguro(obra));
+        const limpa = cloneSeguro(obra);
+        const caminhoRuim = encontrarArrayAninhado(limpa, "obra");
+        if(caminhoRuim){
+          alert("Aviso de sincronização: encontrei o campo com problema antes de tentar enviar:\n\n" + caminhoRuim + "\n\nTire um print desta mensagem e me mande — isso vai direto ao ponto.");
+        }
+        await setDoc(doc(firestoreDb, "obras", obra.id), limpa);
         idsRemotosConhecidos.add(obra.id);
       }
       estadoSync = "sincronizado";
     }catch(e){
       console.warn("Falha ao sincronizar com a nuvem:", e);
       estadoSync = "erro";
-      alert("Aviso de sincronização: não consegui enviar para a nuvem agora (" + (e && e.code || e) + "). Os dados continuam salvos neste aparelho — tire um print desta mensagem e me mande.");
+      alert("Aviso de sincronização: não consegui enviar para a nuvem agora.\n\nCódigo: " + (e && e.code) + "\nMensagem completa: " + (e && e.message) + "\n\nOs dados continuam salvos neste aparelho — tire um print desta mensagem (a mensagem completa é a parte mais importante) e me mande.");
     }
   }
 
