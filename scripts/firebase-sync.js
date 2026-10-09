@@ -181,7 +181,7 @@ import {
   // neste aparelho — reenviar algo que já está lá não tem custo real.
   async function garantirFotosNaNuvem(obra){
     let mudouReferencia = false;
-    await processarComLimite(listarSlotsDeImagem(obra), 5, async (alvo)=>{
+    await processarComLimite(listarSlotsDeImagem(obra), 10, async (alvo)=>{
       const ref = alvo.get();
       if(!window.ehRefImagem(ref)) return;
       const [obraIdNaRef, shortId] = window.obraIdDaRef(ref);
