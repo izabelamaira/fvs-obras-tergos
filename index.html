@@ -1404,9 +1404,10 @@ function headerObra(obra){
   h.appendChild(wrap);
 
   h.appendChild(botaoExcluir(()=>{
+    const pavimentosIds = obra.pavimentos.map(p=>p.id);
     db.obras = db.obras.filter(o=>o.id!==obra.id);
     saveDB(db);
-    if(window.excluirObraNuvem) window.excluirObraNuvem(obra.id);
+    if(window.excluirObraNuvem) window.excluirObraNuvem(obra.id, pavimentosIds);
     go({view:"obras"});
   }, `Excluir a obra "${obra.nome}" e todos os seus pavimentos, ambientes e verificações? Essa ação não pode ser desfeita.`));
 
@@ -1902,7 +1903,9 @@ function renderPavimento(app){
   acoesWrap.appendChild(btnRenomear);
   acoesWrap.appendChild(botaoExcluir(()=>{
     obra.pavimentos = obra.pavimentos.filter(p=>p.id!==pav.id);
-    saveDB(db); go({view:"obra", obraId:obra.id});
+    saveDB(db);
+    if(window.excluirPavimentoNuvem) window.excluirPavimentoNuvem(obra.id, pav.id);
+    go({view:"obra", obraId:obra.id});
   }, `Excluir o pavimento "${pav.nome}" e todas as suas unidades, ambientes e verificações? Essa ação não pode ser desfeita.`));
 
   app.appendChild(header(`${obra.nome} · ${pav.nome}`, ()=>go({view:"obra", obraId:obra.id}), acoesWrap));

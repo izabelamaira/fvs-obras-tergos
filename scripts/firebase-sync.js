@@ -18,7 +18,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 import {
   initializeFirestore, persistentLocalCache, persistentMultipleTabManager,
-  collection, doc, setDoc, deleteDoc, onSnapshot, getFirestore
+  collection, collectionGroup, doc, setDoc, deleteDoc, onSnapshot, getFirestore
 } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 import {
   getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObject
@@ -45,7 +45,9 @@ import {
   // ---------- estado ----------
   let usuarioAtual = null;
   let desinscreverObras = null;
+  let desinscreverPavimentos = null;
   let idsRemotosConhecidos = new Set();
+  let pavimentosRemotosConhecidos = new Set();
   let primeiraSincronizacaoFeita = false;
   let timerSync = null;
   let estadoSync = "offline"; // offline | aguardando-login | sincronizado | sincronizando | erro
@@ -105,44 +107,36 @@ import {
     try{ await deleteObject(storageRef(storage, caminhoFoto(obraId, shortId))); }catch(e){ /* já não existe */ }
   };
 
-  // ---------- envio dos dados da obra (texto/estrutura — sem fotos, que vão pelo Storage) ----------
+  // ---------- envio dos dados da obra ----------
+  // Documento do Firestore tem limite de 1 MB. Uma obra grande (muitos pavimentos,
+  // cada um com vários ambientes/verificações) passa disso fácil. Por isso cada
+  // pavimento vira um documento próprio (obras/{obraId}/pavimentos/{pavId}); o
+  // documento da obra guarda só os dados leves (nome, endereço, fornecedores, foto)
+  // e uma listagem de pavimentos com id+nome, sem o conteúdo pesado de cada um.
   function cloneSeguro(obj){
     // remove undefined e qualquer coisa não serializável; Firestore não aceita "undefined".
     return JSON.parse(JSON.stringify(obj));
   }
 
-  // Firestore recusa "array dentro de array" (ex.: campo: [[1,2],[3,4]]). Varre a obra
-  // inteira procurando esse padrão antes de enviar, pra apontar o campo exato se for isso.
-  function encontrarArrayAninhado(valor, caminho){
-    if(Array.isArray(valor)){
-      for(let i=0;i<valor.length;i++){
-        if(Array.isArray(valor[i])) return caminho + "[" + i + "] (array dentro de array)";
-        const achado = encontrarArrayAninhado(valor[i], caminho + "[" + i + "]");
-        if(achado) return achado;
-      }
-    } else if(valor && typeof valor === "object"){
-      for(const chave of Object.keys(valor)){
-        const achado = encontrarArrayAninhado(valor[chave], caminho + "." + chave);
-        if(achado) return achado;
-      }
-    }
-    return null;
+  function obraLeve(obra){
+    const limpa = cloneSeguro(obra);
+    limpa.pavimentos = (limpa.pavimentos || []).map(p=>({ id: p.id, nome: p.nome }));
+    return limpa;
   }
 
-  async function enviarObras(obras){
-    if(!usuarioAtual || !obras.length) return;
+  async function enviarObra(obra){
+    if(!usuarioAtual) return;
     estadoSync = "sincronizando";
     try{
-      for(const obra of obras){
-        obra.atualizadoEm = Date.now();
-        obra.atualizadoPor = usuarioAtual.email;
-        const limpa = cloneSeguro(obra);
-        const caminhoRuim = encontrarArrayAninhado(limpa, "obra");
-        if(caminhoRuim){
-          alert("Aviso de sincronização: encontrei o campo com problema antes de tentar enviar:\n\n" + caminhoRuim + "\n\nTire um print desta mensagem e me mande — isso vai direto ao ponto.");
-        }
-        await setDoc(doc(firestoreDb, "obras", obra.id), limpa);
-        idsRemotosConhecidos.add(obra.id);
+      obra.atualizadoEm = Date.now();
+      obra.atualizadoPor = usuarioAtual.email;
+      await setDoc(doc(firestoreDb, "obras", obra.id), obraLeve(obra));
+      idsRemotosConhecidos.add(obra.id);
+      for(const pav of (obra.pavimentos || [])){
+        pav.atualizadoEm = Date.now();
+        pav.atualizadoPor = usuarioAtual.email;
+        await setDoc(doc(firestoreDb, "obras", obra.id, "pavimentos", pav.id), cloneSeguro(pav));
+        pavimentosRemotosConhecidos.add(obra.id + "/" + pav.id);
       }
       estadoSync = "sincronizado";
     }catch(e){
@@ -152,14 +146,29 @@ import {
     }
   }
 
-  // Exclusão só acontece por ação explícita da pessoa (botão de lixeira na obra),
-  // nunca por comparação automática — isso já causou apagamento indevido de dados
-  // reais quando uma aba/aparelho com visão incompleta dos dados achou, por engano,
-  // que uma obra "deveria" ter sido removida.
-  window.excluirObraNuvem = async function(obraId){
+  async function enviarObras(obras){
+    for(const obra of obras) await enviarObra(obra);
+  }
+
+  // Exclusão só acontece por ação explícita da pessoa (botão de lixeira), nunca por
+  // comparação automática — isso já causou apagamento indevido de dados reais quando
+  // um aparelho com visão incompleta achou, por engano, que algo "deveria" ser removido.
+  window.excluirObraNuvem = async function(obraId, pavimentosConhecidos){
     if(!usuarioAtual) return;
     idsRemotosConhecidos.delete(obraId);
-    try{ await deleteDoc(doc(firestoreDb, "obras", obraId)); }catch(e){ console.warn("Falha ao excluir obra na nuvem:", e); }
+    try{
+      for(const pavId of (pavimentosConhecidos || [])){
+        await deleteDoc(doc(firestoreDb, "obras", obraId, "pavimentos", pavId)).catch(()=>{});
+        pavimentosRemotosConhecidos.delete(obraId + "/" + pavId);
+      }
+      await deleteDoc(doc(firestoreDb, "obras", obraId));
+    }catch(e){ console.warn("Falha ao excluir obra na nuvem:", e); }
+  };
+  window.excluirPavimentoNuvem = async function(obraId, pavId){
+    if(!usuarioAtual) return;
+    pavimentosRemotosConhecidos.delete(obraId + "/" + pavId);
+    try{ await deleteDoc(doc(firestoreDb, "obras", obraId, "pavimentos", pavId)); }
+    catch(e){ console.warn("Falha ao excluir pavimento na nuvem:", e); }
   };
 
   function agendarSincronizacao(dbObj){
@@ -168,40 +177,62 @@ import {
     timerSync = setTimeout(()=>enviarObras(dbObj.obras || []), 800);
   }
 
+  function salvarLocal(){
+    try{ localStorage.setItem("qualitab_obra_v1", JSON.stringify(window.db)); }catch(e){ /* ignora: já estava salvo localmente antes */ }
+  }
+
+  // Pavimentos que chegam antes do documento leve da obra correspondente (corrida
+  // entre os dois listeners) ficam guardados aqui até a obra aparecer localmente.
+  let pavimentosOrfaos = [];
+  function aplicarPavimentoOrfao(obra){
+    pavimentosOrfaos = pavimentosOrfaos.filter(orf=>{
+      if(orf.obraId !== obra.id) return true;
+      const existente = obra.pavimentos.find(p=>p.id === orf.pav.id);
+      if(existente) Object.assign(existente, orf.pav); else obra.pavimentos.push(orf.pav);
+      return false;
+    });
+  }
+
   // Escuta em tempo real: qualquer alteração feita por outro aparelho chega aqui.
   function iniciarEscuta(){
     if(desinscreverObras) return;
+
     desinscreverObras = onSnapshot(collection(firestoreDb, "obras"), (snapshot)=>{
       let mudouLocal = false;
       snapshot.docChanges().forEach((mudanca)=>{
         const remota = mudanca.doc.data();
         if(mudanca.type === "removed"){
           idsRemotosConhecidos.delete(remota.id);
-          const antes = window.db.obras.length;
           const obraRemovida = window.db.obras.find(o=>o.id === remota.id);
+          const antes = window.db.obras.length;
           window.db.obras = window.db.obras.filter(o=>o.id !== remota.id);
           if(window.db.obras.length !== antes){
             mudouLocal = true;
-            console.warn("[FVS sync] Obra removida da nuvem e do aparelho:", remota.id, obraRemovida && obraRemovida.nome);
             alert("Aviso de sincronização: a obra \"" + (obraRemovida ? obraRemovida.nome : remota.id) + "\" foi removida da nuvem (por este ou outro aparelho) e por isso saiu da lista aqui também.\n\nSe você não excluiu essa obra de propósito, tire um print desta mensagem e me mande.");
           }
           return;
         }
         idsRemotosConhecidos.add(remota.id);
-        const local = window.db.obras.find(o=>o.id === remota.id);
+        let local = window.db.obras.find(o=>o.id === remota.id);
         if(!local){
-          window.db.obras.push(remota);
+          local = Object.assign({}, remota, { pavimentos: (remota.pavimentos||[]).map(p=>({id:p.id, nome:p.nome, ambientes:[], unidades:[], estrutura:[]})) });
+          window.db.obras.push(local);
+          aplicarPavimentoOrfao(local);
           mudouLocal = true;
         } else if((remota.atualizadoEm || 0) > (local.atualizadoEm || 0)){
+          const pavimentosAntigos = local.pavimentos;
           Object.assign(local, remota);
+          // nomes/ordem vêm da nuvem, mas o conteúdo pesado de cada pavimento (ambientes
+          // etc.) só chega pelo listener de pavimentos — preserva o que já tínhamos aqui.
+          local.pavimentos = (remota.pavimentos || []).map(p=>{
+            const existente = pavimentosAntigos.find(pa=>pa.id === p.id);
+            return existente ? Object.assign(existente, { nome: p.nome }) : { id: p.id, nome: p.nome, ambientes:[], unidades:[], estrutura:[] };
+          });
           mudouLocal = true;
         }
       });
 
-      if(mudouLocal){
-        try{ localStorage.setItem("qualitab_obra_v1", JSON.stringify(window.db)); }catch(e){ /* ignora: já estava salvo localmente antes */ }
-        if(typeof window.render === "function") window.render();
-      }
+      if(mudouLocal){ salvarLocal(); if(typeof window.render === "function") window.render(); }
 
       if(!primeiraSincronizacaoFeita){
         primeiraSincronizacaoFeita = true;
@@ -215,11 +246,47 @@ import {
       console.warn("Escuta da nuvem interrompida:", erro);
       estadoSync = "erro";
     });
+
+    desinscreverPavimentos = onSnapshot(collectionGroup(firestoreDb, "pavimentos"), (snapshot)=>{
+      let mudouLocal = false;
+      snapshot.docChanges().forEach((mudanca)=>{
+        const remotoPav = mudanca.doc.data();
+        const obraId = mudanca.doc.ref.parent.parent.id;
+        const chave = obraId + "/" + remotoPav.id;
+        const obra = window.db.obras.find(o=>o.id === obraId);
+
+        if(mudanca.type === "removed"){
+          pavimentosRemotosConhecidos.delete(chave);
+          if(obra){
+            const antes = obra.pavimentos.length;
+            obra.pavimentos = obra.pavimentos.filter(p=>p.id !== remotoPav.id);
+            if(obra.pavimentos.length !== antes) mudouLocal = true;
+          }
+          return;
+        }
+        pavimentosRemotosConhecidos.add(chave);
+        if(!obra){ pavimentosOrfaos.push({ obraId, pav: remotoPav }); return; }
+        const localPav = obra.pavimentos.find(p=>p.id === remotoPav.id);
+        if(!localPav){
+          obra.pavimentos.push(remotoPav);
+          mudouLocal = true;
+        } else if((remotoPav.atualizadoEm || 0) > (localPav.atualizadoEm || 0)){
+          Object.assign(localPav, remotoPav);
+          mudouLocal = true;
+        }
+      });
+      if(mudouLocal){ salvarLocal(); if(typeof window.render === "function") window.render(); }
+    }, (erro)=>{
+      console.warn("Escuta de pavimentos interrompida:", erro);
+    });
   }
 
   function pararEscuta(){
     if(desinscreverObras){ desinscreverObras(); desinscreverObras = null; }
+    if(desinscreverPavimentos){ desinscreverPavimentos(); desinscreverPavimentos = null; }
     idsRemotosConhecidos = new Set();
+    pavimentosRemotosConhecidos = new Set();
+    pavimentosOrfaos = [];
     primeiraSincronizacaoFeita = false;
   }
 
