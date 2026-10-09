@@ -142,6 +142,36 @@ import {
     return limpo;
   }
 
+  // Lista cada "slot" de foto da obra (obra.foto, obra.fotoCapa, cada foto de cada
+  // verificação) com um jeito de ler e trocar aquele valor específico — permite
+  // processar várias fotos ao mesmo tempo (em vez de uma por vez) mais abaixo.
+  function listarSlotsDeImagem(obra){
+    const alvos = [];
+    if(obra.foto) alvos.push({ get: ()=>obra.foto, set: v=>{ obra.foto = v; } });
+    if(obra.fotoCapa) alvos.push({ get: ()=>obra.fotoCapa, set: v=>{ obra.fotoCapa = v; } });
+    for(const pav of obra.pavimentos || []){
+      for(const amb of window.todosAmbientesDoPavimento(pav)){
+        for(const f of amb.fvsList || []){
+          for(const it of f.itens || []){
+            if(it.foto){ it.fotos = [it.foto, ...(it.fotos || [])]; delete it.foto; }
+            (it.fotos || []).forEach((_, i)=> alvos.push({ get: ()=>it.fotos[i], set: v=>{ it.fotos[i] = v; } }));
+          }
+        }
+      }
+    }
+    return alvos;
+  }
+
+  // Processa até 5 fotos ao mesmo tempo (em vez de uma de cada vez) — acelera bastante
+  // obras com muitas fotos, sem sobrecarregar o aparelho.
+  async function processarComLimite(itens, limite, fn){
+    let indice = 0;
+    async function trabalhador(){
+      while(indice < itens.length) await fn(itens[indice++]);
+    }
+    await Promise.all(Array.from({ length: Math.min(limite, itens.length) }, trabalhador));
+  }
+
   // Garante que toda foto desta obra que existe neste aparelho (seja uma foto antiga,
   // de antes da sincronização, seja uma foto nova cujo envio em segundo plano falhou
   // silenciosamente — ex.: durante o período em que a regra do Storage ainda estava
@@ -151,18 +181,18 @@ import {
   // neste aparelho — reenviar algo que já está lá não tem custo real.
   async function garantirFotosNaNuvem(obra){
     let mudouReferencia = false;
-    await window.percorrerFotos({ obras: [obra] }, async (ref)=>{
-      if(!window.ehRefImagem(ref)) return ref;
+    await processarComLimite(listarSlotsDeImagem(obra), 5, async (alvo)=>{
+      const ref = alvo.get();
+      if(!window.ehRefImagem(ref)) return;
       const [obraIdNaRef, shortId] = window.obraIdDaRef(ref);
       const obraIdAlvo = obraIdNaRef || obra.id;
       try{
         const arquivo = await window.lerImagemIdb(window.idDaRef(ref));
-        if(!arquivo) return ref; // não existe neste aparelho — nada a fazer aqui
+        if(!arquivo) return; // não existe neste aparelho — nada a fazer aqui
         const comprimida = await comprimirImagem(arquivo);
         await uploadBytes(storageRef(storage, "obras/" + obraIdAlvo + "/fotos/" + shortId + ".jpg"), comprimida);
-        if(!obraIdNaRef) mudouReferencia = true;
-        return "img:" + obraIdAlvo + ":" + shortId;
-      }catch(e){ return ref; }
+        if(!obraIdNaRef){ mudouReferencia = true; alvo.set("img:" + obraIdAlvo + ":" + shortId); }
+      }catch(e){ /* mantém a referência como estava, tenta de novo na próxima */ }
     });
     return mudouReferencia;
   }
