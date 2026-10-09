@@ -1,4 +1,4 @@
-const CACHE_NAME = "fvs-obras-tergos-v24";
+const CACHE_NAME = "fvs-obras-tergos-v25";
 const ARQUIVOS_APP = [
   "./",
   "./index.html",

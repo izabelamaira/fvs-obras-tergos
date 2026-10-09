@@ -97,13 +97,22 @@ import {
     const comprimida = await comprimirImagem(arquivo);
     await uploadBytes(storageRef(storage, caminhoFoto(obraId, shortId)), comprimida);
   };
+  let avisoFalhaFotoMostrado = false;
   window.buscarFotoNuvem = async function(obraId, shortId){
     if(!usuarioAtual) return null;
     try{
       const url = await getDownloadURL(storageRef(storage, caminhoFoto(obraId, shortId)));
       const resp = await fetch(url);
+      if(!resp.ok) throw new Error("fetch respondeu " + resp.status);
       return await resp.blob();
-    }catch(e){ return null; }
+    }catch(e){
+      console.warn("Falha ao buscar foto da nuvem:", obraId, shortId, e);
+      if(!avisoFalhaFotoMostrado){
+        avisoFalhaFotoMostrado = true;
+        alert("Aviso: não consegui carregar uma foto da nuvem.\n\nCódigo: " + (e && e.code) + "\nMensagem: " + (e && e.message) + "\n\nTire um print e me manda — isso só vai aparecer uma vez por sessão.");
+      }
+      return null;
+    }
   };
   window.excluirFotoNuvem = async function(obraId, shortId){
     if(!usuarioAtual) return;
