@@ -46,8 +46,10 @@ import {
   let usuarioAtual = null;
   let desinscreverObras = null;
   let desinscreverPavimentos = null;
+  let desinscreverAmbientes = null;
   let idsRemotosConhecidos = new Set();
   let pavimentosRemotosConhecidos = new Set();
+  let ambientesRemotosConhecidos = new Set();
   let primeiraSincronizacaoFeita = false;
   let timerSync = null;
   let estadoSync = "offline"; // offline | aguardando-login | sincronizado | sincronizando | erro
@@ -108,20 +110,26 @@ import {
   };
 
   // ---------- envio dos dados da obra ----------
-  // Documento do Firestore tem limite de 1 MB. Uma obra grande (muitos pavimentos,
-  // cada um com vários ambientes/verificações) passa disso fácil. Por isso cada
-  // pavimento vira um documento próprio (obras/{obraId}/pavimentos/{pavId}); o
-  // documento da obra guarda só os dados leves (nome, endereço, fornecedores, foto)
-  // e uma listagem de pavimentos com id+nome, sem o conteúdo pesado de cada um.
+  // Documento do Firestore tem limite de 1 MB. Mesmo UM pavimento sozinho pode passar
+  // disso (prédios grandes, muitas unidades/ambientes). Por isso a divisão vai até o
+  // nível de ambiente — três camadas de documentos:
+  //   obras/{obraId}                                  → nome, endereço, fornecedores, foto
+  //   obras/{obraId}/pavimentos/{pavId}                → nomes/estrutura (ambientes, unidades,
+  //                                                       categorias), sem o conteúdo de FVS
+  //   obras/{obraId}/ambientes/{ambId}                 → o conteúdo pesado: fvsList completa
   function cloneSeguro(obj){
     // remove undefined e qualquer coisa não serializável; Firestore não aceita "undefined".
     return JSON.parse(JSON.stringify(obj));
   }
 
-  function obraLeve(obra){
-    const limpa = cloneSeguro(obra);
-    limpa.pavimentos = (limpa.pavimentos || []).map(p=>({ id: p.id, nome: p.nome }));
-    return limpa;
+  function semFvsList(amb){ const { fvsList, ...resto } = amb; return resto; }
+
+  function pavimentoLeve(pav){
+    const limpo = cloneSeguro(pav);
+    limpo.ambientes = (limpo.ambientes || []).map(semFvsList);
+    (limpo.unidades || []).forEach(u=>{ u.ambientes = (u.ambientes || []).map(semFvsList); });
+    (limpo.estrutura || []).forEach(c=>{ c.elementos = (c.elementos || []).map(semFvsList); });
+    return limpo;
   }
 
   async function enviarObra(obra){
@@ -130,13 +138,24 @@ import {
     try{
       obra.atualizadoEm = Date.now();
       obra.atualizadoPor = usuarioAtual.email;
-      await setDoc(doc(firestoreDb, "obras", obra.id), obraLeve(obra));
+      const obraLeve = cloneSeguro(obra);
+      obraLeve.pavimentos = (obraLeve.pavimentos || []).map(p=>({ id: p.id, nome: p.nome }));
+      await setDoc(doc(firestoreDb, "obras", obra.id), obraLeve);
       idsRemotosConhecidos.add(obra.id);
+
       for(const pav of (obra.pavimentos || [])){
         pav.atualizadoEm = Date.now();
         pav.atualizadoPor = usuarioAtual.email;
-        await setDoc(doc(firestoreDb, "obras", obra.id, "pavimentos", pav.id), cloneSeguro(pav));
+        await setDoc(doc(firestoreDb, "obras", obra.id, "pavimentos", pav.id), pavimentoLeve(pav));
         pavimentosRemotosConhecidos.add(obra.id + "/" + pav.id);
+
+        const ambientes = window.todosAmbientesDoPavimento(pav);
+        for(const amb of ambientes){
+          amb.atualizadoEm = Date.now();
+          amb.atualizadoPor = usuarioAtual.email;
+          await setDoc(doc(firestoreDb, "obras", obra.id, "ambientes", amb.id), cloneSeguro(amb));
+          ambientesRemotosConhecidos.add(obra.id + "/" + amb.id);
+        }
       }
       estadoSync = "sincronizado";
     }catch(e){
@@ -153,22 +172,31 @@ import {
   // Exclusão só acontece por ação explícita da pessoa (botão de lixeira), nunca por
   // comparação automática — isso já causou apagamento indevido de dados reais quando
   // um aparelho com visão incompleta achou, por engano, que algo "deveria" ser removido.
-  window.excluirObraNuvem = async function(obraId, pavimentosConhecidos){
+  window.excluirObraNuvem = async function(obraId, pavimentos){
     if(!usuarioAtual) return;
     idsRemotosConhecidos.delete(obraId);
     try{
-      for(const pavId of (pavimentosConhecidos || [])){
-        await deleteDoc(doc(firestoreDb, "obras", obraId, "pavimentos", pavId)).catch(()=>{});
-        pavimentosRemotosConhecidos.delete(obraId + "/" + pavId);
+      for(const pav of (pavimentos || [])){
+        for(const ambId of (pav.ambienteIds || [])){
+          await deleteDoc(doc(firestoreDb, "obras", obraId, "ambientes", ambId)).catch(()=>{});
+          ambientesRemotosConhecidos.delete(obraId + "/" + ambId);
+        }
+        await deleteDoc(doc(firestoreDb, "obras", obraId, "pavimentos", pav.id)).catch(()=>{});
+        pavimentosRemotosConhecidos.delete(obraId + "/" + pav.id);
       }
       await deleteDoc(doc(firestoreDb, "obras", obraId));
     }catch(e){ console.warn("Falha ao excluir obra na nuvem:", e); }
   };
-  window.excluirPavimentoNuvem = async function(obraId, pavId){
+  window.excluirPavimentoNuvem = async function(obraId, pav){
     if(!usuarioAtual) return;
-    pavimentosRemotosConhecidos.delete(obraId + "/" + pavId);
-    try{ await deleteDoc(doc(firestoreDb, "obras", obraId, "pavimentos", pavId)); }
-    catch(e){ console.warn("Falha ao excluir pavimento na nuvem:", e); }
+    pavimentosRemotosConhecidos.delete(obraId + "/" + pav.id);
+    try{
+      for(const amb of window.todosAmbientesDoPavimento(pav)){
+        await deleteDoc(doc(firestoreDb, "obras", obraId, "ambientes", amb.id)).catch(()=>{});
+        ambientesRemotosConhecidos.delete(obraId + "/" + amb.id);
+      }
+      await deleteDoc(doc(firestoreDb, "obras", obraId, "pavimentos", pav.id));
+    }catch(e){ console.warn("Falha ao excluir pavimento na nuvem:", e); }
   };
 
   function agendarSincronizacao(dbObj){
@@ -181,16 +209,66 @@ import {
     try{ localStorage.setItem("qualitab_obra_v1", JSON.stringify(window.db)); }catch(e){ /* ignora: já estava salvo localmente antes */ }
   }
 
-  // Pavimentos que chegam antes do documento leve da obra correspondente (corrida
-  // entre os dois listeners) ficam guardados aqui até a obra aparecer localmente.
+  // Documentos que chegam antes do "pai" correspondente existir localmente (corrida
+  // entre os três listeners) ficam guardados aqui até o pai aparecer.
   let pavimentosOrfaos = [];
-  function aplicarPavimentoOrfao(obra){
+  let ambientesOrfaos = [];
+  function aplicarPavimentosOrfaos(obra){
     pavimentosOrfaos = pavimentosOrfaos.filter(orf=>{
       if(orf.obraId !== obra.id) return true;
-      const existente = obra.pavimentos.find(p=>p.id === orf.pav.id);
-      if(existente) Object.assign(existente, orf.pav); else obra.pavimentos.push(orf.pav);
+      mesclarPavimentoLeve(obra, orf.pav);
       return false;
     });
+  }
+  function aplicarAmbientesOrfaos(obraId){
+    ambientesOrfaos = ambientesOrfaos.filter(orf=>{
+      if(orf.obraId !== obraId) return true;
+      const obra = window.db.obras.find(o=>o.id === obraId);
+      const alvo = obra && localizarAmbiente(obra, orf.amb.id);
+      if(alvo) Object.assign(alvo, orf.amb);
+      return !!alvo;
+    });
+  }
+
+  // Encontra um ambiente (direto, de unidade, ou elemento de estrutura) em qualquer
+  // pavimento da obra, pelo id — usa o mesmo helper que o app principal já usa pra
+  // listar ambientes de um pavimento (window.todosAmbientesDoPavimento).
+  function localizarAmbiente(obra, ambId){
+    for(const pav of (obra.pavimentos || [])){
+      const achado = window.todosAmbientesDoPavimento(pav).find(a=>a.id === ambId);
+      if(achado) return achado;
+    }
+    return null;
+  }
+
+  // Mescla uma lista "leve" de ambientes (sem fvsList) vinda da nuvem com a lista local,
+  // preservando a fvsList já existente em cada ambiente local (que só chega pelo
+  // listener de ambientes, não pelo de pavimento).
+  function mesclarListaAmbientesLeve(locais, remotos){
+    return (remotos || []).map(r=>{
+      const existente = (locais || []).find(l=>l.id === r.id);
+      return existente ? Object.assign(existente, { nome: r.nome }) : Object.assign({ fvsList: [] }, r);
+    });
+  }
+  function mesclarPavimentoLeve(obra, remotoPav){
+    let local = obra.pavimentos.find(p=>p.id === remotoPav.id);
+    if(!local){ local = { id: remotoPav.id, ambientes:[], unidades:[], estrutura:[] }; obra.pavimentos.push(local); }
+    local.nome = remotoPav.nome;
+    local.ambientes = mesclarListaAmbientesLeve(local.ambientes, remotoPav.ambientes);
+    local.unidades = (remotoPav.unidades || []).map(ru=>{
+      const existente = (local.unidades || []).find(lu=>lu.id === ru.id) || { id: ru.id, ambientes: [] };
+      existente.nome = ru.nome;
+      existente.ambientes = mesclarListaAmbientesLeve(existente.ambientes, ru.ambientes);
+      return existente;
+    });
+    local.estrutura = (remotoPav.estrutura || []).map(rc=>{
+      const existente = (local.estrutura || []).find(lc=>lc.id === rc.id) || { id: rc.id, elementos: [] };
+      existente.nome = rc.nome;
+      existente.elementos = mesclarListaAmbientesLeve(existente.elementos, rc.elementos);
+      return existente;
+    });
+    aplicarAmbientesOrfaos(obra.id);
+    return local;
   }
 
   // Escuta em tempo real: qualquer alteração feita por outro aparelho chega aqui.
@@ -215,18 +293,21 @@ import {
         idsRemotosConhecidos.add(remota.id);
         let local = window.db.obras.find(o=>o.id === remota.id);
         if(!local){
-          local = Object.assign({}, remota, { pavimentos: (remota.pavimentos||[]).map(p=>({id:p.id, nome:p.nome, ambientes:[], unidades:[], estrutura:[]})) });
+          local = Object.assign({}, remota, { pavimentos: [] });
+          (remota.pavimentos || []).forEach(p=> local.pavimentos.push({ id: p.id, nome: p.nome, ambientes: [], unidades: [], estrutura: [] }));
           window.db.obras.push(local);
-          aplicarPavimentoOrfao(local);
+          aplicarPavimentosOrfaos(local);
           mudouLocal = true;
         } else if((remota.atualizadoEm || 0) > (local.atualizadoEm || 0)){
-          const pavimentosAntigos = local.pavimentos;
-          Object.assign(local, remota);
-          // nomes/ordem vêm da nuvem, mas o conteúdo pesado de cada pavimento (ambientes
-          // etc.) só chega pelo listener de pavimentos — preserva o que já tínhamos aqui.
+          const nome = remota.nome, endereco = remota.endereco, foto = remota.foto, fotoCapa = remota.fotoCapa;
+          const fornecedores = remota.fornecedores, ifcStoreyMap = remota.ifcStoreyMap;
+          Object.assign(local, { nome, endereco, foto, fotoCapa, fornecedores, ifcStoreyMap, atualizadoEm: remota.atualizadoEm, atualizadoPor: remota.atualizadoPor });
+          // conteúdo de cada pavimento (ambientes etc.) só chega pelos listeners de
+          // pavimentos/ambientes — aqui só garante que a LISTA de pavimentos (nomes/ordem)
+          // bate com a nuvem, sem apagar o que já tínhamos de cada um.
           local.pavimentos = (remota.pavimentos || []).map(p=>{
-            const existente = pavimentosAntigos.find(pa=>pa.id === p.id);
-            return existente ? Object.assign(existente, { nome: p.nome }) : { id: p.id, nome: p.nome, ambientes:[], unidades:[], estrutura:[] };
+            const existente = local.pavimentos.find(lp=>lp.id === p.id);
+            return existente ? Object.assign(existente, { nome: p.nome }) : { id: p.id, nome: p.nome, ambientes: [], unidades: [], estrutura: [] };
           });
           mudouLocal = true;
         }
@@ -267,11 +348,8 @@ import {
         pavimentosRemotosConhecidos.add(chave);
         if(!obra){ pavimentosOrfaos.push({ obraId, pav: remotoPav }); return; }
         const localPav = obra.pavimentos.find(p=>p.id === remotoPav.id);
-        if(!localPav){
-          obra.pavimentos.push(remotoPav);
-          mudouLocal = true;
-        } else if((remotoPav.atualizadoEm || 0) > (localPav.atualizadoEm || 0)){
-          Object.assign(localPav, remotoPav);
+        if(!localPav || (remotoPav.atualizadoEm || 0) > (localPav.atualizadoEm || 0)){
+          mesclarPavimentoLeve(obra, remotoPav);
           mudouLocal = true;
         }
       });
@@ -279,14 +357,43 @@ import {
     }, (erro)=>{
       console.warn("Escuta de pavimentos interrompida:", erro);
     });
+
+    desinscreverAmbientes = onSnapshot(collectionGroup(firestoreDb, "ambientes"), (snapshot)=>{
+      let mudouLocal = false;
+      snapshot.docChanges().forEach((mudanca)=>{
+        const remotoAmb = mudanca.doc.data();
+        const obraId = mudanca.doc.ref.parent.parent.id;
+        const chave = obraId + "/" + remotoAmb.id;
+        const obra = window.db.obras.find(o=>o.id === obraId);
+
+        if(mudanca.type === "removed"){
+          ambientesRemotosConhecidos.delete(chave);
+          return; // a remoção do ambiente acontece junto com a do pavimento/obra que o contém
+        }
+        ambientesRemotosConhecidos.add(chave);
+        if(!obra){ ambientesOrfaos.push({ obraId, amb: remotoAmb }); return; }
+        const local = localizarAmbiente(obra, remotoAmb.id);
+        if(!local){ ambientesOrfaos.push({ obraId, amb: remotoAmb }); return; }
+        if((remotoAmb.atualizadoEm || 0) > (local.atualizadoEm || 0)){
+          Object.assign(local, remotoAmb);
+          mudouLocal = true;
+        }
+      });
+      if(mudouLocal){ salvarLocal(); if(typeof window.render === "function") window.render(); }
+    }, (erro)=>{
+      console.warn("Escuta de ambientes interrompida:", erro);
+    });
   }
 
   function pararEscuta(){
     if(desinscreverObras){ desinscreverObras(); desinscreverObras = null; }
     if(desinscreverPavimentos){ desinscreverPavimentos(); desinscreverPavimentos = null; }
+    if(desinscreverAmbientes){ desinscreverAmbientes(); desinscreverAmbientes = null; }
     idsRemotosConhecidos = new Set();
     pavimentosRemotosConhecidos = new Set();
+    ambientesRemotosConhecidos = new Set();
     pavimentosOrfaos = [];
+    ambientesOrfaos = [];
     primeiraSincronizacaoFeita = false;
   }
 

@@ -1404,10 +1404,10 @@ function headerObra(obra){
   h.appendChild(wrap);
 
   h.appendChild(botaoExcluir(()=>{
-    const pavimentosIds = obra.pavimentos.map(p=>p.id);
+    const pavimentosInfo = obra.pavimentos.map(p=>({ id: p.id, ambienteIds: todosAmbientesDoPavimento(p).map(a=>a.id) }));
     db.obras = db.obras.filter(o=>o.id!==obra.id);
     saveDB(db);
-    if(window.excluirObraNuvem) window.excluirObraNuvem(obra.id, pavimentosIds);
+    if(window.excluirObraNuvem) window.excluirObraNuvem(obra.id, pavimentosInfo);
     go({view:"obras"});
   }, `Excluir a obra "${obra.nome}" e todos os seus pavimentos, ambientes e verificações? Essa ação não pode ser desfeita.`));
 
@@ -1902,9 +1902,10 @@ function renderPavimento(app){
   acoesWrap.style.display="flex";
   acoesWrap.appendChild(btnRenomear);
   acoesWrap.appendChild(botaoExcluir(()=>{
+    const pavRemovido = pav;
     obra.pavimentos = obra.pavimentos.filter(p=>p.id!==pav.id);
     saveDB(db);
-    if(window.excluirPavimentoNuvem) window.excluirPavimentoNuvem(obra.id, pav.id);
+    if(window.excluirPavimentoNuvem) window.excluirPavimentoNuvem(obra.id, pavRemovido);
     go({view:"obra", obraId:obra.id});
   }, `Excluir o pavimento "${pav.nome}" e todas as suas unidades, ambientes e verificações? Essa ação não pode ser desfeita.`));
 
