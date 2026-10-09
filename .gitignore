@@ -3,3 +3,7 @@ ABRIR NO CELULAR.html
 
 # Backups reais exportados (dados de obras/clientes) - não devem ir para um repositório público
 dados/
+
+# Regras do Firebase com os e-mails reais da equipe - não devem ir para um repositório público
+firestore.rules
+storage.rules
