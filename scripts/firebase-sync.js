@@ -259,11 +259,11 @@ import {
   }
   function aplicarAmbientesOrfaos(obraId){
     ambientesOrfaos = ambientesOrfaos.filter(orf=>{
-      if(orf.obraId !== obraId) return true;
+      if(orf.obraId !== obraId) return true; // de outra obra — mantém na fila, não é a vez dele ainda
       const obra = window.db.obras.find(o=>o.id === obraId);
       const alvo = obra && localizarAmbiente(obra, orf.amb.id);
-      if(alvo) Object.assign(alvo, orf.amb);
-      return !!alvo;
+      if(alvo){ Object.assign(alvo, orf.amb); return false; } // aplicado — sai da fila
+      return true; // o pavimento desse ambiente ainda não chegou — mantém na fila pra tentar de novo
     });
   }
 
