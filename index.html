@@ -1405,7 +1405,9 @@ function headerObra(obra){
 
   h.appendChild(botaoExcluir(()=>{
     db.obras = db.obras.filter(o=>o.id!==obra.id);
-    saveDB(db); go({view:"obras"});
+    saveDB(db);
+    if(window.excluirObraNuvem) window.excluirObraNuvem(obra.id);
+    go({view:"obras"});
   }, `Excluir a obra "${obra.nome}" e todos os seus pavimentos, ambientes e verificações? Essa ação não pode ser desfeita.`));
 
   return h;

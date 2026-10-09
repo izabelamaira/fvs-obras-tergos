@@ -111,8 +111,8 @@ import {
     return JSON.parse(JSON.stringify(obj));
   }
 
-  async function enviarObras(obras, comDiffDeExclusao){
-    if(!usuarioAtual || !obras.length && !comDiffDeExclusao) return;
+  async function enviarObras(obras){
+    if(!usuarioAtual || !obras.length) return;
     estadoSync = "sincronizando";
     try{
       for(const obra of obras){
@@ -121,15 +121,6 @@ import {
         await setDoc(doc(firestoreDb, "obras", obra.id), cloneSeguro(obra));
         idsRemotosConhecidos.add(obra.id);
       }
-      if(comDiffDeExclusao){
-        const idsLocais = new Set((window.db.obras || []).map(o=>o.id));
-        for(const idRemoto of Array.from(idsRemotosConhecidos)){
-          if(!idsLocais.has(idRemoto)){
-            await deleteDoc(doc(firestoreDb, "obras", idRemoto)).catch(()=>{});
-            idsRemotosConhecidos.delete(idRemoto);
-          }
-        }
-      }
       estadoSync = "sincronizado";
     }catch(e){
       console.warn("Falha ao sincronizar com a nuvem:", e);
@@ -137,10 +128,20 @@ import {
     }
   }
 
+  // Exclusão só acontece por ação explícita da pessoa (botão de lixeira na obra),
+  // nunca por comparação automática — isso já causou apagamento indevido de dados
+  // reais quando uma aba/aparelho com visão incompleta dos dados achou, por engano,
+  // que uma obra "deveria" ter sido removida.
+  window.excluirObraNuvem = async function(obraId){
+    if(!usuarioAtual) return;
+    idsRemotosConhecidos.delete(obraId);
+    try{ await deleteDoc(doc(firestoreDb, "obras", obraId)); }catch(e){ console.warn("Falha ao excluir obra na nuvem:", e); }
+  };
+
   function agendarSincronizacao(dbObj){
     if(!usuarioAtual) return;
     clearTimeout(timerSync);
-    timerSync = setTimeout(()=>enviarObras(dbObj.obras || [], true), 800);
+    timerSync = setTimeout(()=>enviarObras(dbObj.obras || []), 800);
   }
 
   // Escuta em tempo real: qualquer alteração feita por outro aparelho chega aqui.
@@ -179,7 +180,7 @@ import {
         // Sobe para a nuvem qualquer obra que já existia neste aparelho antes do login
         // (ex.: histórico já criado no PC) e que a nuvem ainda não conhece.
         const faltantes = (window.db.obras || []).filter(o=>!idsRemotosConhecidos.has(o.id));
-        if(faltantes.length) enviarObras(faltantes, false);
+        if(faltantes.length) enviarObras(faltantes);
       }
     }, (erro)=>{
       console.warn("Escuta da nuvem interrompida:", erro);
