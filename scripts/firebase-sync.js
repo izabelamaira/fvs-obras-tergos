@@ -50,7 +50,8 @@ import {
   let idsRemotosConhecidos = new Set();
   let pavimentosRemotosConhecidos = new Set();
   let ambientesRemotosConhecidos = new Set();
-  let primeiraSincronizacaoFeita = false;
+  let primeiroSnapObras = false, primeiroSnapPavimentos = false, primeiroSnapAmbientes = false;
+  let verificacaoCompletaFeita = false;
   let timerSync = null;
   let estadoSync = "offline"; // offline | aguardando-login | sincronizado | sincronizando | erro
 
@@ -132,36 +133,54 @@ import {
     return limpo;
   }
 
+  // Cada escrita (obra, cada pavimento, cada ambiente) tem seu próprio try/catch: uma
+  // falha isolada (ex.: um ambiente específico grande demais) não pode travar o envio
+  // de todo o resto, senão uma obra inteira fica presa esperando algo que nunca chega
+  // a ser reenviado sozinho.
   async function enviarObra(obra){
     if(!usuarioAtual) return;
     estadoSync = "sincronizando";
+    const falhas = [];
+
+    obra.atualizadoEm = Date.now();
+    obra.atualizadoPor = usuarioAtual.email;
     try{
-      obra.atualizadoEm = Date.now();
-      obra.atualizadoPor = usuarioAtual.email;
       const obraLeve = cloneSeguro(obra);
       obraLeve.pavimentos = (obraLeve.pavimentos || []).map(p=>({ id: p.id, nome: p.nome }));
       await setDoc(doc(firestoreDb, "obras", obra.id), obraLeve);
       idsRemotosConhecidos.add(obra.id);
+    }catch(e){
+      console.warn("Falha ao enviar obra:", obra.nome, e);
+      falhas.push("obra \"" + obra.nome + "\": " + (e && e.code) + " — " + (e && e.message));
+    }
 
-      for(const pav of (obra.pavimentos || [])){
-        pav.atualizadoEm = Date.now();
-        pav.atualizadoPor = usuarioAtual.email;
+    for(const pav of (obra.pavimentos || [])){
+      pav.atualizadoEm = Date.now();
+      pav.atualizadoPor = usuarioAtual.email;
+      try{
         await setDoc(doc(firestoreDb, "obras", obra.id, "pavimentos", pav.id), pavimentoLeve(pav));
         pavimentosRemotosConhecidos.add(obra.id + "/" + pav.id);
+      }catch(e){
+        console.warn("Falha ao enviar pavimento:", pav.nome, e);
+        falhas.push("pavimento \"" + pav.nome + "\": " + (e && e.code) + " — " + (e && e.message));
+      }
 
-        const ambientes = window.todosAmbientesDoPavimento(pav);
-        for(const amb of ambientes){
-          amb.atualizadoEm = Date.now();
-          amb.atualizadoPor = usuarioAtual.email;
+      for(const amb of window.todosAmbientesDoPavimento(pav)){
+        amb.atualizadoEm = Date.now();
+        amb.atualizadoPor = usuarioAtual.email;
+        try{
           await setDoc(doc(firestoreDb, "obras", obra.id, "ambientes", amb.id), cloneSeguro(amb));
           ambientesRemotosConhecidos.add(obra.id + "/" + amb.id);
+        }catch(e){
+          console.warn("Falha ao enviar ambiente:", amb.nome, e);
+          falhas.push("ambiente \"" + (amb.nome || amb.id) + "\" (" + pav.nome + "): " + (e && e.code) + " — " + (e && e.message));
         }
       }
-      estadoSync = "sincronizado";
-    }catch(e){
-      console.warn("Falha ao sincronizar com a nuvem:", e);
-      estadoSync = "erro";
-      alert("Aviso de sincronização: não consegui enviar para a nuvem agora.\n\nCódigo: " + (e && e.code) + "\nMensagem completa: " + (e && e.message) + "\n\nOs dados continuam salvos neste aparelho — tire um print desta mensagem (a mensagem completa é a parte mais importante) e me mande.");
+    }
+
+    estadoSync = falhas.length ? "erro" : "sincronizado";
+    if(falhas.length){
+      alert("Aviso de sincronização: " + falhas.length + " item(ns) não foram enviados para a nuvem agora.\n\n" + falhas.slice(0,5).join("\n\n") + (falhas.length>5 ? "\n\n(+" + (falhas.length-5) + " outros)" : "") + "\n\nOs dados continuam salvos neste aparelho. O resto foi enviado normalmente — tire um print e me mande se isso persistir.");
     }
   }
 
@@ -207,6 +226,24 @@ import {
 
   function salvarLocal(){
     try{ localStorage.setItem("qualitab_obra_v1", JSON.stringify(window.db)); }catch(e){ /* ignora: já estava salvo localmente antes */ }
+  }
+
+  // Depois que os três listeners (obras/pavimentos/ambientes) entregaram sua primeira
+  // leitura, confere se cada obra local está completa na nuvem — cobre tanto obras
+  // criadas antes do login quanto tentativas anteriores que pararam no meio (ex.: por
+  // causa de uma regra do Firestore desatualizada) sem precisar a pessoa mandar de
+  // novo manualmente.
+  function tentarVerificacaoCompleta(){
+    if(verificacaoCompletaFeita || !primeiroSnapObras || !primeiroSnapPavimentos || !primeiroSnapAmbientes) return;
+    verificacaoCompletaFeita = true;
+    const incompletas = (window.db.obras || []).filter(obra=>{
+      if(!idsRemotosConhecidos.has(obra.id)) return true;
+      return (obra.pavimentos || []).some(pav=>{
+        if(!pavimentosRemotosConhecidos.has(obra.id + "/" + pav.id)) return true;
+        return window.todosAmbientesDoPavimento(pav).some(amb=>!ambientesRemotosConhecidos.has(obra.id + "/" + amb.id));
+      });
+    });
+    if(incompletas.length) enviarObras(incompletas);
   }
 
   // Documentos que chegam antes do "pai" correspondente existir localmente (corrida
@@ -314,15 +351,9 @@ import {
       });
 
       if(mudouLocal){ salvarLocal(); if(typeof window.render === "function") window.render(); }
-
-      if(!primeiraSincronizacaoFeita){
-        primeiraSincronizacaoFeita = true;
-        estadoSync = "sincronizado";
-        // Sobe para a nuvem qualquer obra que já existia neste aparelho antes do login
-        // (ex.: histórico já criado no PC) e que a nuvem ainda não conhece.
-        const faltantes = (window.db.obras || []).filter(o=>!idsRemotosConhecidos.has(o.id));
-        if(faltantes.length) enviarObras(faltantes);
-      }
+      estadoSync = "sincronizado";
+      primeiroSnapObras = true;
+      tentarVerificacaoCompleta();
     }, (erro)=>{
       console.warn("Escuta da nuvem interrompida:", erro);
       estadoSync = "erro";
@@ -354,6 +385,8 @@ import {
         }
       });
       if(mudouLocal){ salvarLocal(); if(typeof window.render === "function") window.render(); }
+      primeiroSnapPavimentos = true;
+      tentarVerificacaoCompleta();
     }, (erro)=>{
       console.warn("Escuta de pavimentos interrompida:", erro);
     });
@@ -380,6 +413,8 @@ import {
         }
       });
       if(mudouLocal){ salvarLocal(); if(typeof window.render === "function") window.render(); }
+      primeiroSnapAmbientes = true;
+      tentarVerificacaoCompleta();
     }, (erro)=>{
       console.warn("Escuta de ambientes interrompida:", erro);
     });
@@ -394,7 +429,10 @@ import {
     ambientesRemotosConhecidos = new Set();
     pavimentosOrfaos = [];
     ambientesOrfaos = [];
-    primeiraSincronizacaoFeita = false;
+    primeiroSnapObras = false;
+    primeiroSnapPavimentos = false;
+    primeiroSnapAmbientes = false;
+    verificacaoCompletaFeita = false;
   }
 
   // ---------- tela de login ----------
