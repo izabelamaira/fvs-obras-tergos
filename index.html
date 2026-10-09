@@ -260,7 +260,9 @@ const ICON_PATHS = {
   pilar: `<path d="M5 4h14M5 20h14M8 4v16M16 4v16"/>`,
   hourglass: `<path d="M6 3h12M6 21h12M7 3c0 5 5 6 5 9s-5 4-5 9M17 3c0 5-5 6-5 9s5 4 5 9"/>`,
   back: `<path d="M19 12H5M11 6l-6 6 6 6"/>`,
-  chevron: `<path d="M9 6l6 6-6 6"/>`
+  chevron: `<path d="M9 6l6 6-6 6"/>`,
+  logout: `<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/>`,
+  cloud: `<path d="M7 18a4 4 0 0 1-.5-7.97A5 5 0 0 1 16 8.1 4.5 4.5 0 0 1 17.5 18H7z"/>`
 };
 function icon(name){
   return `<svg class="ic" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${ICON_PATHS[name]||""}</svg>`;
@@ -328,20 +330,35 @@ async function apagarImagemIdb(id){
 const _urlsImagem = {};
 function ehRefImagem(v){ return typeof v === "string" && v.startsWith("img:"); }
 function idDaRef(ref){ return ref.slice(4); }
+// Fotos novas (tiradas depois da sincronização na nuvem) guardam o id da obra dentro
+// da própria referência: "img:<obraId>:<id>". Fotos antigas continuam "img:<id>" (sem
+// nuvem — só existem no aparelho onde foram tiradas). obraIdDaRef separa as duas partes.
+function obraIdDaRef(ref){
+  const id = idDaRef(ref);
+  const i = id.indexOf(":");
+  return i === -1 ? [null, id] : [id.slice(0,i), id.slice(i+1)];
+}
 async function urlDaRefImagem(ref){
   const id = idDaRef(ref);
   if(!_urlsImagem[id]){
-    const valor = await lerImagemIdb(id);
+    let valor = await lerImagemIdb(id);
+    if(!valor){
+      const [obraId, shortId] = obraIdDaRef(ref);
+      if(obraId && window.buscarFotoNuvem){
+        try{ valor = await window.buscarFotoNuvem(obraId, shortId); }catch(e){ valor = null; }
+        if(valor) gravarImagemIdb(id, valor).catch(()=>{});
+      }
+    }
     if(!valor) return null;
     _urlsImagem[id] = typeof valor === "string" ? valor : URL.createObjectURL(valor);
   }
   return _urlsImagem[id];
 }
-async function salvarArquivoImagem(arquivo){
-  const ref = "img:" + uid();
+async function salvarArquivoImagem(arquivo, obraId){
+  const shortId = uid();
+  const ref = "img:" + (obraId ? obraId + ":" : "") + shortId;
   try{
     await gravarImagemIdb(idDaRef(ref), arquivo);
-    return ref;
   }catch(e){
     return await new Promise((res, rej)=>{
       const reader = new FileReader();
@@ -350,6 +367,14 @@ async function salvarArquivoImagem(arquivo){
       reader.readAsDataURL(arquivo);
     });
   }
+  if(obraId && window.enviarFotoNuvem) window.enviarFotoNuvem(obraId, shortId, arquivo).catch(()=>{});
+  return ref;
+}
+async function excluirImagem(ref){
+  if(!ehRefImagem(ref)) return;
+  apagarImagemIdb(idDaRef(ref)).catch(()=>{});
+  const [obraId, shortId] = obraIdDaRef(ref);
+  if(obraId && window.excluirFotoNuvem) window.excluirFotoNuvem(obraId, shortId).catch(()=>{});
 }
 async function salvarDataUrlImagem(dataUrl){
   const ref = "img:" + uid();
@@ -1369,7 +1394,7 @@ function headerObra(obra){
   wrap.title = "Toque para alterar a logo da obra";
   wrap.onclick=()=>{
     abrirSeletorArquivo("image/*", async (file)=>{
-      obra.foto = await salvarArquivoImagem(file);
+      obra.foto = await salvarArquivoImagem(file, obra.id);
       saveDB(db); render();
     });
   };
@@ -1406,9 +1431,24 @@ function renderObras(app){
   btnRestaurar.className="back"; btnRestaurar.innerHTML=icon('restore'); btnRestaurar.title="Restaurar backup";
   btnRestaurar.onclick=(e)=>{ e.stopPropagation(); restaurarBackup(); };
 
+  const btnSync = document.createElement("button");
+  btnSync.className="back"; btnSync.id="btn-sync-status";
+  btnSync.innerHTML=icon('cloud');
+  btnSync.title = window.statusSincronizacao ? window.statusSincronizacao() : "Sincronização";
+  btnSync.style.opacity = "0.55";
+  btnSync.onclick=(e)=>{ e.stopPropagation(); alert(btnSync.title); };
+
+  const btnSair = document.createElement("button");
+  btnSair.className="back"; btnSair.innerHTML=icon('logout'); btnSair.title="Sair da conta";
+  btnSair.onclick=(e)=>{
+    e.stopPropagation();
+    if(confirm("Sair da conta? Você vai parar de ver as atualizações da equipe até entrar de novo.") && window.fvsLogout) window.fvsLogout();
+  };
+
   const acoesWrap = document.createElement("div");
   acoesWrap.style.cssText = "display:flex;flex:1;justify-content:flex-end;";
-  acoesWrap.appendChild(btnBackup); acoesWrap.appendChild(btnRestaurar);
+  acoesWrap.appendChild(btnSync); acoesWrap.appendChild(btnBackup); acoesWrap.appendChild(btnRestaurar);
+  if(window.fvsLogado && window.fvsLogado()) acoesWrap.appendChild(btnSair);
 
   const espacador = document.createElement("div");
   espacador.style.flex = "1";
@@ -1445,7 +1485,7 @@ function renderObras(app){
       iconEl.onclick=(e)=>{
         e.stopPropagation();
         abrirSeletorArquivo("image/*", async (file)=>{
-          obra.foto = await salvarArquivoImagem(file);
+          obra.foto = await salvarArquivoImagem(file, obra.id);
           saveDB(db);
           render();
         });
@@ -1485,7 +1525,7 @@ function capaObra(obra){
   div.title = "Toque para " + (obra.fotoCapa ? "trocar" : "adicionar") + " a foto do prédio";
   div.onclick = ()=>{
     abrirSeletorArquivo("image/*", async (file)=>{
-      obra.fotoCapa = await salvarArquivoImagem(file);
+      obra.fotoCapa = await salvarArquivoImagem(file, obra.id);
       saveDB(db); render();
     });
   };
@@ -2661,7 +2701,7 @@ function abrirChecklist(obra,pav,amb,fvsInst){
           t.onclick = async ()=>{
             if(!confirm("Remover esta foto?")) return;
             const [removida] = item.fotos.splice(fi,1);
-            if(ehRefImagem(removida)) apagarImagemIdb(idDaRef(removida)).catch(()=>{});
+            excluirImagem(removida);
             dirty = true;
             atualizarFotosItem();
             atualizarBotaoSalvar();
@@ -2679,7 +2719,7 @@ function abrirChecklist(obra,pav,amb,fvsInst){
         abrirSeletorArquivo("image/*", async (file)=>{
           if(vagasReservadas >= MAX_FOTOS_VERIFICACAO) return;
           vagasReservadas++;
-          fotosDoItem(item).push(await salvarArquivoImagem(file));
+          fotosDoItem(item).push(await salvarArquivoImagem(file, obra.id));
           dirty = true;
           atualizarFotosItem();
           atualizarBotaoSalvar();
@@ -3670,5 +3710,7 @@ if("serviceWorker" in navigator){
   });
 }
 </script>
+<script src="scripts/firebase-config.js"></script>
+<script type="module" src="scripts/firebase-sync.js"></script>
 </body>
 </html>

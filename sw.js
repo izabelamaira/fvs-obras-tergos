@@ -1,4 +1,4 @@
-const CACHE_NAME = "fvs-obras-tergos-v13";
+const CACHE_NAME = "fvs-obras-tergos-v14";
 const ARQUIVOS_APP = [
   "./",
   "./index.html",
@@ -6,6 +6,8 @@ const ARQUIVOS_APP = [
   "./scripts/catalogo-fvs.js",
   "./scripts/subchecks-fvs.js",
   "./scripts/nomes-comodo.js",
+  "./scripts/firebase-config.js",
+  "./scripts/firebase-sync.js",
   "./assets/icons/icon-192.png",
   "./assets/icons/icon-512.png",
   "./assets/icons/icon-192-maskable.png",
