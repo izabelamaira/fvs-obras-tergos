@@ -18,7 +18,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 import {
   initializeFirestore, persistentLocalCache, persistentMultipleTabManager,
-  collection, collectionGroup, doc, setDoc, deleteDoc, onSnapshot, getFirestore
+  collection, collectionGroup, doc, setDoc, deleteDoc, onSnapshot, getFirestore, getDocs
 } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 import {
   getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObject
@@ -308,6 +308,29 @@ import {
     return local;
   }
 
+  // Quando um aparelho novo recebe uma obra que nunca tinha visto, busca os pavimentos
+  // e ambientes diretamente (em vez de depender da ordem de chegada dos três listeners
+  // em tempo real, que pode variar) — garante que tudo chega completo de uma vez, sem
+  // depender de fila de "órfãos".
+  async function hidratarObraCompleta(obra){
+    try{
+      const pavsSnap = await getDocs(collection(firestoreDb, "obras", obra.id, "pavimentos"));
+      pavsSnap.forEach(d=>{ pavimentosRemotosConhecidos.add(obra.id + "/" + d.id); mesclarPavimentoLeve(obra, d.data()); });
+
+      const ambsSnap = await getDocs(collection(firestoreDb, "obras", obra.id, "ambientes"));
+      ambsSnap.forEach(d=>{
+        ambientesRemotosConhecidos.add(obra.id + "/" + d.id);
+        const alvo = localizarAmbiente(obra, d.id);
+        if(alvo) Object.assign(alvo, d.data());
+      });
+
+      salvarLocal();
+      if(typeof window.render === "function") window.render();
+    }catch(e){
+      console.warn("Falha ao carregar pavimentos/ambientes da obra \"" + obra.nome + "\":", e);
+    }
+  }
+
   // Escuta em tempo real: qualquer alteração feita por outro aparelho chega aqui.
   function iniciarEscuta(){
     if(desinscreverObras) return;
@@ -334,6 +357,7 @@ import {
           (remota.pavimentos || []).forEach(p=> local.pavimentos.push({ id: p.id, nome: p.nome, ambientes: [], unidades: [], estrutura: [] }));
           window.db.obras.push(local);
           aplicarPavimentosOrfaos(local);
+          hidratarObraCompleta(local);
           mudouLocal = true;
         } else if((remota.atualizadoEm || 0) > (local.atualizadoEm || 0)){
           const nome = remota.nome, endereco = remota.endereco, foto = remota.foto, fotoCapa = remota.fotoCapa;
