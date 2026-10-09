@@ -142,27 +142,29 @@ import {
     return limpo;
   }
 
-  // Fotos tiradas antes de existir sincronização ficam com referência "img:<id>", sem o
-  // id da obra embutido, e nunca foram enviadas ao Storage — só existem no aparelho
-  // onde foram tiradas. Reaproveita o percorrerFotos() do app principal (já testado,
-  // já visita obra.foto, obra.fotoCapa e as fotos de cada verificação) pra encontrar
-  // essas referências antigas, subir cada uma pro Storage e trocar pela referência nova
-  // (com o id da obra embutido), que os outros aparelhos conseguem buscar.
-  async function migrarFotosAntigasParaNuvem(obra){
-    let mudou = false;
+  // Garante que toda foto desta obra que existe neste aparelho (seja uma foto antiga,
+  // de antes da sincronização, seja uma foto nova cujo envio em segundo plano falhou
+  // silenciosamente — ex.: durante o período em que a regra do Storage ainda estava
+  // errada) está de fato no Storage, comprimida. Ter o id da obra na referência NÃO
+  // significa que o arquivo chegou a ser enviado com sucesso (o envio de foto nova é
+  // "fire and forget"), então reenvia sempre que o arquivo original ainda existir
+  // neste aparelho — reenviar algo que já está lá não tem custo real.
+  async function garantirFotosNaNuvem(obra){
+    let mudouReferencia = false;
     await window.percorrerFotos({ obras: [obra] }, async (ref)=>{
       if(!window.ehRefImagem(ref)) return ref;
       const [obraIdNaRef, shortId] = window.obraIdDaRef(ref);
-      if(obraIdNaRef) return ref; // já migrada
+      const obraIdAlvo = obraIdNaRef || obra.id;
       try{
-        const blob = await window.lerImagemIdb(shortId);
-        if(!blob) return ref; // não existe neste aparelho — nada a fazer aqui
-        await uploadBytes(storageRef(storage, "obras/" + obra.id + "/fotos/" + shortId + ".jpg"), blob);
-        mudou = true;
-        return "img:" + obra.id + ":" + shortId;
+        const arquivo = await window.lerImagemIdb(window.idDaRef(ref));
+        if(!arquivo) return ref; // não existe neste aparelho — nada a fazer aqui
+        const comprimida = await comprimirImagem(arquivo);
+        await uploadBytes(storageRef(storage, "obras/" + obraIdAlvo + "/fotos/" + shortId + ".jpg"), comprimida);
+        if(!obraIdNaRef) mudouReferencia = true;
+        return "img:" + obraIdAlvo + ":" + shortId;
       }catch(e){ return ref; }
     });
-    return mudou;
+    return mudouReferencia;
   }
 
   // Cada escrita (obra, cada pavimento, cada ambiente) tem seu próprio try/catch: uma
@@ -173,9 +175,6 @@ import {
     if(!usuarioAtual) return;
     estadoSync = "sincronizando";
     const falhas = [];
-
-    try{ if(await migrarFotosAntigasParaNuvem(obra)) saveDBOriginal(window.db); }
-    catch(e){ console.warn("Falha ao migrar fotos antigas:", e); }
 
     obra.atualizadoEm = Date.now();
     obra.atualizadoPor = usuarioAtual.email;
@@ -269,7 +268,7 @@ import {
     migracaoFotosFeita = true;
     for(const obra of (window.db.obras || [])){
       try{
-        if(await migrarFotosAntigasParaNuvem(obra)){
+        if(await garantirFotosNaNuvem(obra)){
           saveDBOriginal(window.db);
           await enviarObra(obra);
         }
