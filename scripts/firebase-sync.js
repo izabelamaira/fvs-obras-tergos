@@ -125,6 +125,7 @@ import {
     }catch(e){
       console.warn("Falha ao sincronizar com a nuvem:", e);
       estadoSync = "erro";
+      alert("Aviso de sincronização: não consegui enviar para a nuvem agora (" + (e && e.code || e) + "). Os dados continuam salvos neste aparelho — tire um print desta mensagem e me mande.");
     }
   }
 
@@ -154,8 +155,13 @@ import {
         if(mudanca.type === "removed"){
           idsRemotosConhecidos.delete(remota.id);
           const antes = window.db.obras.length;
+          const obraRemovida = window.db.obras.find(o=>o.id === remota.id);
           window.db.obras = window.db.obras.filter(o=>o.id !== remota.id);
-          if(window.db.obras.length !== antes) mudouLocal = true;
+          if(window.db.obras.length !== antes){
+            mudouLocal = true;
+            console.warn("[FVS sync] Obra removida da nuvem e do aparelho:", remota.id, obraRemovida && obraRemovida.nome);
+            alert("Aviso de sincronização: a obra \"" + (obraRemovida ? obraRemovida.nome : remota.id) + "\" foi removida da nuvem (por este ou outro aparelho) e por isso saiu da lista aqui também.\n\nSe você não excluiu essa obra de propósito, tire um print desta mensagem e me mande.");
+          }
           return;
         }
         idsRemotosConhecidos.add(remota.id);
