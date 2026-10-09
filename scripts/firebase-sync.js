@@ -250,6 +250,24 @@ import {
     timerSync = setTimeout(()=>enviarObras(dbObj.obras || []), 800);
   }
 
+  // A checagem de completude (tentarVerificacaoCompleta) só olha pavimentos/ambientes,
+  // então uma obra com checklist já sincronizado mas com fotos antigas (sem id da obra
+  // na referência) nunca aparece como "incompleta" e o envio nunca é disparado sozinho.
+  // Isso roda uma vez por login, direto, sem depender de nada "parecer" faltando.
+  let migracaoFotosFeita = false;
+  async function tentarMigrarFotosAntigas(){
+    if(migracaoFotosFeita) return;
+    migracaoFotosFeita = true;
+    for(const obra of (window.db.obras || [])){
+      try{
+        if(await migrarFotosAntigasParaNuvem(obra)){
+          saveDBOriginal(window.db);
+          await enviarObra(obra);
+        }
+      }catch(e){ console.warn("Falha ao migrar fotos antigas da obra \"" + obra.nome + "\":", e); }
+    }
+  }
+
   function salvarLocal(){
     try{ localStorage.setItem("qualitab_obra_v1", JSON.stringify(window.db)); }catch(e){ /* ignora: já estava salvo localmente antes */ }
   }
@@ -404,6 +422,7 @@ import {
       estadoSync = "sincronizado";
       primeiroSnapObras = true;
       tentarVerificacaoCompleta();
+      tentarMigrarFotosAntigas();
     }, (erro)=>{
       console.warn("Escuta da nuvem interrompida:", erro);
       estadoSync = "erro";
@@ -483,6 +502,7 @@ import {
     primeiroSnapPavimentos = false;
     primeiroSnapAmbientes = false;
     verificacaoCompletaFeita = false;
+    migracaoFotosFeita = false;
   }
 
   // ---------- tela de login ----------
