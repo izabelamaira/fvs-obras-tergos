@@ -187,6 +187,11 @@
   .rel-item .rel-foto{width:auto;height:150px;max-width:100%;object-fit:cover;border:1px solid #ccc;}
   .rel-fotos .rel-foto{flex:0 1 auto;}
   .rel-elemento-titulo{font-size:16px;margin:0 0 12px 0;padding-bottom:6px;border-bottom:1px solid #999;page-break-before:always;}
+  .rel-anexos-titulo{font-size:16px;margin:24px 0 0 0;padding-bottom:6px;border-bottom:1px solid #999;page-break-before:always;}
+  .rel-anexo-pagina{page-break-before:always;}
+  .rel-anexo-titulo{font-size:13px;font-weight:700;margin:14px 0 8px;color:#333;}
+  .rel-anexo-img{width:100%;max-width:100%;border:1px solid #ccc;display:block;}
+  .rel-anexo-erro{font-size:12px;color:#c00;}
   .rel-elemento-titulo:first-of-type{page-break-before:avoid;}
   .rel-table{width:100%;border-collapse:collapse;font-size:12.5px;margin-bottom:16px;}
   .rel-table th, .rel-table td{border:1px solid #ccc;padding:6px 8px;text-align:left;}
@@ -2181,9 +2186,17 @@ function renderPavimentoEstrutura(app){
 
   const btnPdfCat = document.createElement("button");
   btnPdfCat.className="btn"; btnPdfCat.style.cssText="width:100%;border:1px solid var(--border);background:none;color:var(--text);margin-top:8px;";
-  btnPdfCat.innerHTML=icon('document')+` Exportar fichas completas de "${escapeHtml(cat.nome)}" (PDF)`;
-  btnPdfCat.onclick=()=>exportarRelatorioCategoriaEstrutura(obra, pav, cat);
+  const textoBtnPdfCat = icon('document')+` Exportar fichas completas de "${escapeHtml(cat.nome)}" (PDF)`;
+  btnPdfCat.innerHTML = textoBtnPdfCat;
+  btnPdfCat.onclick=async ()=>{
+    const temAnexos = cat.documentos && cat.documentos.length;
+    if(temAnexos){ btnPdfCat.disabled = true; btnPdfCat.textContent = "Gerando relatório (incluindo anexos)..."; }
+    try{ await exportarRelatorioCategoriaEstrutura(obra, pav, cat); }
+    finally{ btnPdfCat.disabled = false; btnPdfCat.innerHTML = textoBtnPdfCat; }
+  };
   main.appendChild(btnPdfCat);
+
+  main.appendChild(blocoAnexosCategoria(cat));
 
   renderListaAmbientes(main, cat, amb=>({view:"ambiente", obraId:obra.id, pavId:pav.id, catId:cat.id, ambId:amb.id}),
     `Nenhum elemento cadastrado ainda.<br>Toque em "+" para adicionar um elemento (ex: P1) ou vários numerados de uma vez.`, "elementos", "pilar");
@@ -2194,6 +2207,73 @@ function renderPavimentoEstrutura(app){
   fab.className="fab"; fab.textContent="+";
   fab.onclick=()=>abrirMenuAdicionarElementoEstrutura(cat);
   app.appendChild(fab);
+}
+
+// Documentos (PDF) anexados a uma categoria de estrutura inteira (ex.: "Pilares"),
+// diferente dos documentos por item de verificação — esses aparecem ao final do PDF
+// "Exportar fichas completas" dessa categoria (ver anexosHtmlRelatorio).
+function blocoAnexosCategoria(cat){
+  if(!cat.documentos) cat.documentos = [];
+  const wrap = document.createElement("div");
+  wrap.className = "card";
+  wrap.style.marginTop = "8px";
+  wrap.innerHTML = `
+    <label style="margin-top:0;">Documentos anexados (aparecem ao final do PDF "Exportar fichas completas")</label>
+    <div class="doc-list" style="margin-top:8px;"></div>
+    <button class="doc-btn" style="margin-top:10px;">${icon('document')} Anexar documento (PDF)</button>
+  `;
+  const docListEl = wrap.querySelector(".doc-list");
+  const btnAnexar = wrap.querySelector(".doc-btn");
+
+  function renderizarLista(){
+    docListEl.innerHTML = cat.documentos.length
+      ? cat.documentos.map((d,di)=>`
+        <span class="doc-chip">
+          <span class="doc-chip-nome" data-doc-idx="${di}" title="${escapeHtml(d.nome)}">${icon('document')} ${escapeHtml(d.nome)}</span>
+          <button class="doc-del-btn" data-doc-idx="${di}" title="Remover">${icon('trash')}</button>
+        </span>`).join("")
+      : `<span style="font-size:12.5px;color:var(--muted);">Nenhum documento anexado ainda.</span>`;
+    docListEl.querySelectorAll(".doc-chip-nome").forEach(el=>{
+      el.onclick=async ()=>{
+        const d = cat.documentos[parseInt(el.dataset.docIdx)];
+        const janela = window.open("", "_blank");
+        try{
+          const blob = await carregarDocumento(d.id);
+          if(!blob){ if(janela) janela.close(); alert("Não encontrei o arquivo salvo."); return; }
+          const url = URL.createObjectURL(blob);
+          if(janela) janela.location.href = url;
+        }catch(e){
+          if(janela) janela.close();
+          alert("Não consegui abrir o arquivo.");
+        }
+      };
+    });
+    docListEl.querySelectorAll(".doc-del-btn").forEach(el=>{
+      el.onclick=async ()=>{
+        const di = parseInt(el.dataset.docIdx);
+        const d = cat.documentos[di];
+        if(!confirm(`Remover o documento "${d.nome}"?`)) return;
+        try{ await excluirDocumento(d.id); }catch(e){}
+        cat.documentos.splice(di,1);
+        saveDB(db);
+        renderizarLista();
+      };
+    });
+  }
+  renderizarLista();
+
+  btnAnexar.onclick=()=>{
+    abrirSeletorArquivo("application/pdf,.pdf", async (file)=>{
+      const id = uid();
+      try{ await salvarDocumento(id, file); }
+      catch(e){ alert("Não consegui salvar o arquivo (verifique o espaço disponível no dispositivo)."); return; }
+      cat.documentos.push({ id, nome:file.name });
+      saveDB(db);
+      renderizarLista();
+    }, null, true);
+  };
+
+  return wrap;
 }
 
 function abrirMenuAdicionarElementoEstrutura(cat){
@@ -3508,6 +3588,41 @@ function fotosHtmlRelatorio(refs){
   return `<div class="rel-fotos">${refs.map(src=>imgHtml(src,"rel-foto","")).join("")}</div>`;
 }
 
+// Renderiza cada página de cada PDF anexado como imagem, pra aparecer legível ao final
+// do relatório impresso (não dá pra "colar" um PDF de verdade dentro da impressão do
+// navegador — isso converte cada página em imagem, uma por página impressa).
+async function anexosHtmlRelatorio(documentos){
+  if(!documentos || !documentos.length) return "";
+  let html = `<h2 class="rel-anexos-titulo">Documentos anexados</h2>`;
+  for(const d of documentos){
+    try{
+      const blob = await carregarDocumento(d.id);
+      if(!blob){
+        html += `<div class="rel-anexo-pagina"><div class="rel-anexo-titulo">${escapeHtml(d.nome)}</div><p class="rel-anexo-erro">Arquivo não encontrado neste aparelho.</p></div>`;
+        continue;
+      }
+      const pdfjsLib = await carregarPdfJs();
+      const buffer = await blob.arrayBuffer();
+      const doc = await pdfjsLib.getDocument({data:buffer}).promise;
+      for(let p=1; p<=doc.numPages; p++){
+        const page = await doc.getPage(p);
+        const viewport = page.getViewport({scale:2});
+        const canvas = document.createElement("canvas");
+        canvas.width = viewport.width; canvas.height = viewport.height;
+        await page.render({canvasContext: canvas.getContext("2d"), viewport}).promise;
+        const src = canvas.toDataURL("image/jpeg", 0.88);
+        html += `<div class="rel-anexo-pagina">
+          <div class="rel-anexo-titulo">${escapeHtml(d.nome)}${doc.numPages>1?` — página ${p}/${doc.numPages}`:""}</div>
+          <img src="${src}" class="rel-anexo-img">
+        </div>`;
+      }
+    }catch(e){
+      html += `<div class="rel-anexo-pagina"><div class="rel-anexo-titulo">${escapeHtml(d.nome)}</div><p class="rel-anexo-erro">Não foi possível exibir este anexo (${escapeHtml(e.message||"erro desconhecido")}).</p></div>`;
+    }
+  }
+  return html;
+}
+
 async function imprimirRelatorio(html){
   const area = document.getElementById("print-area");
   area.innerHTML = html;
@@ -3610,7 +3725,7 @@ function exportarRelatorioPavimento(obra, pav){
   imprimirRelatorio(html);
 }
 
-function exportarRelatorioCategoriaEstrutura(obra, pav, cat){
+async function exportarRelatorioCategoriaEstrutura(obra, pav, cat){
   let html = `
     <div class="rel-header">
       <div class="rel-header-texto">
@@ -3647,6 +3762,7 @@ function exportarRelatorioCategoriaEstrutura(obra, pav, cat){
   });
 
   html += `<div class="meta" style="margin-top:30px;">RESPONSÁVEL PELA VERIFICAÇÃO: _______________________________ &nbsp;&nbsp; Data: ___/___/______</div>`;
+  html += await anexosHtmlRelatorio(cat.documentos);
   imprimirRelatorio(html);
 }
 
