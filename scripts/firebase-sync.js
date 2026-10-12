@@ -437,9 +437,15 @@ import {
           hidratarObraCompleta(local);
           mudouLocal = true;
         } else if((remota.atualizadoEm || 0) > (local.atualizadoEm || 0)){
-          const nome = remota.nome, endereco = remota.endereco, foto = remota.foto, fotoCapa = remota.fotoCapa;
-          const fornecedores = remota.fornecedores, ifcStoreyMap = remota.ifcStoreyMap;
-          Object.assign(local, { nome, endereco, foto, fotoCapa, fornecedores, ifcStoreyMap, atualizadoEm: remota.atualizadoEm, atualizadoPor: remota.atualizadoPor });
+          // Só atualiza um campo se ele REALMENTE veio no documento remoto. Um campo
+          // ausente lá (ex.: um aparelho que nunca teve a foto e salvou outra coisa)
+          // não pode apagar o valor que já existia aqui — isso já causou a foto de
+          // capa e a logo da obra sumirem sem ninguém ter mexido nelas.
+          ["nome","endereco","foto","fotoCapa","fotoCapaPos","fornecedores","ifcStoreyMap"].forEach(campo=>{
+            if(remota[campo] !== undefined) local[campo] = remota[campo];
+          });
+          local.atualizadoEm = remota.atualizadoEm;
+          local.atualizadoPor = remota.atualizadoPor;
           // conteúdo de cada pavimento (ambientes etc.) só chega pelos listeners de
           // pavimentos/ambientes — aqui só garante que a LISTA de pavimentos (nomes/ordem)
           // bate com a nuvem, sem apagar o que já tínhamos de cada um.
