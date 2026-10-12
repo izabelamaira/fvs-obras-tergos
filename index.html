@@ -578,7 +578,7 @@ sincronizarItensCatalogoFvs();
 var route = { view: "obras" };
 var pavimentosReordenando = false;
 
-function go(newRoute){ route = newRoute; render(); }
+function go(newRoute){ route = newRoute; render(); window.scrollTo(0,0); }
 
 function getObra(id){ return db.obras.find(o=>o.id===id); }
 function getPav(obra,id){ return obra.pavimentos.find(p=>p.id===id); }
@@ -2612,6 +2612,10 @@ function abrirChecklist(obra,pav,amb,fvsInst){
     btn.className = "btn primary "+(dirty?'save-pending':'save-ok');
   }
   function draw(){
+    // draw() reconstrói o modal inteiro a cada mudança (status, N/A, foto etc.) — sem
+    // isso, cada toque reabriria o modal do zero e voltaria o scroll para o topo.
+    const modalAntigo = document.querySelector(".modal");
+    const scrollAnterior = modalAntigo ? modalAntigo.scrollTop : 0;
     const normasHtml = fvsInst.normas.map(n=>`• ${escapeHtml(n)}`).join("<br>");
     const fornecedores = fornecedoresDaObra(obra);
     const opcoesFornecedor = fornecedores.map(f=>`<option value="${f.id}" ${fvsInst.fornecedorId===f.id?'selected':''}>${escapeHtml(f.nome)}</option>`).join("");
@@ -2643,6 +2647,8 @@ function abrirChecklist(obra,pav,amb,fvsInst){
       </div>
       <button class="btn ghost" id="m-remover">Remover este serviço do ambiente</button>`;
     openModal(html);
+    const modalNovo = document.querySelector(".modal");
+    if(modalNovo) modalNovo.scrollTop = scrollAnterior;
     document.getElementById("m-close").onclick=fecharComConfirmacao;
     document.getElementById("modal-bg").onclick=(e)=>{ if(e.target.id==="modal-bg") fecharComConfirmacao(); };
     document.getElementById("m-salvar-fvs").onclick=()=>{
