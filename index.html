@@ -52,6 +52,13 @@
   .obra-capa{position:relative;height:190px;border-radius:14px;overflow:hidden;margin-bottom:14px;cursor:pointer;}
   .obra-capa img{width:100%;height:100%;object-fit:cover;display:block;}
   .obra-capa .capa-editar{position:absolute;right:10px;bottom:10px;width:38px;height:38px;border-radius:50%;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;}
+  .obra-capa .capa-posicionar{position:absolute;left:10px;bottom:10px;width:76px;height:76px;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:2px;}
+  .obra-capa .capa-pos-btn{border:none;background:rgba(0,0,0,.55);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;font-size:13px;}
+  .obra-capa .capa-pos-btn:active{background:rgba(0,0,0,.8);}
+  .obra-capa .pos-cima{grid-column:2;grid-row:1;border-radius:8px 8px 0 0;}
+  .obra-capa .pos-esquerda{grid-column:1;grid-row:2;border-radius:8px 0 0 8px;}
+  .obra-capa .pos-direita{grid-column:3;grid-row:2;border-radius:0 8px 8px 0;}
+  .obra-capa .pos-baixo{grid-column:2;grid-row:3;border-radius:0 0 8px 8px;}
   .obra-capa.vazia{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--muted);background:var(--card);border:1.5px dashed var(--border);}
   .obra-capa.vazia .capa-icone{width:46px;height:46px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--primary);}
   .obra-capa.vazia .capa-texto{font-size:13.5px;font-weight:600;}
@@ -262,7 +269,9 @@ const ICON_PATHS = {
   back: `<path d="M19 12H5M11 6l-6 6 6 6"/>`,
   chevron: `<path d="M9 6l6 6-6 6"/>`,
   logout: `<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/>`,
-  cloud: `<path d="M7 18a4 4 0 0 1-.5-7.97A5 5 0 0 1 16 8.1 4.5 4.5 0 0 1 17.5 18H7z"/>`
+  cloud: `<path d="M7 18a4 4 0 0 1-.5-7.97A5 5 0 0 1 16 8.1 4.5 4.5 0 0 1 17.5 18H7z"/>`,
+  left: `<path d="M15 6l-6 6 6 6"/>`,
+  right: `<path d="M9 6l6 6-6 6"/>`
 };
 function icon(name){
   return `<svg class="ic" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${ICON_PATHS[name]||""}</svg>`;
@@ -1529,12 +1538,36 @@ function capaObra(obra){
   div.onclick = ()=>{
     abrirSeletorArquivo("image/*", async (file)=>{
       obra.fotoCapa = await salvarArquivoImagem(file, obra.id);
+      obra.fotoCapaPos = { x: 50, y: 50 };
       saveDB(db); render();
     });
   };
   if(obra.fotoCapa){
+    if(!obra.fotoCapaPos) obra.fotoCapaPos = { x: 50, y: 50 };
+    const pos = obra.fotoCapaPos;
     div.className = "obra-capa";
-    div.innerHTML = `${imgHtml(obra.fotoCapa, "", "Foto do prédio — " + obra.nome)}<span class="capa-editar">${icon('camera')}</span>`;
+    div.innerHTML = `${imgHtml(obra.fotoCapa, "", "Foto do prédio — " + obra.nome)}<span class="capa-editar">${icon('camera')}</span>
+      <div class="capa-posicionar">
+        <button class="capa-pos-btn pos-cima" title="Mover para cima">${icon('up')}</button>
+        <button class="capa-pos-btn pos-esquerda" title="Mover para a esquerda">${icon('left')}</button>
+        <button class="capa-pos-btn pos-direita" title="Mover para a direita">${icon('right')}</button>
+        <button class="capa-pos-btn pos-baixo" title="Mover para baixo">${icon('down')}</button>
+      </div>`;
+    const img = div.querySelector("img");
+    const aplicarPos = ()=>{ img.style.objectPosition = pos.x + "% " + pos.y + "%"; };
+    aplicarPos();
+    const PASSO = 10;
+    const nudge = (dx, dy)=>(e)=>{
+      e.stopPropagation();
+      pos.x = Math.max(0, Math.min(100, pos.x + dx));
+      pos.y = Math.max(0, Math.min(100, pos.y + dy));
+      aplicarPos();
+      saveDB(db);
+    };
+    div.querySelector(".pos-cima").onclick = nudge(0, -PASSO);
+    div.querySelector(".pos-baixo").onclick = nudge(0, PASSO);
+    div.querySelector(".pos-esquerda").onclick = nudge(-PASSO, 0);
+    div.querySelector(".pos-direita").onclick = nudge(PASSO, 0);
   } else {
     div.className = "obra-capa vazia";
     div.innerHTML = `<span class="capa-icone">${icon('building')}</span><span class="capa-texto">Adicionar foto do prédio</span>`;
