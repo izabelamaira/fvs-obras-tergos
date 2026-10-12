@@ -2441,4 +2441,85 @@ window.FVS_SUBCHECKS = {
     ]
   },
 
+  "FVS-46|00": {
+    "Porta corta-fogo instalada corresponde ao modelo, dimensões e TRRF (tempo requerido de resistência ao fogo) especificados em projeto, com etiqueta de identificação do fabricante afixada e legível": [
+      "Modelo e dimensões da porta conferidos com a especificação de projeto",
+      "TRRF (ex.: 30, 60 ou 90 minutos) conferido com a exigência do projeto de segurança contra incêndio",
+      "Etiqueta/selo do fabricante afixada na porta e legível",
+      "Registro fotográfico da etiqueta e da porta instalada"
+    ],
+    "Barra antipânico instalada e testada, liberando a porta sem uso de chave, cartão ou qualquer conhecimento prévio, em um único movimento": [
+      "Barra antipânico instalada conforme especificação de projeto",
+      "Acionamento testado liberando a porta em um único movimento, sem chave ou cartão",
+      "Funcionamento testado com a porta nas duas posições (aberta e fechada)",
+      "Ausência de travamentos ou adaptações que dificultem o acionamento em emergência"
+    ],
+    "Mola hidráulica ou braço de fechamento automático instalado e ajustado, garantindo o fechamento completo da porta (até o batente) sem necessidade de ação manual": [
+      "Mola hidráulica ou braço de fechamento instalado conforme o peso e o tamanho da porta",
+      "Fechamento completo testado a partir de diferentes ângulos de abertura",
+      "Velocidade de fechamento ajustada, sem batida brusca nem fechamento incompleto",
+      "Porta permanece travada no batente após o fechamento, sem folga"
+    ],
+    "Vedação (gaxeta intumescente) e dobradiças/ferragens íntegras, sem furos, cortes ou adaptações fora do especificado pelo fabricante": [
+      "Gaxeta intumescente conferida ao redor de todo o batente, sem falhas ou trechos faltando",
+      "Dobradiças e ferragens conferidas quanto à fixação e integridade",
+      "Ausência de furos, cortes ou adaptações não previstas pelo fabricante",
+      "Substituição solicitada quando identificado dano que comprometa a resistência ao fogo"
+    ],
+    "Porta abre no sentido do fluxo de saída (sentido de fuga) e sua área de giro está livre de obstáculos (mobiliário, quadro elétrico, extintor etc.)": [
+      "Sentido de abertura conferido com o sentido do fluxo de saída (fuga)",
+      "Área de giro da porta conferida em campo, sem mobiliário ou equipamentos na trajetória",
+      "Quadros elétricos, extintores e sinalizações reposicionados fora da área de giro, quando necessário",
+      "Conferência repetida após qualquer alteração de layout próxima à porta"
+    ],
+    "Sinalização \"Mantenha esta porta fechada\" afixada na face da porta, visível, conforme NBR 13434-2": [
+      "Placa/adesivo de sinalização afixado na face da porta",
+      "Símbolo e dizeres conferidos conforme NBR 13434-2",
+      "Sinalização visível e legível nas condições normais de iluminação",
+      "Fixação conferida para que a sinalização não se solte com o uso da porta"
+    ],
+    "Largura livre de corredores e rotas de fuga conforme dimensionamento de projeto e NBR 9050:2020 — mínimo 1,50 m, ou a largura calculada para o fluxo de pessoas previsto": [
+      "Largura livre do corredor medida em pelo menos três pontos do trecho",
+      "Medida conferida com a largura mínima do projeto (ou 1,50 m, o que for maior)",
+      "Ausência de redução pontual da largura por tubulação, mobiliário fixo ou batente de porta",
+      "Medição registrada (foto com trena) nos trechos mais críticos"
+    ],
+    "Vão livre de porta em rota acessível com no mínimo 0,80 m, maçaneta tipo alavanca instalada entre 0,80 m e 1,10 m de altura do piso acabado": [
+      "Vão livre da porta medido com a folha aberta a 90°",
+      "Medida conferida com o mínimo de 0,80 m exigido",
+      "Maçaneta do tipo alavanca (não tipo bola/redonda) conferida",
+      "Altura da maçaneta medida a partir do piso acabado, entre 0,80 m e 1,10 m"
+    ],
+    "Piso tátil de alerta e direcional instalado conforme projeto e NBR 9050, nas mudanças de direção, desníveis e proximidades de escadas/rampas": [
+      "Piso tátil direcional conferido nos trechos de percurso previstos em projeto",
+      "Piso tátil de alerta conferido nas mudanças de direção, desníveis e no início/fim de escadas e rampas",
+      "Contraste de cor do piso tátil em relação ao piso adjacente conferido",
+      "Fixação e nivelamento do piso tátil conferidos, sem saliências que causem tropeço"
+    ],
+    "Área de manobra para rotação de 180° (1,50 m x 1,20 m, com segmento reto mínimo de 0,80 m) livre de obstáculos nos pontos previstos em projeto (acessos, halls de elevador, sanitários acessíveis)": [
+      "Pontos de área de manobra conferidos com o projeto (acessos, halls de elevador, sanitários acessíveis)",
+      "Dimensão de 1,50 m x 1,20 m medida e conferida",
+      "Segmento reto mínimo de 0,80 m conferido dentro da área de manobra",
+      "Área livre de mobiliário, lixeiras ou outros obstáculos no momento da vistoria"
+    ],
+    "Área de resgate executada conforme projeto, com dimensão mínima para acomodar uma cadeira de rodas, posicionada junto à escada de segurança ou rota de fuga, sem obstrução": [
+      "Localização da área de resgate conferida com o projeto (junto à escada de segurança ou rota de fuga)",
+      "Dimensão da área de resgate medida e conferida como suficiente para uma cadeira de rodas",
+      "Área livre de obstáculos e de uso indevido (depósito de materiais, mobiliário) no momento da vistoria",
+      "Piso e acabamento da área de resgate conferidos quanto à regularidade e antiderrapância"
+    ],
+    "Sinalização da área de resgate afixada conforme NBR 13434, indicando o ponto de espera para pessoas com mobilidade reduzida em caso de emergência": [
+      "Placa de sinalização da área de resgate afixada no local",
+      "Símbolo e dizeres conferidos conforme NBR 13434",
+      "Sinalização visível a partir da rota de acesso à área",
+      "Sinalização complementar (piso ou parede) conferida, quando prevista em projeto"
+    ],
+    "Comunicação (interfone/intercomunicador) na área de resgate testada e funcionando, quando prevista em projeto": [
+      "Existência de interfone/intercomunicador conferida com o projeto",
+      "Funcionamento testado (chamada e recebimento de áudio)",
+      "Identificação clara do ponto de comunicação (etiqueta ou sinalização)",
+      "Teste registrado com data, já que esse item deve ser reconferido periodicamente"
+    ]
+  },
+
 };

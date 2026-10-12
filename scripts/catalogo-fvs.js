@@ -615,6 +615,24 @@ const FVS_CATALOGO = [
       "Funcionamento testado antes da entrega // verificar"
     ]
   },
+  { codigo:"FVS-46", nome:"Portas Corta-Fogo e Acessibilidade (NBR 9050)", rev:"00",
+    normas:["NBR 11742 - Porta resistente ao fogo para saída de emergência // confirmar a edição vigente diretamente na ABNT antes de uso formal — catálogos comerciais consultados em 10/2026 indicavam nova edição publicada, mas não foi possível confirmar no site oficial da ABNT","NBR 11711 - Dispositivo de abertura de emergência para saída de emergência (barra antipânico)","NBR 13434-2 - Sinalização de segurança contra incêndio e pânico - Parte 2: Símbolos e suas formas, dimensões e cores","NBR 9050:2020 - Acessibilidade a edificações, mobiliário, espaços e equipamentos urbanos","IT-07/CBMMG - Compartimentação Horizontal e Vertical (exige porta corta-fogo conforme NBR 11742 nas saídas de emergência) // confirmar edição vigente e substituir pela IT do Corpo de Bombeiros do estado da obra, se diferente de Minas Gerais","IT-08/CBMMG - Saídas de Emergência em Edificações (dimensionamento de rotas e larguras de saída) // mesma ressalva acima quanto ao estado"],
+    itens:[
+      "Porta corta-fogo instalada corresponde ao modelo, dimensões e TRRF (tempo requerido de resistência ao fogo) especificados em projeto, com etiqueta de identificação do fabricante afixada e legível",
+      "Barra antipânico instalada e testada, liberando a porta sem uso de chave, cartão ou qualquer conhecimento prévio, em um único movimento",
+      "Mola hidráulica ou braço de fechamento automático instalado e ajustado, garantindo o fechamento completo da porta (até o batente) sem necessidade de ação manual",
+      "Vedação (gaxeta intumescente) e dobradiças/ferragens íntegras, sem furos, cortes ou adaptações fora do especificado pelo fabricante",
+      "Porta abre no sentido do fluxo de saída (sentido de fuga) e sua área de giro está livre de obstáculos (mobiliário, quadro elétrico, extintor etc.)",
+      "Sinalização \"Mantenha esta porta fechada\" afixada na face da porta, visível, conforme NBR 13434-2",
+      "Largura livre de corredores e rotas de fuga conforme dimensionamento de projeto e NBR 9050:2020 — mínimo 1,50 m, ou a largura calculada para o fluxo de pessoas previsto",
+      "Vão livre de porta em rota acessível com no mínimo 0,80 m, maçaneta tipo alavanca instalada entre 0,80 m e 1,10 m de altura do piso acabado",
+      "Piso tátil de alerta e direcional instalado conforme projeto e NBR 9050, nas mudanças de direção, desníveis e proximidades de escadas/rampas",
+      "Área de manobra para rotação de 180° (1,50 m x 1,20 m, com segmento reto mínimo de 0,80 m) livre de obstáculos nos pontos previstos em projeto (acessos, halls de elevador, sanitários acessíveis)",
+      "Área de resgate executada conforme projeto, com dimensão mínima para acomodar uma cadeira de rodas, posicionada junto à escada de segurança ou rota de fuga, sem obstrução",
+      "Sinalização da área de resgate afixada conforme NBR 13434, indicando o ponto de espera para pessoas com mobilidade reduzida em caso de emergência",
+      "Comunicação (interfone/intercomunicador) na área de resgate testada e funcionando, quando prevista em projeto"
+    ]
+  },
 
 ];
 window.FVS_CATALOGO = FVS_CATALOGO;
