@@ -159,6 +159,7 @@
   .close-x{background:none;border:none;color:var(--muted);font-size:22px;float:right;cursor:pointer;line-height:1;}
 
   #print-area{display:none;}
+  @page{size:A4;margin:10mm;}
   @media print{
     body *{visibility:hidden;}
     #print-area, #print-area *{visibility:visible;}
@@ -187,11 +188,14 @@
   .rel-item .rel-foto{width:auto;height:150px;max-width:100%;object-fit:cover;border:1px solid #ccc;}
   .rel-fotos .rel-foto{flex:0 1 auto;}
   .rel-elemento-titulo{font-size:16px;margin:0 0 12px 0;padding-bottom:6px;border-bottom:1px solid #999;page-break-before:always;}
-  .rel-anexos-titulo{font-size:16px;margin:24px 0 0 0;padding-bottom:6px;border-bottom:1px solid #999;page-break-before:always;}
-  .rel-anexo-pagina{page-break-before:always;text-align:center;}
-  .rel-anexo-titulo{font-size:13px;font-weight:700;margin:14px 0 8px;color:#333;}
-  .rel-anexo-img{max-width:100%;max-height:92vh;border:1px solid #ccc;display:inline-block;}
-  .rel-anexo-erro{font-size:12px;color:#c00;}
+  .rel-anexos-secao{page-break-before:always;break-before:page;}
+  .rel-anexos-titulo{font-size:16px;margin:0 0 4mm 0;padding-bottom:6px;border-bottom:1px solid #999;}
+  .rel-anexo-folha{display:flex;flex-direction:column;gap:3mm;overflow:hidden;page-break-inside:avoid;break-inside:avoid;}
+  .rel-anexo-folha + .rel-anexo-folha{page-break-before:always;break-before:page;}
+  .rel-anexo-bloco{display:flex;flex-direction:column;min-height:0;}
+  .rel-anexo-titulo{font-size:11px;font-weight:700;margin:0 0 1.5mm;color:#333;height:4mm;line-height:4mm;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+  .rel-anexo-img{flex:1 1 auto;min-height:0;width:100%;height:100%;object-fit:contain;object-position:top center;display:block;}
+  .rel-anexo-erro{font-size:12px;color:#c00;margin:0;}
   .rel-elemento-titulo:first-of-type{page-break-before:avoid;}
   .rel-table{width:100%;border-collapse:collapse;font-size:12.5px;margin-bottom:16px;}
   .rel-table th, .rel-table td{border:1px solid #ccc;padding:6px 8px;text-align:left;}
@@ -3594,39 +3598,116 @@ function fotosHtmlRelatorio(refs){
   return `<div class="rel-fotos">${refs.map(src=>imgHtml(src,"rel-foto","")).join("")}</div>`;
 }
 
-// Renderiza cada página de cada PDF anexado como imagem, pra aparecer legível ao final
-// do relatório impresso (não dá pra "colar" um PDF de verdade dentro da impressão do
-// navegador — isso converte cada página em imagem, uma por página impressa).
-async function anexosHtmlRelatorio(documentos){
-  if(!documentos || !documentos.length) return "";
-  let html = `<h2 class="rel-anexos-titulo">Documentos anexados</h2>`;
+// Renderiza cada página de cada PDF anexado como imagem (não dá pra "colar" um PDF de
+// verdade dentro da impressão do navegador) e monta as folhas aproveitando o espaço:
+// 1) corta a margem branca de cada página do anexo (o laudo fica maior e mais legível);
+// 2) empilha na mesma folha impressa quantas páginas couberem na largura total
+//    (ex.: dois boletins de concretagem curtos numa folha só);
+// 3) páginas altas ocupam a folha inteira, reduzidas só o necessário para caber.
+// O título "Documentos anexados" fica na MESMA folha do primeiro anexo (antes ele
+// ficava sozinho numa folha, e a folha seguinte ainda podia sair em branco).
+const ANEXO_LARGURA_MM = 190;   // A4 (210mm) menos margens de 10mm de cada lado
+const ANEXO_ALTURA_MM = 270;    // A4 (297mm) menos margens, com folga para não estourar a folha
+const ANEXO_TITULO_SECAO_MM = 12;
+const ANEXO_LEGENDA_MM = 5.5;
+const ANEXO_ESPACO_MM = 3;
+
+function recortarMargemBranca(canvas){
+  const ctx = canvas.getContext("2d");
+  const {width:w, height:h} = canvas;
+  const dados = ctx.getImageData(0, 0, w, h).data;
+  const LIMITE = 235; // pixel mais claro que isso conta como "branco"
+  let topo = h, base = -1, esq = w, dir = -1;
+  for(let y=0; y<h; y+=2){
+    const linha = y*w*4;
+    for(let x=0; x<w; x+=2){
+      const i = linha + x*4;
+      if(dados[i] < LIMITE || dados[i+1] < LIMITE || dados[i+2] < LIMITE){
+        if(y < topo) topo = y;
+        if(y > base) base = y;
+        if(x < esq) esq = x;
+        if(x > dir) dir = x;
+      }
+    }
+  }
+  if(base < 0) return canvas; // página em branco: mantém como está
+  const folga = Math.round(Math.min(w,h) * 0.015);
+  topo = Math.max(0, topo - folga); esq = Math.max(0, esq - folga);
+  base = Math.min(h-1, base + folga); dir = Math.min(w-1, dir + folga);
+  const cw = dir - esq + 1, ch = base - topo + 1;
+  if(cw >= w*0.97 && ch >= h*0.97) return canvas; // quase nada a cortar
+  const corte = document.createElement("canvas");
+  corte.width = cw; corte.height = ch;
+  corte.getContext("2d").drawImage(canvas, esq, topo, cw, ch, 0, 0, cw, ch);
+  return corte;
+}
+
+async function paginasDosAnexos(documentos){
+  const itens = [];
   for(const d of documentos){
     try{
       const blob = await carregarDocumento(d.id);
-      if(!blob){
-        html += `<div class="rel-anexo-pagina"><div class="rel-anexo-titulo">${escapeHtml(d.nome)}</div><p class="rel-anexo-erro">Arquivo não encontrado neste aparelho.</p></div>`;
-        continue;
-      }
+      if(!blob){ itens.push({ legenda:d.nome, erro:"Arquivo não encontrado neste aparelho." }); continue; }
       const pdfjsLib = await carregarPdfJs();
-      const buffer = await blob.arrayBuffer();
-      const doc = await pdfjsLib.getDocument({data:buffer}).promise;
+      const doc = await pdfjsLib.getDocument({data: await blob.arrayBuffer()}).promise;
       for(let p=1; p<=doc.numPages; p++){
         const page = await doc.getPage(p);
         const viewport = page.getViewport({scale:2});
         const canvas = document.createElement("canvas");
         canvas.width = viewport.width; canvas.height = viewport.height;
-        await page.render({canvasContext: canvas.getContext("2d"), viewport}).promise;
-        const src = canvas.toDataURL("image/jpeg", 0.88);
-        html += `<div class="rel-anexo-pagina">
-          <div class="rel-anexo-titulo">${escapeHtml(d.nome)}${doc.numPages>1?` — página ${p}/${doc.numPages}`:""}</div>
-          <img src="${src}" class="rel-anexo-img">
-        </div>`;
+        const ctx = canvas.getContext("2d");
+        ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+        await page.render({canvasContext: ctx, viewport}).promise;
+        const recortado = recortarMargemBranca(canvas);
+        itens.push({
+          legenda: d.nome + (doc.numPages>1 ? ` — página ${p}/${doc.numPages}` : ""),
+          src: recortado.toDataURL("image/jpeg", 0.88),
+          proporcao: recortado.height / recortado.width
+        });
       }
     }catch(e){
-      html += `<div class="rel-anexo-pagina"><div class="rel-anexo-titulo">${escapeHtml(d.nome)}</div><p class="rel-anexo-erro">Não foi possível exibir este anexo (${escapeHtml(e.message||"erro desconhecido")}).</p></div>`;
+      itens.push({ legenda:d.nome, erro:`Não foi possível exibir este anexo (${e.message||"erro desconhecido"}).` });
     }
   }
-  return html;
+  return itens;
+}
+
+function montarFolhasAnexos(itens){
+  const folhas = [];
+  let atual = null;
+  itens.forEach(item=>{
+    const corpo = item.erro ? 8 : ANEXO_LARGURA_MM * item.proporcao; // altura usando a largura total
+    const necessario = ANEXO_LEGENDA_MM + corpo;
+    const dispNova = ANEXO_ALTURA_MM - (folhas.length===0 && !atual ? ANEXO_TITULO_SECAO_MM : 0);
+    if(atual && atual.usado + ANEXO_ESPACO_MM + necessario <= atual.disponivel){
+      atual.usado += ANEXO_ESPACO_MM + necessario;
+      atual.blocos.push({ item, altura: necessario });
+      return;
+    }
+    if(atual) folhas.push(atual);
+    const disponivel = atual ? ANEXO_ALTURA_MM : dispNova;
+    atual = { disponivel, usado: Math.min(necessario, disponivel), blocos: [{ item, altura: Math.min(necessario, disponivel) }] };
+  });
+  if(atual) folhas.push(atual);
+  return folhas;
+}
+
+async function anexosHtmlRelatorio(documentos){
+  if(!documentos || !documentos.length) return "";
+  const folhas = montarFolhasAnexos(await paginasDosAnexos(documentos));
+  let html = `<div class="rel-anexos-secao">`;
+  folhas.forEach((folha, fi)=>{
+    html += `<div class="rel-anexo-folha" style="max-height:${ANEXO_ALTURA_MM}mm;">`;
+    if(fi===0) html += `<h2 class="rel-anexos-titulo">Documentos anexados</h2>`;
+    folha.blocos.forEach(({item, altura})=>{
+      html += `<div class="rel-anexo-bloco" style="height:${altura.toFixed(1)}mm;">
+        <div class="rel-anexo-titulo">${escapeHtml(item.legenda)}</div>
+        ${item.erro ? `<p class="rel-anexo-erro">${escapeHtml(item.erro)}</p>` : `<img src="${item.src}" class="rel-anexo-img" alt="">`}
+      </div>`;
+    });
+    html += `</div>`;
+  });
+  return html + `</div>`;
 }
 
 async function imprimirRelatorio(html){
