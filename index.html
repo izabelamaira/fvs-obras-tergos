@@ -410,12 +410,28 @@ function imgHtml(valor, classe, alt){
   const atr = ehRefImagem(valor) ? `data-imgref="${valor}"` : `src="${valor}"`;
   return `<img class="${classe}" ${atr} alt="${escapeHtml(alt||"")}">`;
 }
+// Resolve com null se a promessa demorar mais que `ms` (evita travar o relatório
+// esperando uma foto da nuvem que não responde).
+function comTempoLimite(promessa, ms){
+  return Promise.race([promessa, new Promise(res=>setTimeout(()=>res(null), ms))]);
+}
+// Carrega as fotos em paralelo (até 6 por vez), cada uma com tempo-limite.
+// Uma foto com problema não impede as outras nem trava a exportação.
 async function hidratarImagens(raiz){
-  const imgs = (raiz || document).querySelectorAll("img[data-imgref]");
-  for(const img of imgs){
-    const url = await urlDaRefImagem(img.dataset.imgref);
-    if(url){ img.src = url; await img.decode().catch(()=>{}); }
-  }
+  const imgs = Array.from((raiz || document).querySelectorAll("img[data-imgref]"));
+  let proximo = 0;
+  const trabalhador = async ()=>{
+    while(proximo < imgs.length){
+      const img = imgs[proximo++];
+      try{
+        const url = await comTempoLimite(urlDaRefImagem(img.dataset.imgref), 20000);
+        if(url){ img.src = url; await comTempoLimite(img.decode().catch(()=>{}), 10000); }
+      }catch(e){
+        console.warn("Falha ao carregar imagem:", img.dataset.imgref, e);
+      }
+    }
+  };
+  await Promise.all(Array.from({length: Math.min(6, imgs.length)}, trabalhador));
 }
 async function percorrerFotos(obj, fn){
   for(const obra of obj.obras || []){
@@ -2184,20 +2200,16 @@ function renderPavimentoEstrutura(app){
   const main = document.createElement("main");
 
   const btnPdfPav = document.createElement("button");
-  btnPdfPav.className="btn primary"; btnPdfPav.style.marginTop="0"; btnPdfPav.innerHTML=icon('document')+" Exportar relatório do pavimento (PDF)";
-  btnPdfPav.onclick=()=>exportarRelatorioPavimento(obra, pav);
+  const textoBtnPdfPav = icon('document')+" Exportar relatório do pavimento (PDF)";
+  btnPdfPav.className="btn primary"; btnPdfPav.style.marginTop="0"; btnPdfPav.innerHTML=textoBtnPdfPav;
+  btnPdfPav.onclick=()=>executarExportacao(btnPdfPav, textoBtnPdfPav, ()=>exportarRelatorioPavimento(obra, pav));
   main.appendChild(btnPdfPav);
 
   const btnPdfCat = document.createElement("button");
   btnPdfCat.className="btn"; btnPdfCat.style.cssText="width:100%;border:1px solid var(--border);background:none;color:var(--text);margin-top:8px;";
   const textoBtnPdfCat = icon('document')+` Exportar fichas completas de "${escapeHtml(cat.nome)}" (PDF)`;
   btnPdfCat.innerHTML = textoBtnPdfCat;
-  btnPdfCat.onclick=async ()=>{
-    const temAnexos = cat.documentos && cat.documentos.length;
-    if(temAnexos){ btnPdfCat.disabled = true; btnPdfCat.textContent = "Gerando relatório (incluindo anexos)..."; }
-    try{ await exportarRelatorioCategoriaEstrutura(obra, pav, cat); }
-    finally{ btnPdfCat.disabled = false; btnPdfCat.innerHTML = textoBtnPdfCat; }
-  };
+  btnPdfCat.onclick=()=>executarExportacao(btnPdfCat, textoBtnPdfCat, ()=>exportarRelatorioCategoriaEstrutura(obra, pav, cat));
   main.appendChild(btnPdfCat);
 
   main.appendChild(blocoAnexosCategoria(cat));
@@ -3714,7 +3726,30 @@ async function imprimirRelatorio(html){
   const area = document.getElementById("print-area");
   area.innerHTML = html;
   await hidratarImagens(area);
+  // Fotos que não puderam ser carregadas viram um aviso no lugar de uma imagem quebrada.
+  area.querySelectorAll("img[data-imgref]:not([src])").forEach(img=>{
+    const aviso = document.createElement("span");
+    aviso.className = "rel-foto-indisponivel";
+    aviso.textContent = "[foto indisponível]";
+    aviso.style.cssText = "font-size:10px;color:#888;";
+    img.replaceWith(aviso);
+  });
   window.print();
+}
+
+// Roda uma exportação mostrando "Gerando relatório..." no botão e avisando se der erro.
+async function executarExportacao(btn, textoOriginal, fn){
+  btn.disabled = true;
+  btn.textContent = "Gerando relatório... (carregando fotos, aguarde)";
+  try{
+    await fn();
+  }catch(e){
+    console.error("Erro ao exportar relatório:", e);
+    alert("Não foi possível gerar o relatório.\n\nDetalhe: " + (e && e.message ? e.message : e) + "\n\nTente novamente; se persistir, envie este detalhe para o suporte.");
+  }finally{
+    btn.disabled = false;
+    btn.innerHTML = textoOriginal;
+  }
 }
 
 function exportarRelatorioAmbiente(obra, pav, amb, unid, cat){
@@ -3745,7 +3780,7 @@ function exportarRelatorioAmbiente(obra, pav, amb, unid, cat){
   });
 
   html += `<div class="meta" style="margin-top:30px;">RESPONSÁVEL PELA VERIFICAÇÃO: _______________________________ &nbsp;&nbsp; Data: ___/___/______</div>`;
-  imprimirRelatorio(html);
+  return imprimirRelatorio(html);
 }
 
 function exportarRelatorioPavimento(obra, pav){
@@ -3809,7 +3844,7 @@ function exportarRelatorioPavimento(obra, pav){
     });
   }
 
-  imprimirRelatorio(html);
+  return imprimirRelatorio(html);
 }
 
 async function exportarRelatorioCategoriaEstrutura(obra, pav, cat){
@@ -3850,7 +3885,7 @@ async function exportarRelatorioCategoriaEstrutura(obra, pav, cat){
 
   html += `<div class="meta" style="margin-top:30px;">RESPONSÁVEL PELA VERIFICAÇÃO: _______________________________ &nbsp;&nbsp; Data: ___/___/______</div>`;
   html += await anexosHtmlRelatorio(cat.documentos);
-  imprimirRelatorio(html);
+  return imprimirRelatorio(html);
 }
 
 function exportarRelatorioObra(obra){
@@ -3918,7 +3953,7 @@ function exportarRelatorioObra(obra){
     });
   }
 
-  imprimirRelatorio(html);
+  return imprimirRelatorio(html);
 }
 
 function exportarRelatorioFornecedor(obra, forn, itensNC){
@@ -3939,7 +3974,7 @@ function exportarRelatorioFornecedor(obra, forn, itensNC){
   });
 
   html += `<div class="meta" style="margin-top:30px;">Ciente do responsável: _______________________________ &nbsp;&nbsp; Data: ___/___/______</div>`;
-  imprimirRelatorio(html);
+  return imprimirRelatorio(html);
 }
 
 function escapeHtml(str){
