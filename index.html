@@ -121,6 +121,16 @@
   .item-extra{margin-top:8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
   .item-extra textarea{min-height:36px;font-size:13px;}
   .photo-thumb{width:52px;height:52px;border-radius:6px;object-fit:cover;border:1px solid var(--border);cursor:pointer;}
+  .foto-viewer{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:60;display:flex;flex-direction:column;}
+  .foto-viewer-topo{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;color:#fff;font-size:14px;}
+  .foto-viewer-topo .acoes{display:flex;gap:8px;}
+  .foto-viewer button{border:none;border-radius:8px;padding:9px 14px;font-size:14px;font-weight:600;cursor:pointer;}
+  .foto-viewer .btn-fechar{background:#fff;color:#222;}
+  .foto-viewer .btn-remover{background:#dc2626;color:#fff;}
+  .foto-viewer-area{flex:1;display:flex;align-items:center;justify-content:center;position:relative;min-height:0;padding:0 8px 16px;touch-action:pan-y;}
+  .foto-viewer-area img{max-width:100%;max-height:100%;object-fit:contain;border-radius:4px;}
+  .foto-viewer .nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.18);color:#fff;font-size:26px;width:44px;height:44px;padding:0;border-radius:50%;}
+  .foto-viewer .nav.ant{left:10px;} .foto-viewer .nav.prox{right:10px;}
   .fotos-strip{display:flex;gap:6px;align-items:center;flex-wrap:wrap;width:100%;}
   .fotos-count{font-size:12px;font-weight:700;color:var(--muted);}
   .photo-btn{width:52px;height:52px;border-radius:6px;border:1px dashed var(--border);background:none;color:var(--muted);font-size:20px;cursor:pointer;flex-shrink:0;}
@@ -2839,16 +2849,15 @@ function abrirChecklist(obra,pav,amb,fvsInst){
         const contador = strip.querySelector(".fotos-count");
         fotos.forEach((ref,fi)=>{
           const t = document.createElement("img");
-          t.className = "photo-thumb"; t.title = "Toque para remover";
+          t.className = "photo-thumb"; t.title = "Toque para ver a foto";
           if(ehRefImagem(ref)) t.dataset.imgref = ref; else t.src = ref;
-          t.onclick = async ()=>{
-            if(!confirm("Remover esta foto?")) return;
-            const [removida] = item.fotos.splice(fi,1);
+          t.onclick = ()=> abrirVisualizadorFotos(fotosDoItem(item), fi, (indice)=>{
+            const [removida] = item.fotos.splice(indice,1);
             excluirImagem(removida);
             dirty = true;
             atualizarFotosItem();
             atualizarBotaoSalvar();
-          };
+          });
           strip.insertBefore(t, contador);
         });
         hidratarImagens(strip);
@@ -3535,6 +3544,69 @@ function abrirSeletorArquivo(accept, onSelecionar, capture, multiplo){
   };
   document.body.appendChild(input);
   input.click();
+}
+
+// Visualizador de fotos em tela cheia: abre ao tocar numa miniatura, permite passar
+// entre as fotos da verificação (setas, teclado ou deslizar o dedo) e remover a foto
+// exibida. Fica por cima do checklist (que já é um modal), sem fechá-lo.
+function abrirVisualizadorFotos(refs, inicio, aoRemover){
+  const anterior = document.getElementById("foto-viewer");
+  if(anterior) anterior.remove();
+  if(!refs.length) return;
+  let atual = Math.min(Math.max(inicio,0), refs.length-1);
+  const el = document.createElement("div");
+  el.className = "foto-viewer"; el.id = "foto-viewer";
+  el.innerHTML = `
+    <div class="foto-viewer-topo">
+      <span class="contador"></span>
+      <div class="acoes">
+        ${aoRemover ? `<button class="btn-remover">Remover foto</button>` : ""}
+        <button class="btn-fechar">Fechar</button>
+      </div>
+    </div>
+    <div class="foto-viewer-area">
+      <button class="nav ant" aria-label="Foto anterior">&#8249;</button>
+      <img alt="Foto da verificação">
+      <button class="nav prox" aria-label="Próxima foto">&#8250;</button>
+    </div>`;
+  document.body.appendChild(el);
+  const img = el.querySelector("img");
+  async function mostrar(){
+    const ref = refs[atual];
+    el.querySelector(".contador").textContent = refs.length>1 ? `Foto ${atual+1} de ${refs.length}` : "Foto";
+    el.querySelectorAll(".nav").forEach(b=> b.style.display = refs.length>1 ? "" : "none");
+    img.removeAttribute("src");
+    if(ehRefImagem(ref)){
+      const url = await urlDaRefImagem(ref);
+      if(refs[atual]===ref && url) img.src = url;
+    } else img.src = ref;
+  }
+  function fechar(){ el.remove(); document.removeEventListener("keydown", teclas); }
+  function passo(d){ if(refs.length>1){ atual = (atual + d + refs.length) % refs.length; mostrar(); } }
+  function teclas(e){
+    if(e.key==="Escape") fechar();
+    else if(e.key==="ArrowLeft") passo(-1);
+    else if(e.key==="ArrowRight") passo(1);
+  }
+  document.addEventListener("keydown", teclas);
+  el.querySelector(".btn-fechar").onclick = fechar;
+  el.querySelector(".nav.ant").onclick = ()=>passo(-1);
+  el.querySelector(".nav.prox").onclick = ()=>passo(1);
+  el.querySelector(".foto-viewer-area").onclick = (e)=>{ if(e.target===e.currentTarget) fechar(); };
+  let xInicio = null;
+  img.addEventListener("touchstart", e=>{ xInicio = e.touches[0].clientX; }, {passive:true});
+  img.addEventListener("touchend", e=>{
+    if(xInicio===null) return;
+    const dx = e.changedTouches[0].clientX - xInicio; xInicio = null;
+    if(Math.abs(dx) > 50) passo(dx < 0 ? 1 : -1);
+  });
+  const btnRem = el.querySelector(".btn-remover");
+  if(btnRem) btnRem.onclick = ()=>{
+    if(!confirm("Remover esta foto?")) return;
+    fechar();
+    aoRemover(atual);
+  };
+  mostrar();
 }
 
 function openModal(innerHtml){
