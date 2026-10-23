@@ -1,4 +1,4 @@
-const CACHE_NAME = "fvs-obras-tergos-v37";
+const CACHE_NAME = "fvs-obras-tergos-v38";
 const ARQUIVOS_APP = [
   "./",
   "./index.html",
@@ -30,20 +30,29 @@ self.addEventListener("activate", (event) => {
   self.clients.claim();
 });
 
-// Cache-first pros arquivos do próprio app; qualquer outra coisa (ex.: PDF.js/dxf-parser
-// de CDN, usados só na importação de planta) vai direto pra rede, sem passar pelo cache.
+// Arquivos do próprio app: "rede primeiro". Com internet, sempre busca a versão mais
+// nova no site (assim uma atualização publicada no GitHub aparece no próximo
+// carregamento, sem depender de trocar a versão deste arquivo) e guarda uma cópia.
+// Sem internet, usa a cópia guardada — o app continua funcionando offline.
+// Qualquer outra coisa (ex.: PDF.js/dxf-parser de CDN, Firebase) vai direto pra rede.
 self.addEventListener("fetch", (event) => {
+  if (event.request.method !== "GET") return;
   const url = new URL(event.request.url);
   if (url.origin !== self.location.origin) return;
 
   event.respondWith(
-    caches.match(event.request).then((resposta) => {
-      if (resposta) return resposta;
-      return fetch(event.request).then((rede) => {
-        const copia = rede.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copia));
+    fetch(event.request, { cache: "no-cache" })
+      .then((rede) => {
+        if (rede && rede.ok) {
+          const copia = rede.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copia));
+        }
         return rede;
-      });
-    }).catch(() => caches.match("./index.html"))
+      })
+      .catch(() =>
+        caches.match(event.request).then((resposta) =>
+          resposta || (event.request.mode === "navigate" ? caches.match("./index.html") : Response.error())
+        )
+      )
   );
 });
